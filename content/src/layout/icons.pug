@@ -1,0 +1,37 @@
+mixin icon(iconClass, size)
+  if size == "lg"
+    i(class="fa fa-lg " + iconClass)
+  else if size == "2x"
+    i(class="fa fa-2x " + iconClass)
+  else
+    i(class="fa " + iconClass)
+
+// Content
+mixin profileIcon(size)
+  +icon("fa-user", size)
+mixin projectIcon(size)
+  +icon("fa-gears", size)
+mixin publicationIcon(size)
+  +icon("fa-book", size)
+mixin contactIcon(size)
+  +icon("fa-users", size)
+mixin linkIcon(size)
+  +icon("fa-external-link", size)
+
+// Contact / Service
+mixin mailIcon(size)
+  +icon("fa-envelope", size)
+mixin twitterIcon(size)
+  +icon("fa-twitter", size)
+mixin githubIcon(size)
+  +icon("fa-github", size)
+mixin qiitaIcon(size)
+  +icon("qiita", size)
+mixin npmIcon(size)
+  +icon("npm", size)
+
+// Language
+mixin englishIcon(size)
+  +icon("fa-font", size)
+mixin japaneseIcon(size)
+  +icon("japan", size)

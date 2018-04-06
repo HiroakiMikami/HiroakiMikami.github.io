@@ -1,0 +1,108 @@
+block language
+    -
+        var language = "en"
+
+block title
+    -
+        var title = "Micro-Versioning Tool to Support Experimentation in Exploratory Programming"
+
+include ../../src/layout/icons.pug
+include ./strings.pug
+
+doctype html
+html(lang=language)
+    head
+        // Meta Information
+        meta(charset="utf-8")
+        meta(http-equiv="X-UA-Compatible", content="IE=edge")
+        meta(name="viewport", content="width=device-width, initial-scale=1")
+        title #{title}
+        // jQuery
+        script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js")
+
+        // Bootstrap (Yeti)
+        link(href="../yeti/css/bootstrap.min.css", rel="stylesheet")
+        script(src="../bootstrap/js/bootstrap.min.js")
+
+        // Font Awesome
+        link(href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css", rel="stylesheet")
+        link(href="../css/icon.css", rel="stylesheet")
+    body
+        div.container
+            div.page-header
+                div.row
+                    div.text-right
+                        if language == "en"
+                            a(href="index-ja.html")
+                                +japaneseIcon("lg")
+                                span 日本語
+                        else
+                            a(href="index.html")
+                                +englishIcon("lg")
+                                span English
+                    div(class="col-sm-12 text-center")
+                        h2 #{title}
+                div.row
+                    div(class="col-sm-12 text-center")
+                        h4
+                            a(href="https://hiroakimikami.github.io") #{strings.hiroakimikami[language]}
+                            span ,
+                            a(href="https://daisukesakamoto.jp/") #{strings.daisukesakamoto[language]}
+                            span ,
+                            a(href="http://www-ui.is.s.u-tokyo.ac.jp/~takeo/") #{strings.takeoigarashi[language]}
+                div.row
+                    div(class="col-sm-12 text-center")
+                        h4
+                            a(href="http://www.u-tokyo.ac.jp/en/index.html") #{strings.univtokyo[language]}
+        div.container
+            div(class="row page-header")
+                div.col-sm-12
+                    h3 #{strings.abstract[language]}
+            div.row
+                div.col-sm-8
+                    block abstract
+                div.col-sm-4
+                    img(src="../images/abstract.jpg")
+            div(class="row page-header")
+                div.col-sm-12
+                    h3 #{strings.video[language]}
+            div.row
+                div.col-sm-6
+                    iframe(width=560, height=315
+                           src="https://www.youtube.com/embed/THHwelAo0aY?ecver=1",
+                           frameborder="0", allowfullscreen)
+                div.col-sm-6
+                    iframe(width=560, height=315
+                           src="https://www.youtube.com/embed/2v1hHl9mQ7g?ecver=1",
+                           frameborder="0", allowfullscreen)
+            div(class="row page-header")
+                div.col-sm-12
+                    h3 #{strings["prototype"][language]}
+            div.row
+                div.col-sm-12
+                    div(class="panel panel-default")
+                        div.panel-heading
+                            h4 #{strings.install[language]}
+                        div.panel-body
+                            block install
+                    div(class="panel panel-default")
+                        div.panel-heading
+                            h4 #{strings.usage[language]}
+                        div.panel-body
+                            block usage
+            div(class="row page-header")
+                div.col-sm-12
+                    h3 #{strings.publications[language]}
+            di.row
+                div.col-sm-12
+                    ul
+                        li
+                            | Hiroaki Mikami, Daisuke Sakamoto, and Takeo Igarashi. Micro-Versioning Tool to Support Experimentation in Exploratory Programming.
+                            | 2017 SIGCHI Conference on Human Factors in Computer Systems (CHI 2017)
+                            | [
+                            a(href="https://doi.org/10.1145/3025453.3025597") DOI
+                            | , 
+                            a(href="../files/micro-versioning-tool.pdf") PDF
+                            | ,
+                            a(href="https://www.slideshare.net/HiroakiMikami/chi2017-slide-share-75959279") Slide
+                            | ]

@@ -1,0 +1,82 @@
+block language
+    -
+        var language = "en"
+
+include ./layout/icons.pug
+include ./layout/components.pug
+
+include ./data/strings.pug
+include ./data/projects.pug
+include ./data/publications.pug
+
+doctype html
+html(lang=language)
+    include ./layout/head.pug
+    body#bootcards
+        include ./layout/navvar.pug
+
+        // Content
+        div(class="container push-right")
+            div(class="col-sm-12 bootcards-cards")
+                div.row
+                    div.page-header
+                        h1#profile.text-left #{strings.profile[language]}
+                    div.col-sm-6
+                        div(class="panel panel-default bootcards-richtex")
+                            div(class="panel-heading clearfix")
+                                h3(class="panel-title pull-left") #{strings.bio[language]}
+                            div.panel-body
+                                block bio
+                    div.col-sm-6
+                        div(class="panel panel-default bootcards-richtex")
+                            div(class="panel-heading clearfix")
+                                h3(class="panel-title pull-left") #{strings.interest[language]}
+                            div.panel-body 
+                                block interest
+
+                div.row
+                    div.page-header
+                        h1#projects.text-left #{strings.projects[language]}
+                    div.col-sm-12
+                        div.row
+                            div.col-sm-12
+                            each project in projects
+                                +projectLarge(project.title, project.image, project.tags, project.links)
+                        div.row
+                            h2.text-left #{strings.repositories[language]}
+                            div.col-sm-12
+                            each repository in repositories
+                                +projectSmall(repository.title, repository.image, repository.tags, repository.links)
+                div.row
+                    div.page-header
+                        h1#publications.text-left #{strings.publications[language]}
+                    div.col-sm-12
+                        div(class="panel panel-default")
+                            div.list-group
+                                each publication, index in publications
+                                    +publication(index,
+                                                 publication.title, publication.location, publication.resources)
+
+        // Modal
+        each publication, index in publications
+            +publicationModal(index,
+                              publication.title, publication.location, publication.resources)
+
+        // Footer
+        div(class="navbar navbar-default navbar-fixed-bottom")
+            div.container
+            div(class="bootcards-desktop-footer clearfix")
+            div.btn-group
+                a(class="btn btn-default", href="#profile")
+                    +profileIcon("2x")
+                    span #{strings.profile[language]}
+                a(class="btn btn-default", href="#projects")
+                    +projectIcon("2x")
+                    span #{strings.projects[language]}
+                a(class="btn btn-default", href="#publications")
+                    +publicationIcon("2x")
+                    span #{strings.publications[language]}
+                a(class="btn btn-default", href="https://github.com/HiroakiMikami")
+                    +githubIcon("2x")
+                    span Github
+
