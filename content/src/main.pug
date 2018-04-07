@@ -18,6 +18,7 @@ html(lang=language)
         // Content
         div(class="container push-right")
             div(class="col-sm-12 bootcards-cards")
+                // Profile
                 div.row
                     div.page-header
                         h1#profile.text-left #{strings.profile[language]}
@@ -30,6 +31,7 @@ html(lang=language)
                             div.panel-body 
                                 block interest
 
+                // Content
                 div.row
                     div.page-header
                         h1#projects.text-left #{strings.projects[language]}
@@ -39,10 +41,15 @@ html(lang=language)
                             each project in projects
                                 +projectLarge(project.title, project.image, project.tags, project.links)
                         div.row
-                            h2.text-left #{strings.repositories[language]}
+                            h2.text-left #{strings.activities[language]}
                             div.col-sm-12
-                            each repository in repositories
-                                +projectSmall(repository.title, repository.image, repository.tags, repository.links)
+                                each activity in activities
+                                    +projectSmall(activity.title[language], activity.image, activity.tags, activity.links)
+                        div.row
+                            h2.text-left #{strings.others[language]}
+                            div.col-sm-12
+                                each repository in repositories
+                                    +projectSmall(repository.title, repository.image, repository.tags, repository.links)
                 div.row
                     div.page-header
                         h1#publications.text-left #{strings.publications[language]}
