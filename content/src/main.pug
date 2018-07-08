@@ -12,12 +12,12 @@ include ./data/publications.pug
 doctype html
 html(lang=language)
     include ./layout/head.pug
-    body#bootcards
+    body
         include ./layout/navvar.pug
 
         // Content
         div(class="container push-right")
-            div(class="col-sm-12 bootcards-cards")
+            div(class="col-sm-12 -cards")
                 // Profile
                 div.row
                     div.page-header
@@ -25,7 +25,7 @@ html(lang=language)
                     div.col-sm-5
                         block bio
                     div.col-sm-7
-                        div(class="panel panel-default bootcards-richtex")
+                        div(class="panel panel-default")
                             div(class="panel-heading clearfix")
                                 h3(class="panel-title pull-left") #{strings.interest[language]}
                             div.panel-body 
@@ -66,8 +66,7 @@ html(lang=language)
                               publication.title, publication.location, publication.resources)
 
         // Footer
-        div(class="navbar navbar-default navbar-fixed-bottom")
-            div(class="bootcards-desktop-footer clearfix")
+        div(class="navbar navbar-default navbar-fixed-bottom" role="navigation")
             div.container
                 div.btn-group(style="display: ''")
                     a(class="btn btn-default", href="#profile")

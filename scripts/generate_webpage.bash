@@ -5,10 +5,6 @@ output=${1:-./output}
 mkdir -p $output
 
 # get git repositories
-## bootcards
-git clone --depth 1 https://github.com/bootcards/bootcards $output/bootcards
-rm -rf $output/bootcards/.git
-
 ## npm-logos
 mkdir -p $output/images
 git clone --depth 1 https://github.com/npm/logos $output/images/npm-logos
