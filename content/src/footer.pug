@@ -1,0 +1,16 @@
+// Footer
+div(class="navbar navbar-default navbar-fixed-bottom" role="navigation")
+  div.container
+    div.btn-group(style="display: ''")
+      a(class="btn btn-default", href="#profile")
+        +profileIcon("2x")
+        span #{strings.profile[language]}
+      a(class="btn btn-default", href="#projects")
+        +projectIcon("2x")
+        span #{strings.projects[language]}
+      a(class="btn btn-default", href="#publications")
+        +publicationIcon("2x")
+        span #{strings.publications[language]}
+      a(class="btn btn-default", href="https://github.com/HiroakiMikami")
+        +githubIcon("2x")
+        span Github
