@@ -6,28 +6,28 @@ div(class="navbar navbar-default navbar-fixed-top", role="navigation")
         li
           a(href="#profile")
             +profileIcon("lg")
-            span 
+            span
             span #{strings.profile[language]}
         li
           a(href="#projects")
             +projectIcon("lg")
-            span 
+            span
             span #{strings.projects[language]}
         li
           a(href="#publications")
             +publicationIcon("lg")
-            span 
+            span
             span #{strings.publications[language]}
         li.dropdown
           a.dropdown-toggle(href="#", data-toggle="dropdown")
             +contactIcon("lg")
-            span 
+            span
             span #{strings.contact[language]}
           ul.dropdown-menu
             li
               a(href="mailto:hiroaki8270@gmail.com")
                 +mailIcon()
-                span 
+                span
                 span #{strings.mail[language]}
             li
               a(href="https://twitter.com/hiroaki8270")
@@ -45,7 +45,7 @@ div(class="navbar navbar-default navbar-fixed-top", role="navigation")
             li
               a(href="https://github.com/HiroakiMikami")
                 +githubIcon()
-                span 
+                span
                 span Github
             li
               a(href="https://www.npmjs.com/~hiroakimikami")
@@ -61,7 +61,7 @@ div(class="navbar navbar-default navbar-fixed-top", role="navigation")
             li
               a(href="http://qiita.com/MikamiHiroaki")
                 +qiitaIcon()
-                span 
+                span
                 span Qiita
       if language == "en"
         a(class="navbar-right navbar-text", href="index-ja.html")

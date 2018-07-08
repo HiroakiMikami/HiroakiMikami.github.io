@@ -17,7 +17,7 @@ mixin projectWithClass(className, title, imageUrl, tags, links)
           div.row
             each tag in tags
               span(class="label label-info") #{tag}
-              | 
+              |
       div.panel-body
         if imageUrl == null
           img.img-responsive(src="images/no-image.svg")
