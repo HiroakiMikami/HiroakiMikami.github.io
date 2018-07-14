@@ -2,7 +2,7 @@ include ./data/strings.pug
 
 div.container
   div.jumbtron
-    // Profile
+    //- Profile
     div.row
       h2.mt-5(id="profile") #{strings.profile[language]}
     div.row
@@ -12,7 +12,7 @@ div.container
         h3.mt-3 #{strings.interest[language]}
         block interest
   div.container
-    // Projects
+    //- Projects
     div.row
       h2.mt-5(id="projects") #{strings.projects[language]}
     div.row
@@ -31,7 +31,7 @@ div.container
           each repository in repositories
             +projectSmall(repository.title, repository.image, repository.tags, repository.links)
 
-    // Publications
+    //- Publications
     div.row
       h2.mt-5(id="publications") #{strings.publications[language]}
     div.row
@@ -41,7 +41,7 @@ div.container
             +publication(index,
                          publication.title, publication.location, publication.resources)
 
-// Modal
+//- Modal
 each publication, index in publications
   +publicationModal(index,
                     publication.title, publication.location, publication.resources)
