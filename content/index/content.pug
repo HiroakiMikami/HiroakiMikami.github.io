@@ -1,47 +1,45 @@
-// Content
-div(class="container push-right")
-  div(class="col-sm-12 -cards")
+include ./data/strings.pug
+
+div.container
+  div.jumbtron
     // Profile
     div.row
-      div.page-header
-        h1#profile.text-left #{strings.profile[language]}
-      div.col-sm-5
-        block bio
-      div.col-sm-7
-        div(class="panel panel-default")
-          div(class="panel-heading clearfix")
-            h3(class="panel-title pull-left") #{strings.interest[language]}
-          div.panel-body
-            block interest
-
-    // Content
+      h2.mt-5(id="profile") #{strings.profile[language]}
     div.row
-      div.page-header
-        h1#projects.text-left #{strings.projects[language]}
+      div.col-sm-4
+        block bio
+      div.col-sm-8
+        h3.mt-3 #{strings.interest[language]}
+        block interest
+  div.container
+    // Projects
+    div.row
+      h2.mt-5(id="projects") #{strings.projects[language]}
+    div.row
       div.col-sm-12
         div.row
-          div.col-sm-12
           each project in projects
             +projectLarge(project.title, project.image, project.tags, project.links)
         div.row
-          h2.text-left #{strings.activities[language]}
-          div.col-sm-12
-            each activity in activities
-              +projectSmall(activity.title[language], activity.image, activity.tags, activity.links)
+          h3.mt-3 #{strings.activities[language]}
         div.row
-          h2.text-left #{strings.others[language]}
-          div.col-sm-12
-            each repository in repositories
-              +projectSmall(repository.title, repository.image, repository.tags, repository.links)
+          each activity in activities
+            +projectSmall(activity.title[language], activity.image, activity.tags, activity.links)
+        div.row
+          h3.mt-3 #{strings.others[language]}
+        div.row
+          each repository in repositories
+            +projectSmall(repository.title, repository.image, repository.tags, repository.links)
+
+    // Publications
     div.row
-      div.page-header
-        h1#publications.text-left #{strings.publications[language]}
+      h2.mt-5(id="publications") #{strings.publications[language]}
+    div.row
       div.col-sm-12
-        div(class="panel panel-default")
-          div.list-group
-            each publication, index in publications
-              +publication(index,
-                           publication.title, publication.location, publication.resources)
+        div.list-group
+          each publication, index in publications
+            +publication(index,
+                         publication.title, publication.location, publication.resources)
 
 // Modal
 each publication, index in publications

@@ -1,28 +1,18 @@
 mixin projectWithClass(className, title, imageUrl, tags, links)
-  div(class=className)
-    div(class="panel panel-default")
-      div(class="panel-heading clearfix")
+  div(class=`${className} my-4`)
+    div.card
+      div.card-body
+        h5.card-title #{title}
+        if imageUrl != null
+          img.card-img(src=imageUrl)
+      p.card-footer
         each link in links
-          //- TODO Use icon.pug
           if link.modal
-            a(
-              class=`fa fa-lg pull-right ${link.type}`, href=link.url,
-              role="button", data-toggle="modal", data-target=link.url
-            )
+            //- TODO Use icon.pug
+            a(class=`card-link fa fa-lg pull-right ${link.type}`, href=link.url,
+              role="button", data-toggle="modal", data-target=link.url)
           else
-            a(class=`fa fa-lg pull-right ${link.type}`, href=link.url)
-        div.container
-          div.row
-            h4(class="pull-left") #{title}
-          div.row
-            each tag in tags
-              span(class="label label-info") #{tag}
-              |
-      div.panel-body
-        if imageUrl == null
-          img.img-responsive(src="images/no-image.svg")
-        else
-          img.img-responsive(src=imageUrl)
+            a(class=`card-link fa fa-lg pull-right ${link.type}`, href=link.url)
 mixin projectLarge(title, imageUrl, tags, links)
   +projectWithClass("col-sm-4", title, imageUrl, tags, links)
 mixin projectSmall(title, imageUrl, tags, links)
@@ -48,6 +38,7 @@ mixin publicationModal(index, title, location, resources)
       div.modal-content
         div.modal-header
           h3(id=`publications_modal_${index}_title`, class="modal-title") #{title}
+        div.modal-body
           span #{location}
           each resource in resources
             |[

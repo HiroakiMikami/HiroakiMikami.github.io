@@ -1,18 +1,22 @@
+include ../data/strings.pug
+
 head
   // Meta Information
   meta(charset="utf-8")
   meta(http-equiv="X-UA-Compatible", content="IE=edge")
-  meta(name="viewport", content="width=device-width, initial-scale=1")
+  meta(name="viewport", content="width=device-width, initial-scale=1, shrink-to-fit=no")
 
   // Title
-  title #{strings[language]}
+  title #{strings.name[language]}
 
   // jQuery
   script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js")
 
-  // Bootstrap
-  link(href="bootstrap/css/bootstrap.min.css", rel="stylesheet")
-  script(src="bootstrap/js/bootstrap.min.js")
+  // Bootstrap (4.1.1)
+  link(rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css")
+  script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js")
+
+  link(href="css/common.css", rel="stylesheet")
 
   // LinkedIn Budge
   script(src="https://platform.linkedin.com/badges/js/profile.js" async defer)
