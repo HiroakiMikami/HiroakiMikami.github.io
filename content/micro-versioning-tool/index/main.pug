@@ -44,7 +44,7 @@ html(lang=language)
         // Title
         h2.text-center #{title}
         div.row
-          div.col-sm-12
+          div.col-lg-12
             p(class="text-center pb-0 mb-0")
               a(href="https://hiroakimikami.github.io") #{strings.hiroakimikami[language]}
               span ,
@@ -58,19 +58,19 @@ html(lang=language)
         div.row
           h3.mt-5 #{strings.abstract[language]}
         div.row
-          div.col-sm-12
-            img(class="pull-right col-sm-4", src="../images/abstract.jpg")
+          div.col-lg-12
+            img(class="pull-right col-lg-4", src="../images/abstract.jpg")
             block abstract
 
         // Videos
         div.row
           h3.mt-5 #{strings.video[language]}
         div.row
-          div.col-sm-6
+          div.col-lg-6
             div(class="embed-responsive embed-responsive-16by9")
               iframe.embed-responsive-item(
                 src="https://www.youtube.com/embed/THHwelAo0aY?ecver=1", allowfullscreen)
-          div.col-sm-6
+          div.col-lg-6
             div(class="embed-responsive embed-responsive-16by9")
               iframe.embed-responsive-item(
                 src="https://www.youtube.com/embed/2v1hHl9mQ7g?ecver=1", allowfullscreen)
@@ -79,10 +79,10 @@ html(lang=language)
         div.row
           h3.mt-5 #{strings["prototype"][language]}
         div.row
-          div.col-sm-12
+          div.col-lg-12
             h4.mt-3 #{strings.install[language]}
             block install
-          div.col-sm-12
+          div.col-lg-12
             h4.mt-3 #{strings.usage[language]}
             block usage
 
@@ -90,7 +90,7 @@ html(lang=language)
         div.row
           h3.mt-5 #{strings.publications[language]}
         div.row
-          div.col-sm-12
+          div.col-lg-12
             // TODO
             ul
               li

@@ -6,9 +6,9 @@ div.container
     div.row
       h2.mt-5(id="profile") #{strings.profile[language]}
     div.row
-      div.col-sm-4
+      div.col-lg-4
         block bio
-      div.col-sm-8
+      div.col-lg-8
         h3.mt-3 #{strings.interest[language]}
         block interest
   div.container
@@ -16,7 +16,7 @@ div.container
     div.row
       h2.mt-5(id="projects") #{strings.projects[language]}
     div.row
-      div.col-sm-12
+      div.col-lg-12
         div.row
           each project in projects
             +projectLarge(project.title, project.image, project.tags, project.links)
@@ -35,7 +35,7 @@ div.container
     div.row
       h2.mt-5(id="publications") #{strings.publications[language]}
     div.row
-      div.col-sm-12
+      div.col-lg-12
         div.list-group
           each publication, index in publications
             +publication(index,

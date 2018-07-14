@@ -14,9 +14,9 @@ mixin projectWithClass(className, title, imageUrl, tags, links)
           else
             a(class=`card-link fa fa-lg pull-right ${link.type}`, href=link.url)
 mixin projectLarge(title, imageUrl, tags, links)
-  +projectWithClass("col-sm-4", title, imageUrl, tags, links)
+  +projectWithClass("col-lg-4", title, imageUrl, tags, links)
 mixin projectSmall(title, imageUrl, tags, links)
-  +projectWithClass("col-sm-3", title, imageUrl, tags, links)
+  +projectWithClass("col-lg-3", title, imageUrl, tags, links)
 
 mixin publication(index, title, location, resources)
   div.list-group-item
