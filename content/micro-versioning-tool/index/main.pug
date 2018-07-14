@@ -8,6 +8,7 @@ block title
 
 include ../../pug/icons.pug
 include ./strings.pug
+include ../../index/layout/components.pug
 
 doctype html
 html(lang=language)
@@ -91,15 +92,12 @@ html(lang=language)
           h3.mt-5 #{strings.publications[language]}
         div.row
           div.col-lg-12
-            // TODO
-            ul
-              li
-                | Hiroaki Mikami, Daisuke Sakamoto, and Takeo Igarashi. Micro-Versioning Tool to Support Experimentation in Exploratory Programming.
-                | 2017 SIGCHI Conference on Human Factors in Computer Systems (CHI 2017)
-                | [
-                a(href="https://doi.org/10.1145/3025453.3025597") DOI
-                | ,
-                a(href="../files/micro-versioning-tool.pdf") PDF
-                | ,
-                a(href="https://www.slideshare.net/HiroakiMikami/chi2017-slide-share-75959279") Slide
-                | ]
+            div.list-group
+              +publication(0,
+                           "Micro-Versioning Tool to Support Experimentation in Exploratory Programming",
+                           "2017 SIGCHI Conference on Human Factors in Computer Systems (CHI 2017)",
+                           [
+                            { text: "DOI", url: "https://doi.org/10.1145/3025453.3025597" },
+                            { text: "PDF", url: "../files/micro-versioning-tool.pdf" },
+                            { text: "Slide", url: "https://www.slideshare.net/HiroakiMikami/chi2017-slide-share-75959279" }
+                           ])
