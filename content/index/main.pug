@@ -11,7 +11,130 @@ include ./data/publications.pug
 
 doctype html
 html(lang=language)
-  include ./layout/head.pug
+  head
+    include ../pug/meta.pug
+    include ../pug/resources.pug
+
+    //- Title
+    title #{strings.name[language]}
+
+    //- LinkedIn Budge
+    script(src="https://platform.linkedin.com/badges/js/profile.js" async defer)
   body
-    include ./header.pug
-    include ./content.pug
+    nav(class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")
+      div.container
+        span(class="navbar-brand") #{strings.name[language]}
+        button.navbar-toggler(type="button",
+                              data-toggle="collapse", data-target="#navbar-menu",
+                              aria-controls="navbar-menu", aria-expanded="false", aria-label="Toggle navigation")
+          span.navbar-toggler-icon
+        div(class="navbar-collapse collapse", id="navbar-menu")
+          ul(class="navbar-nav ml-auto")
+            li.nav-item
+              a.nav-link(href="#profile")
+                +profileIcon("lg")
+                span
+                span #{strings.profile[language]}
+            li.nav-item
+              a.nav-link(href="#projects")
+                +projectIcon("lg")
+                span
+                span #{strings.projects[language]}
+            li.nav-item
+              a.nav-link(href="#publications")
+                +publicationIcon("lg")
+                span
+                span #{strings.publications[language]}
+            li(class="nav-item dropdown")
+              a(id="contact-dropdown", class="nav-link dropdown-toggle", href="#", role="button", data-toggle="dropdown")
+                +contactIcon("lg")
+                span
+                span #{strings.contact[language]}
+              div(class="dropdown-menu bg-dark", aria-labelledby="contact-dropdown")
+                a(class="dropdown-item text-light bg-dark", href="mailto:hiroaki8270@gmail.com")
+                  +mailIcon()
+                  span
+                  span #{strings.mail[language]}
+                a(class="dropdown-item text-light bg-dark", href="https://twitter.com/hiroaki8270")
+                  +twitterIcon()
+                  span
+                  span Twitter
+                a(class="dropdown-item text-light bg-dark", href="https://www.linkedin.com/in/hiroaki-mikami-69084b142/")
+                  span LinkedIn &reg;
+            li(class="nav-item dropdown")
+              a(id="link-dropdown", class="nav-link dropdown-toggle", href="#", role="button", data-toggle="dropdown")
+                +linkIcon("lg")
+                span
+                span #{strings.link[language]}
+              div(class="dropdown-menu bg-dark", aria-labelledby="link-dropdown")
+                a(class="dropdown-item text-light bg-dark", href="https://github.com/HiroakiMikami")
+                  +githubIcon()
+                  span
+                  span GitHub
+                a(class="dropdown-item text-light bg-dark", href="https://www.npmjs.com/~hiroakimikami")
+                  +npmIcon()
+                  span
+                  span npm
+                a(class="dropdown-item text-light bg-dark", href="https://atom.io/users/HiroakiMikami")
+                  span Atom
+                a(class="dropdown-item text-light bg-dark", href="https://hub.docker.com/u/mhiroaki8270/")
+                  span DockerHub
+                a(class="dropdown-item text-light bg-dark", href="http://qiita.com/MikamiHiroaki")
+                  +qiitaIcon()
+                  span
+                  span Qiita
+            li.nav-item
+              if language == "en"
+                a(class="nav-link", href="index-ja.html")
+                  +japaneseIcon("lg")
+                  span 日本語
+              else
+                a(class="nav-link", href="index.html")
+                  +englishIcon("lg")
+                  span English
+
+    div.container
+      div.jumbtron
+        //- Profile
+        div.row
+          h2.mt-5(id="profile") #{strings.profile[language]}
+        div.row
+          div.col-lg-4
+            block bio
+          div.col-lg-8
+            h3.mt-3 #{strings.interest[language]}
+            block interest
+      div.container
+        //- Projects
+        div.row
+          h2.mt-5(id="projects") #{strings.projects[language]}
+        div.row
+          div.col-lg-12
+            div.row
+              each project in projects
+                +projectLarge(project.title, project.image, project.links)
+            div.row
+              h3.mt-3 #{strings.activities[language]}
+            div.row
+              each activity in activities
+                +projectSmall(activity.title[language], activity.image, activity.links)
+            div.row
+              h3.mt-3 #{strings.others[language]}
+            div.row
+              each repository in repositories
+                +projectSmall(repository.title, repository.image, repository.links)
+
+        //- Publications
+        div.row
+          h2.mt-5(id="publications") #{strings.publications[language]}
+        div.row
+          div.col-lg-12
+            div.list-group
+              each publication, index in publications
+                +publication(index,
+                            publication.title, publication.location, publication.resources)
+
+    //- Modal
+    each publication, index in publications
+      +publicationModal(index,
+                        publication.title, publication.location, publication.resources)
