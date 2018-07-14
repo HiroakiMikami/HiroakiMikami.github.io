@@ -10,9 +10,7 @@ block abstract
   | A user study involving programmers indicated that our tool satisfies the above-mentioned requirements and that it is useful for exploratory programming.
 
 block install
-  p
-    a(href="micro-versioning-tool.zip", type="button", class="btn btn-primary") Source Code (zip file)
-  br
+  a.pull-right(href="../files/micro-versioning-tool.zip", type="button", class="btn btn-primary") Source Code (zip file)
   p
     | The prototype tool requires following software.
     ul
@@ -20,18 +18,17 @@ block install
         a(href="https://electron.atom.io/") electron
       li
         a(href="https://www.java.com/") Java 1.8
-  p
     | Please download the above zip file, unzip it, and executes the following commands.
-  br
-  code
-    pre
-      | $ cd micro-versioning-tool
-      | $ npm install
+  div.card
+    code
+      pre
+        | $ cd micro-versioning-tool
+        | $ npm install
 
 block usage
   | Run the following command to open foo.html using the prototype micro-versioning tool.
-  br
-  code
-    pre
-      | $ cd micro-versioning-tool
-      | $ electron . foo.html
+  div.card
+    code
+      pre
+        | $ cd micro-versioning-tool
+        | $ electron . foo.html
