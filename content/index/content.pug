@@ -19,17 +19,17 @@ div.container
       div.col-lg-12
         div.row
           each project in projects
-            +projectLarge(project.title, project.image, project.tags, project.links)
+            +projectLarge(project.title, project.image, project.links)
         div.row
           h3.mt-3 #{strings.activities[language]}
         div.row
           each activity in activities
-            +projectSmall(activity.title[language], activity.image, activity.tags, activity.links)
+            +projectSmall(activity.title[language], activity.image, activity.links)
         div.row
           h3.mt-3 #{strings.others[language]}
         div.row
           each repository in repositories
-            +projectSmall(repository.title, repository.image, repository.tags, repository.links)
+            +projectSmall(repository.title, repository.image, repository.links)
 
     //- Publications
     div.row
