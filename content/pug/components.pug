@@ -49,3 +49,12 @@ mixin publicationModal(index, title, location, resources)
             |]
         div.modal-footer
           button(class="btn btn-default", type="button", data-dismiss="modal") Close
+
+mixin patent(index, title, resources)
+  div.list-group-item
+    h4.list-group-item-heading(id=`patents_${index}`) #{title}
+    p.list-group-item-text
+      each resource in resources
+        |[
+        a(href = resource.url) #{resource.text}
+        |]
