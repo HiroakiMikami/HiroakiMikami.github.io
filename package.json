@@ -13,6 +13,6 @@
   "private": true,
   "dependencies": {
     "pug-cli": "^1.0.0-alpha6",
-    "simplehttpserver": "^0.1.1"
+    "simplehttpserver": "^0.3.0"
   }
 }
