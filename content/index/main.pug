@@ -120,6 +120,11 @@ html(lang=language)
               each activity in activities
                 +projectSmall(activity.title[language], activity.image, activity.links)
             div.row
+              h3.mt-3 #{strings.reproductions[language]}
+            div.row
+              each reproduction in reproductions
+                +projectSmall(reproduction.title, reproduction.image, reproduction.links)
+            div.row
               h3.mt-3 #{strings.others[language]}
             div.row
               each repository in repositories
