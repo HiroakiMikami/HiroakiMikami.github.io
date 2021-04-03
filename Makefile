@@ -13,5 +13,5 @@ clean:
 	bundle exec jekyll clean
 	rm -rf vendor Gemfile.lock
 
-build:
-	bundle exec jekyll build
+deploy:
+	./scripts/deploy.sh

@@ -60,5 +60,4 @@ exclude:
   - "Makefile"
   - "vendor"
   - ".bundle"
-  - "OLD"
-foo: bar
+  - "bin"
