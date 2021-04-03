@@ -1,0 +1,8 @@
+---
+layout: post
+title: emacsとmarkup言語
+subtitle: Livedoorブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<body>前回記事にも書いたとおり, scala(とたまにjava)は, IntelliJ ideaで, それ以外はemacsを使っている. <br/><br/>scala以外何を書くのかと言えば, まずメモとしてmarkdown. それから, スライドとかのためにlatex. 最後に, GUIコンポーネントとしてjavascriptやhtml. 他にC++を書いたりもするけど, メインはmarkdown, latex, html/javascriptの3つ.<br/><br/>なので, これらの記述環境としてのemacsの設定方法をまとめてみた. なお, C++については, flymake周りでIDEみたいにプロジェクト設定しないと詰む気がして何もやっていない.<br/><br/><span style="font-size: x-large;">markdown / html</span><br/><a href="http://kotatu.org/blog/2012/04/07/realtime-html-preview-with-emacs/" target="_blank"><span style="font-size: medium;">Warp</span></a><br/>firefoxを使ってリアルタイムにこれらの言語をプレビューするためのemacs package.<br/>markdown, htmlに限らず, shell scriptでhtmlに変換できるものなら何でもプレビューできる.<br/>自分はmarkdownに独自拡張(codeのsyntax highlightとか, MathJaxをデフォルトでonにしたり, dot言語の可視化をする)したものをプレビューしている.<br/><br/><span style="font-size: x-large;">latex </span><br/><a href="http://oku.edu.mie-u.ac.jp/~okumura/texwiki/?YaTeX" target="_blank"><span style="font-size: large;">yatex</span></a><br/>自分はエディタとビルドシステムは分離したい人間なので, yatexでコンパイルはしていない. コンパイルはomakeを使っている. またプレビューは下のpdf-toolsとdoc-view-modeで行っている.<br/>細かい設定はリンク先等を参照に, 本当に微々たることしかしていない. エラーの検出etcのためにぜひちゃんと設定したい(そのうち).<br/><br/><a href="http://sheephead.homelinux.org/2014/03/17/7076/" target="_blank"><span style="font-size: large;">pdf-tools</span></a><br/><br/><br/><span style="font-size: x-large;">javascript</span><br/>javascriptについては, IntelliJとかのIDEで書いたほうが, 書きやすいのかもとか思っていて, あまり構築する気が起きない. <br/><br/>他にもemacsではorg-modeを使って, todoをtodo.txt, Googleカレンダーと同期させたり, javadoc, scaladocのtodoと同期させたりしたい欲があるが, それはまたそのうち. 
+</body>

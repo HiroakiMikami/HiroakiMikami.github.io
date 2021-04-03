@@ -1,0 +1,228 @@
+---
+layout: post
+title: 自分のconky設定
+subtitle: Livedoorブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<body>conkyは一度設定してしまえばGoogleカレンダーのウィジェットとして, todo listの表示としてなど様々に使えるんだけれども, 残念ながら日本語資料があまりない.<br/>そして, 全角文字を入れるとうまく働かないことがしばしば. なので, 自分のconky設定とその時に困ったことのメモを残しておく.<br/><br/> 
+
+<h2>設定全体</h2>
+<h3>ディレクトリ構成</h3>
+~/.conkyにconkyの設定ファイル, 起動スクリプト, 実行するスクリプトなどをまとめている.
+
+<h3>ニュース</h3>
+ニュースを表示する設定ファイル. 左上に表示される.
+<pre># 配置設定
+alignment top_left
+background yes
+gap_x 0
+gap_y 30
+minimum_size 5 5
+
+# 概観設定
+border_width 1
+default_color black
+default_outline_color black
+default_shade_color grey
+draw_borders no
+draw_graph_borders yes
+draw_outline no
+draw_shades no
+stippled_borders 0
+
+# その他設定
+update_interval 10
+
+# ちらつきを抑える.
+double_buffer yes
+
+# 透過させる
+own_window yes
+own_window_class Conky
+own_window_type override
+own_window_transparent yes
+own_window_argb_visual yes
+own_window_argb_value 255
+
+# フォントの設定
+use_xft yes
+xftfont TakaoExGothic:style=Regular:size=10
+
+# 内容
+TEXT
+## ニュース
+${font TakaoExGothic:style=Bold:size=20}ニュース:${font}
+${font TakaoExGothic:style=Bold:size=15}トップ${font}
+${rss http://news.google.com/news?hl=ja&amp;ned=us&amp;ie=UTF-8&amp;oe=UTF-8&amp;output=rss 60 item_titles 5}
+
+## 社会ニュース
+${font TakaoExGothic:style=Bold:size=15}社会${font}
+${rss http://news.google.com/news?hl=ja&amp;ned=us&amp;ie=UTF-8&amp;oe=UTF-8&amp;output=rss&amp;topic=y 60 item_titles 2}
+
+## 国際ニュース
+${font TakaoExGothic:style=Bold:size=15}国際${font}
+${rss http://news.google.com/news?hl=ja&amp;ned=us&amp;ie=UTF-8&amp;oe=UTF-8&amp;output=rss&amp;topic=b 60 item_titles 2}
+
+## 政治ニュース
+${font TakaoExGothic:style=Bold:size=15}政治${font}
+${rss http://news.google.com/news?hl=ja&amp;ned=us&amp;ie=UTF-8&amp;oe=UTF-8&amp;output=rss&amp;topic=p 60 item_titles 2}
+
+## テクノロジー
+${font TakaoExGothic:style=Bold:size=15}テクノロジー${font}
+${rss http://news.google.com/news?hl=ja&amp;ned=us&amp;ie=UTF-8&amp;oe=UTF-8&amp;output=rss&amp;topic=t 60 item_titles 2}
+</pre>
+ちなみに, 白背景, xmonad+xmobarをデスクトップ環境としているので, そうでない人には使いづらいかも.<br/>この設定ファイルで困るところはほとんどない. ただgoogleニュースのrssを取得して, 60分ごと(だったと思う) に内容を更新させているだけ.<br/>   <h3>カレンダー・todoリスト</h3>
+Googleカレンダーや, todoリストを表示する設定ファイル. 右上に表示される.<br/><pre># 配置設定
+alignment top_right
+background yes
+gap_x 0
+gap_y 30
+minimum_size 5 5
+maximum_width 630
+#maximum_size 500 500
+
+# 概観設定
+border_width 1
+default_color black
+default_outline_color black
+default_shade_color grey
+draw_borders no
+draw_graph_borders yes
+draw_outline no
+draw_shades no
+stippled_borders 0
+
+# その他設定
+update_interval 10
+
+# ちらつきを抑える.
+double_buffer yes
+
+# 透過させるための設定
+own_window yes
+own_window_class Conky
+own_window_type override
+own_window_transparent yes
+own_window_argb_visual yes
+own_window_argb_value 255
+
+# カレンダー表示のための設定
+max_port_monitor_connections 64
+max_specials 512
+max_user_text 30000
+text_buffer_size 16384
+
+# フォントの設定
+use_xft yes
+xftfont TakaoExGothic:style=Regular:size=10
+
+# 内容
+TEXT
+## Googleカレンダー予定表
+${font IPAMincho:style=Bold:size=10.5}
+${execpi 300 ~/.conky/gcal.sh}
+${font}
+
+## todo.txtの内容
+${color black}
+${font TakaoExGothic:style=Bold:size=10.5}Todo List${font}
+${font IPAMincho:style=Bold:size=10.5}
+${execi 150 ~/.conky/todo.sh}
+${font}
+${color}
+</pre>
+正直一番面倒臭かった. gcal.sh, todo.shについては後で説明するとして, 設定ファイル側で詰まったのは, 等幅フォント(っていうのかな？)を使わないとレイアウトが崩れること. ただ, ぐぐってもなかなか日本語に対応した等幅フォントが見つからず苦労した. 試行錯誤の結果, IPA明朝を使っている.<br/><strike>実はそれでもGoogleカレンダーはずれるんだけど, 面倒なのでもう無視した.</strike><br/>2015/1/5追記. <a href="http://d.hatena.ne.jp/yascentur/20110621/1308650962" target="_blank">ここ</a>を参照に, フォントサイズを10.5ptにしたら, Googleカレンダーもずれなくなった.<br/><br/>で, 次にgcal.shについて. 参考にしたのは<a href="http://xmodulo.com/integrate-google-calendar-linux-desktop.html">ここ</a>. 細かい説明(エスケープシーケンスの打ち方とか)はリンク先を見てください. gcalcliのインストールになんか面倒があった気もしたけどもう忘れた.
+<pre>#!/bin/sh
+gcalcli --conky calm |
+    sed -e 's/(0\x71(B/-/g' \
+        -e 's/(0\x78(B/|/g' \
+        -e 's/(0\x6A(B/+/g' \
+        -e 's/(0\x6B(B/+/g' \
+        -e 's/(0\x6C(B/+/g' \
+        -e 's/(0\x6D(B/+/g' \
+        -e 's/(0\x6E(B/+/g' \
+        -e 's/(0\x74(B/+/g' \
+        -e 's/(0\x75(B/+/g' \
+        -e 's/(0\x76(B/+/g' \
+        -e 's/(0\x77(B/+/g' \
+	-e 's/\${color white}/\${color black}/g' \
+	-e 's/\${color yellow}/\${color black}/g'
+</pre>
+リンク先のような英語サイトでは, 枠に─, ┘などの文字を使うことをしている. なんだけれども, 日本語環境でこれを使うと全角文字として表示されて, 一方で, 幅の計算はこれらが半角文字であるとして計算されているから, 変なことになる.
+
+面倒くさくなったので, 枠には-, |, +を使うことで必ず半角文字であるとして表示されるようにした.
+<br/>最後に, 白背景に白枠とか黄色文字とか見づらい事この上ないので, 全部blackに変換している(下2行).<br/><br/>次, todo.sh. これは, todo.txtという単純なCUIベースのtodoリスト管理ツールの中身を表示するもの. 機能としては, Googleカレンダーのtodoリストに負けるけど, ひたすらにシェル上で使いやすいところが利点. 補間もちゃんとしているのはgcalcliにはないメリット. 
+<pre>#! /bin/sh
+todo.sh ls | col -x | <br/>  sed -e 's/[0-9];30m/\${color black}/g' \<br/>      -e 's/[0-9];31m/\${color red}/g' \<br/>      -e 's/[0-9];32m/\${color green}/g' \<br/>      -e 's/[0-9];33m/\${color yellow}/g' \<br/>      -e 's/[0-9];34m/\${color blue}/g' \<br/>      -e 's/[0-9];35m/\${color magenta}/g' \<br/>      -e 's/[0-9];36m/\${color cyan}/g' \<br/>      -e 's/[0-9];37m/\${color white}/g' \<br/>      -e 's/[0-9];39m/\${color}/g' \<br/>      -e s/'[0-9];[0-9][0-9]m'//g \<br/>      -e s/'0m$'/\${color}/g \<br/>      -e 's/\${color white}/\${color black}/g' \<br/>      -e 's/\${color yellow}/\${color red}/g' \<br/>  | head -n 6</pre><strike>これは何をしているかというと, 確かエスケープシーケンスを用いた文字の色付けを削除している. conkyの文字の色付けに変換するのが最適なんだろうけど, だるかったので削除で妥協してしまった.<br/></strike>2015/1/5追記. 色の削除を, ちゃんと色付けの変更にした. なんだけど, 白背景に白とか黄色とか見えないので, 白を黒に, 黄色を赤に変更した.<br/><strike><br/></strike>なお, 将来的にはGoogleカレンダーのtodoリストと同期したいが今はされていない.<br/><br/>
+
+<h3>時計</h3>
+時計を表示. 参考は<a href="http://d.hatena.ne.jp/tettou77-2/20091109/1257779256">ここ</a>で, ほぼコピペ.
+いるのかは微妙だけど, 見やすいのは事実なので置いといている. スペースがたりなくなったら真っ先に削除されだろう.
+<pre># 配置設定
+alignment bottom_left
+background yes
+gap_x 0
+gap_y 0
+minimum_size 5 5
+#maximum_width 630
+#maximum_size 500 500
+
+# 概観設定
+border_width 1
+default_color black
+default_outline_color black
+default_shade_color grey
+draw_borders no
+draw_graph_borders yes
+draw_outline no
+draw_shades no
+stippled_borders 0
+
+# その他設定
+update_interval 10
+
+# ちらつきを抑える.
+double_buffer yes
+
+# 透過させるための設定
+own_window yes
+own_window_class Conky
+own_window_type override
+own_window_transparent yes
+own_window_argb_visual yes
+own_window_argb_value 255
+
+# カレンダー表示のための設定
+max_port_monitor_connections 64
+max_specials 512
+max_user_text 30000
+text_buffer_size 16384
+
+# フォントの設定
+use_xft yes
+xftfont TakaoExGothic:style=Regular:size=10
+
+# 内容
+TEXT
+${font Andale Mono:size=200}${time %H:%M}${font}
+</pre>
+
+
+<h3>起動スクリプト</h3>
+特に言うこともない起動スクリプト. これをxmonadの立ち上げ時にspawnで起動している.
+<pre>#! /bin/sh
+
+conky -c ~/.conky/newsrc -d
+conky -c ~/.conky/calendarrc -d
+conky -c ~/.conky/clockrc -d</pre>
+
+<h2>xmonad</h2>
+xmonadの設定について. なんかデスクトップ効果かなんかの問題で, xmonadのスタートアップで
+<pre>xcompmgr -c &amp;
+</pre>
+をしないとうまくconkyが透過されない.
+
+<h2>terminal</h2>
+ただのgnome-terminalの設定. これの背景透過をしないとconkyを使う意義が薄れると思う.
+端末で右クリック, プロファイル, 背景, 背景を透明にするにチェック, で透明にできる.<br/><br/><hr/>以上. 長かった. 
+</body>

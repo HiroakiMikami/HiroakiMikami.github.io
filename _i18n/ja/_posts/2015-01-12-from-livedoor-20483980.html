@@ -1,0 +1,8 @@
+---
+layout: post
+title: markdown拡張の方向性メモ
+subtitle: Livedoorブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<body>以前markdownの自作拡張を入れたわけだけど, 色々と問題があることに気づいた. <br/>問題点はいくつもあるけど, メインの問題点は, わざわざhtmlに変換するのが面倒くさいし場所を取ることだと気づいた.Warpを用いて自動化するにせよ, 結局firefoxに画面の1/3から半分を取られてしまう. それならmarkdownのままでもそれなりに見れるしそれでいいやってなる.<br/><br/>で, これをどうにかするための手法を考えると, 多分最適解はemacs上でのpopwinの使用だという結論に至った. 要するに, htmlに変換して, ブラウザでプレビューするという方針を捨てて, emacs上でmarkdownをそのまま構造化されたテキストとして読み, テキストじゃわかりづらいこと(画像, dot, tex, etc)を, プレビューコマンドでbuffer作ってやってそこで見ればいい. あるいは現代的にはtooltipとかだろうか.<br/><br/>で, そのために必要なプログラムをまとめる.<br/><ol><li>code syntax highlightをemacsのバッファ上に適用する. おそらくだけど, emacsのmarkdown-modeの拡張で, github_markdown用のがあるんじゃないか？ それを使えば解決できそうに思う.<br/></li><li>画像, dot, table, texをmarkdown上から抽出する. これはpandocをAPIから叩ければそのSyntax Treeを引っ張ってきて解決できる. これはelispで書くのは辛いからscalaかな</li><li>それぞれを画像表現に変換する.</li></ol><p>で, 3は一番メインのコーディングになりそう.</p><br/><p>まず, 画像については, emacsはpng等の画像を読めるからelispゴリゴリでできるはず.</p><p><br/></p><p>次に, dotについては, dotでsvgに変換して, そっからは画像と同じ.</p><p><br/></p><p>tableはpandocを使って, htmlになおして, それをさらにpngかsvgに変換する必要がある. 面倒.</p><p><br/></p><p>最後, texは一番面倒で, MathJaxはブラウザがないと動かない. 要するに, 裏で画像生成することが難しい. でもpandocでpdfにすると, (tex経由か?)で画像が作れるので, 果てしなく面倒だけど, pdf, svgの順を経ないといけない.</p><br/><p>要するに, markdownの断片から画像を生成するプログラムを作るのが当面の目的.<br/></p><p><br/></p><p><br/></p>
+</body>

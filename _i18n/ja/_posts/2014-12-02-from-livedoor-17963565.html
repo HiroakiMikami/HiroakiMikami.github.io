@@ -1,0 +1,30 @@
+---
+layout: post
+title: Viz.jsのバグ(?)とその対処法
+subtitle: Livedoorブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<body>Viz.jsは, javascript単独でdot言語を解析するライブラリ. svgにして, htmlに直接書きだせば, browser上で, グラフを可視化できる.<br/><br/>便利なのだが, どうにもバグがあるっぽい. 同じdot言語テキストをparseしているのに, なんか挙動が違う時がある. 具体的には, HTMLのtableをlabelに使った時に発生した. 
+<pre>digraph {
+  subgraph cluster0 {
+    node0 [
+      shape=none;
+      label=&lt;&lt;table&gt;
+        &lt;tr&gt;&lt;td&gt;x&lt;/td&gt;&lt;td&gt;y&lt;/td&gt;&lt;td&gt;z&lt;/td&gt;&lt;/tr&gt;
+      &lt;/table&gt;&gt;
+  }
+}
+</pre>
+上のような有向グラフをparseすると, まれに, 「Syntax Error ... 」という感じのエラーメッセージが表示され,  node0が表として表示されなくなる.<br/>再現性は全くなく, 同じ引数を与えても起きたり起きなかったり. ただし, 一度起こると連続して何回か起こる気もする.<br/><br/>※ ただし, 具体的な発生条件はわからないので, 上のdot scriptで本当にエラーが発生するかはわからない. 大体こんな感じってことで. <br/><br/>根本的解決は難しそうなので, 諦めて成功するまでloopすることで対処した. しかし, Viz.jsのViz関数は, エラー発生時に例外を投げたり, callback関数を登録できたりするわけではない.<br/>内部コードを読むと, console.logにエラーメッセージを出力して, エラー処理が終わっている.<br/><br/>なので, parseが失敗したことをしらべるためには, 以下のようにする必要がある.
+<pre>var log = console.log
+var isSuccess = true
+console.log = function(message) { isSuccess = false; }
+var svg = Viz(dotScript, "svg", "dot")
+console.log = log
+if (isSuccess) {
+  // parse成功時の処理
+} else {
+  // parse失敗時の処理
+}
+</pre>これと, setInterval関数によるループを組み合わせたらparse失敗で変なグラフが表示されることはなくなった.<br/><br/>dotコマンドで起きたことはないので, なんかViz.jsに特有の問題なんだろうな. 
+</body>

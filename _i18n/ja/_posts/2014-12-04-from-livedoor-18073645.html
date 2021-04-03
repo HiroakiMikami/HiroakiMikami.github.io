@@ -1,0 +1,12 @@
+---
+layout: post
+title: Emacs関連のURLメモ
+subtitle: Livedoorブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<body>ブックマークかわり第二弾.<br/>scalaを書くときはたいていreplに書いてhistoryか, IntelliJ ideaなんだけど, C++やjavascript, markdownなどを書くときはemacsを用いている. <br/><span style="font-size: x-large;"><br/></span><a href="http://keisanbutsuriya.blog.fc2.com/blog-entry-60.html" target="_blank"><span style="font-size: x-large;">flyspell-modeについて</span><br/></a>編集中に動的にspell checkをする方法について. プログラムのcomment部分にだけ適用とかもあるので実用的.<br/><br/><a href="http://qiita.com/catatsuy/items/5f1cd86e2522fd3384a0" target="_blank"><span style="font-size: x-large;">init-loader, package.elについて</span></a><br/>もはやemacs使いの間では常識なのではないかと思う2機能だけど, 油断するとすぐ設定と使い方を忘れるのでメモ.<br/><br/><a href="http://qiita.com/catatsuy/items/ae9875706769d4f02317" target="_blank"><span style="font-size: x-large;">google-translateについて</span></a><br/>文章翻訳すらできる(精度はお察しだけども). これなしで英文書くのが辛くなってきた.<br/><br/>scaladocのコメントはintellijで書くほうが色々とサポートが効くのでintellijで書きたいが翻訳できないからemacsで書きたいが, (以下無限ループ)みたいな感じになっている.<br/>近い将来google-translateのintellij pluginを書きたいところ. <br/><br/>(12/5追記)<br/>上の記事だと, 日本語から英語への変換にのみbindingしている. 英語から日本語をしたい場合は, google-translate-at-point-reverseを使えば良い.<br/>自分の設定は以下のような感じ.<br/>
+<pre>(global-set-key "\C-xj" 'google-translate-at-point)
+(global-set-key "\C-xe" 'google-translate-at-point-reverse)
+</pre>
+<br/><br/>emacsに関して言えばyatexの使い方をちゃんと知りたいと思っているが時間がない. 
+</body>

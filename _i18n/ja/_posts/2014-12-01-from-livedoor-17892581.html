@@ -1,0 +1,13 @@
+---
+layout: post
+title: HTML5関連のURLメモ
+subtitle: Livedoorブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<body>完全にブックマークのかわりと化してる.<br/><br/><a href="http://weboook.blog22.fc2.com/blog-entry-359.html" target="_blank"><span style="font-size: x-large;">CSSだけで作る動きのあるドロップダウンメニュー</span></a><br/>こんなことできるんだーっていう話. jQueryとか使うともっと色々簡単にできるらしいけど．．．？ 使ったことがないどころか, javascriptすら触ったことがある程度なので不明.<br/><br/>(12/3 追記)<br/>上記のままだと, ページ下部にコンテンツを作るとメニューがうまく働かなくなる. どうやら, ページ下部のコンテンツの下にメニューが表示されるようにhtmlが解釈されてしまうらしい.<br/>それを避けるためには, cssでz-indexをいじる必要がある. 深く考えずに, 上記ページのcssの全要素のz-index: 1を追記したらうまく動くようになった. <br/><br/><a href="http://www.marguerite.jp/Nihongo/WWW/Introduction/QuasiFrame.html" target="_blank"><span style="font-size: x-large;">擬似フレームについて</span></a><br/>久々にHTMLを書こうと思ったらframeが非推奨になってたので. <br/><br/>今だとcss使って色々できるんだなー. 昔もできたのかもしれないけど.<br/>GUIの実装はjavascriptとhtmlに任せてNode.jsで外部プロセス呼び出して内部ロジックを実行...ってやるとModel-Viewが分離できて綺麗なのかもしれないとか思った. <strike>でもscala-swingのlistenerの書き方綺麗だよね</strike><br/><br/> GUIをswingに任せるのは時代の潮流からは離れていっているのかもしれないけど, scala-swingのあの 
+<pre>listeners += {
+  case (event) if condition =&gt; ...
+}
+</pre>
+って書き方は色々なevent drivenなプログラムをする場面で役に立つと思う. 例えば, io処理とか.<br/>というわけで誰か or どこかがあの枠組みを一般化したようなライブラリを作っていないだろうか.
+</body>

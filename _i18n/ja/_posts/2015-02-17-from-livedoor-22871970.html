@@ -1,0 +1,88 @@
+---
+layout: post
+title: emacsをPDF Viewerにしよう
+subtitle: Livedoorブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<body><p>evince(いわゆるドキュメントビューア)を使っていると, キーバインドがemacs風でないことに苛立つ.</p>
+<p>vimユーザーなら, zathuraを使えば多分いいんだろうけど, emacsバインドというと存在しないと言っていいレベル. 残念ながら, Sublime TextにもPDF Viewerは存在せず(多分), Firefoxのはなんか微妙に重くて腹が立つ.</p>
+<p>最終的に, emacsをPDF Viewerに仕立て上げるのが一番はやいなって思った. でも, 色々大変だったのでそのへんをこの記事にまとめる. 最終的にはSublime TextのPDFプラグインを作るのも視野に入れているが, とりあえず欲しい機能をまとめないことにはお話にならない.</p>
+<h2 id="emacs24.4のインストール">emacs24.4のインストール</h2>
+<p>pdf-toolsとよばれる, emacsでpdfをいい感じに扱うためのライブラリ群(?)があるのだが, これがどうやらemacs24.4じゃないと完全には動かないらしい. 厳密には, 求められた動作はするけど, 関数がないってエラーを吐き出すので, 手動で<code>M-x</code>から実行しているうちはいいけど, 自動化すると固まってしまう.</p>
+<p>しかし, ubuntu14.04のaptで入るemacsは23なので, 手動でemacs24.4をインストールする必要がある. 方法については下記サイトの通りにやれば良い(purgeは個人的にはいらないと思う).</p>
+<ul>
+<li><a href="http://blog.be-open.net/emacs/ubuntu14_04-emacs24_04-install/">参考</a></li>
+</ul>
+<h2 id="pdf-toolsの使用">pdf-toolsの使用</h2>
+<h3 id="インストール">インストール</h3>
+<p>まず, pdf-toolsをインストールしないとはじまらない. <code>M-x list-packages</code>でパッケージ一覧へ行って, pdf-toolsを見つけてインストールすれば良い. このあたりはいつもの流れ.</p>
+<h3 id="基本設定">基本設定</h3>
+<p>とりあえず, pdfを常にpdf-view-modeで開くようにする.</p>
+<pre class="lisp"><code>(require 'pdf-tools)
+(require 'pdf-annot) 
+(require 'pdf-history) 
+(require 'pdf-info) 
+(require 'pdf-isearch) 
+(require 'pdf-links) 
+(require 'pdf-misc) 
+(require 'pdf-occur) 
+(require 'pdf-outline) 
+(require 'pdf-sync) 
+(require 'tablist-filter)
+(require 'tablist)
+(add-to-list 'auto-mode-alist (cons "\\.pdf$" 'pdf-view-mode))</code></pre>
+<p>後, 噂によると, <code>linum-mode</code>が悪さをしてpdf-toolsを遅くするらしいので, <a href="http://stackoverflow.com/questions/6837511/automatically-disable-a-global-minor-mode-for-a-specific-major-mode">ここ</a>を元に,</p>
+<pre><code>(require 'linum)
+(global-linum-mode)
+(defcustom linum-disabled-modes-list '(doc-view-mode pdf-view-mode)
+  "* List of modes disabled when global linum mode is on"
+  :type '(repeat (sexp :tag "Major mode"))
+  :tag " Major modes where linum is disabled: "
+  :group 'linum
+  )
+(defcustom linum-disable-starred-buffers 't
+  "* Disable buffers that have stars in them like *Gnu Emacs*"
+  :type 'boolean
+  :group 'linum)
+(defun linum-on ()
+  "* When linum is running globally, disable line number in modes defined in `linum-disabled-modes-list'. Changed by linum-off. Also turns off numbering in starred modes like *scratch*"
+  (unless (or (minibufferp) (member major-mode linum-disabled-modes-list)
+          (and linum-disable-starred-buffers (string-match "*" (buffer-name)))
+          )
+    (linum-mode 1)))
+(provide 'setup-linum)</code></pre>
+<p>と書いて, <code>linum-mode</code>を無効化する. ちなみに, 優先順位はpdf-toolsと同じで構わない(先にやらないといけないとかはない).</p>
+<p>このままだと使い勝手が悪いので, 最低限, isearch, link, size-indicationくらいのminor-modeはいれておきたい.</p>
+<pre><code>(add-hook 'pdf-view-mode-hook
+  (lambda ()
+    (pdf-misc-size-indication-minor-mode)
+    (pdf-links-minor-mode)
+    (pdf-isearch-minor-mode)
+  )
+)</code></pre>
+<p>ここまでやると, 普通のpdfビューアくらいの能力は持つ. <code>pdf-occur</code>で単語の出現箇所一覧も見れるし, <code>C-s</code>でのインクリメンタルサーチもできる. ただし, <code>pdf-misc-size-indication-minor-mode</code>は使い方によっては拡大しすぎに見えるかもしれない. その場合は適当に<code>pdf-view-???</code>のコマンドを漁って自分に適するものを探せば良いと思う.</p>
+<h3 id="余白の削除">余白の削除</h3>
+<p>pdfはよく印刷を前提とした文書だったりする(e.g. 論文)ため, 印刷用の余白が取られている. けれども, PC上で見るとき, その余白はただディスプレイを占拠するだけのものとなる.</p>
+<p>そこで, <code>pdf-view-auto-slice-minor-mode</code>を追加し, 余白を自動的に削除するようにする. ただし, 何故か最初のページだけはこの余白削除が効かないとかいう問題があるので注意. 解決策は今のところ不明だが, <code>n</code>で次ページ行って<code>p</code>で戻れば削除されているのでそう問題にはならないと思う.</p>
+<h3 id="注釈">注釈</h3>
+<p>pdfを読んでいる時にメモを書きたいときは当然ある. 例えば, 和訳をつけておいたりとか, あとでちゃんと読もうとか思ったりとか. あるいはcode review的な用途で用いられるときもある.</p>
+<p>そのような用途のため, pdfは注釈(annotation)という枠組みを用意しており, pdf-toolsはこれを扱うことができる.</p>
+<p>まず, minor-modeを追加する.</p>
+<pre><code>pdf-annot-minor-mode</code></pre>
+<p>そして, pdfを開き, <code>M-x pdf-annot-add-text-annotation</code>とし, 注釈を付けたい場所をクリックする. そうしたら赤い注釈っぽいのがついたと思う. それをクリックすると, バッファが開かれるので, そこに注釈を書いて, <code>C-c C-c</code>とすると, 注釈を付けられる. 最後に<code>C-x C-s</code>で保存すれば良い. たまに保存を忘れるので注意.</p>
+<p>また, annotationのリストは, <code>M-x pdf-annot-list-annotations</code>で見ることができる.</p>
+<h2 id="以後の問題点">以後の問題点</h2>
+<h3 id="処理速度について">処理速度について</h3>
+<p>処理速度が一般のpdf viewerに比べてもっさりしている理由は, おそらく</p>
+<ol style="list-style-type: decimal">
+<li>一度pngに変換するという手間(=emacsがそもそもtext editorであることの限界)</li>
+<li>どっかでblockingな処理が挟まっている.</li>
+</ol>
+<p>の2つに起因すると思われる. 2については, 明らかにPDFのページ数と処理速度に相関が見て取れたため理由の1つと判断した. 1はどうしようもないが, 2を非同期処理に変更するなどすればうまいこと処理速度があげられると思う.</p>
+<h3 id="バッファの処理について">バッファの処理について</h3>
+<p>現状だと一時的なバッファ(<code>pdf-occur</code>で生成されたバッファ等)の扱いが極めて微妙. これについてはSublime Textとかもそうなのでテキストエディタとはそこから拡張していくべきもの, ってことなのかもしれないけれども.</p>
+<p>これらをpopwinなどを用いて構造化してやるとよさ気な感じがする.</p>
+<h3 id="multipageへの対応">multipageへの対応</h3>
+<p>昔<code>pdf-mulitpage-minor-mode</code>的なものがあった気がするんだけど, 今は消えてしまっている. githubを見てもTODOにかかれている内容なので, そのうち実装されるといいな.</p>
+<p>あるいは, 2分割とか画面分割サイズを固定にして, <code>n</code>, <code>p</code>みたいなページ切り替えのコマンドを書き換えることでad-hocに対処が可能かもしれない.</p>
+</body>

@@ -1,0 +1,362 @@
+---
+layout: post
+title: emacsバインドとは
+subtitle: Livedoorブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<body><p>なんかアプリケーションがあった時に，とりあえずemacsバインドにしたい．でもemacsバインドの定義は極めて曖昧．例えば，<code>C-n</code>で下にいかないのはemacsバインドとは呼べないと思う.<code>C-x C-s</code>が保存じゃないのも違う．でも<code>M-x</code>でミニバッファ(ないしそれに準ずるもの)がでないのはどうなのだろうか．eclipseでいうemacsバインドにはその機能はないけど，一応emacsバインドとして通っている．</p>
+<p>確かに，<code>F1 b</code>で出てくるemacsのキーバインド全てが実装されていれば間違いなくemacsバインドだけど，多少欠けていても問題ないはず．自分としてはKeySnailのemacsバインドにはあまり不満を持っていないし，数もそこまで多くないので，KeySnailのemacs like bindを調べた．元に自分なりのemacsバインドに要求されるキーバインドをまとめてみた．</p>
+<h2 id="修飾キー">修飾キー</h2>
+<ul>
+<li><code>C</code>はCtrlの略．</li>
+<li><code>M</code>はMetaの略．Metaキーは, EscかAltである．</li>
+</ul>
+<h2 id="特殊文字の入力">特殊文字の入力</h2>
+<table>
+<thead>
+<tr class="header">
+<th align="left">バインド</th>
+<th align="left">処理</th>
+</tr>
+</thead>
+
+<tbody><tr class="odd">
+<td align="left">C-q</td>
+<td align="left">Escの入力</td>
+</tr>
+<tr class="even">
+<td align="left">C-d</td>
+<td align="left">Deleteの入力</td>
+</tr>
+<tr class="odd">
+<td align="left">C-h</td>
+<td align="left">backspaceの入力</td>
+</tr>
+<tr class="even">
+<td align="left">C-m or C-o</td>
+<td align="left">enter "enter/return"</td>
+</tr>
+
+</tbody></table>
+<h2 id="基本操作">基本操作</h2>
+<table>
+<thead>
+<tr class="header">
+<th align="left">バインド</th>
+<th align="left">処理</th>
+</tr>
+</thead>
+
+<tbody><tr class="odd">
+<td align="left">C-g</td>
+<td align="left">終了</td>
+</tr>
+<tr class="even">
+<td align="left">M-x</td>
+<td align="left">ミニバッファ</td>
+</tr>
+<tr class="odd">
+<td align="left">C-x C-c</td>
+<td align="left">終了</td>
+</tr>
+<tr class="even">
+<td align="left">C-u</td>
+<td align="left">prefix argument</td>
+</tr>
+<tr class="odd">
+<td align="left">M-:</td>
+<td align="left">elisp式の評価</td>
+</tr>
+<tr class="even">
+<td align="left">C-/</td>
+<td align="left">undo</td>
+</tr>
+
+</tbody></table>
+<h2 id="ファイル管理">ファイル管理</h2>
+<table>
+<thead>
+<tr class="header">
+<th align="left">バインド</th>
+<th align="left">処理</th>
+</tr>
+</thead>
+
+<tbody><tr class="odd">
+<td align="left">C-x C-f</td>
+<td align="left">ファイルを開く・作る</td>
+</tr>
+<tr class="even">
+<td align="left">C-x C-w</td>
+<td align="left">いわゆる名前をつけて保存</td>
+</tr>
+<tr class="odd">
+<td align="left">C-x C-s</td>
+<td align="left">現在のバッファの保存</td>
+</tr>
+<tr class="even">
+<td align="left">C-x s</td>
+<td align="left">バッファにある全てのファイルの保存</td>
+</tr>
+<tr class="odd">
+<td align="left">C-x l</td>
+<td align="left">バッファの行数を数える</td>
+</tr>
+
+</tbody></table>
+<h3 id="コピーペースト">コピー&amp;ペースト</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="left">バインド</th>
+<th align="left">処理</th>
+</tr>
+</thead>
+
+<tbody><tr class="odd">
+<td align="left">C-w</td>
+<td align="left">切り取り</td>
+</tr>
+<tr class="even">
+<td align="left">M-w</td>
+<td align="left">コピー</td>
+</tr>
+<tr class="odd">
+<td align="left">C-y</td>
+<td align="left">ヤンク・ペースト</td>
+</tr>
+<tr class="even">
+<td align="left">M-y</td>
+<td align="left">古いクリックボードの中身を順に貼り付け(Yank pop)</td>
+</tr>
+<tr class="odd">
+<td align="left">C-k</td>
+<td align="left">カーソルから一行先をカット</td>
+</tr>
+
+</tbody></table>
+<h3 id="単語操作">単語操作</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="left">バインド</th>
+<th align="left">処理</th>
+</tr>
+</thead>
+
+<tbody><tr class="odd">
+<td align="left">M-d</td>
+<td align="left">次の位置単語を削除</td>
+</tr>
+<tr class="even">
+<td align="left">C-backspace</td>
+<td align="left">前の1単語を削除</td>
+</tr>
+<tr class="odd">
+<td align="left">M-u</td>
+<td align="left">次の1単語を大文字に</td>
+</tr>
+<tr class="even">
+<td align="left">M-l</td>
+<td align="left">次の1単語を小文字に</td>
+</tr>
+<tr class="odd">
+<td align="left">M-c</td>
+<td align="left">次の1単語をキャピタライズ</td>
+</tr>
+
+</tbody></table>
+<h3 id="選択">選択</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="left">バインド</th>
+<th align="left">処理</th>
+</tr>
+</thead>
+
+<tbody><tr class="odd">
+<td align="left">C-x h</td>
+<td align="left">全選択</td>
+</tr>
+<tr class="even">
+<td align="left">C-@ or C-space</td>
+<td align="left">mark set</td>
+</tr>
+<tr class="odd">
+<td align="left">M-h</td>
+<td align="left">部分選択(領域選択)</td>
+</tr>
+<tr class="even">
+<td align="left">C-x r d</td>
+<td align="left">短形削除</td>
+</tr>
+<tr class="odd">
+<td align="left">C-x r t</td>
+<td align="left">短形置換</td>
+</tr>
+<tr class="even">
+<td align="left">C-x r o</td>
+<td align="left">短形行あけ</td>
+</tr>
+<tr class="odd">
+<td align="left">C-x r k</td>
+<td align="left">短形キル</td>
+</tr>
+<tr class="even">
+<td align="left">C-x r y</td>
+<td align="left">短形ヤンク</td>
+</tr>
+
+</tbody></table>
+<h3 id="ファイル内移動">ファイル内移動</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="left">バインド</th>
+<th align="left">処理</th>
+</tr>
+</thead>
+
+<tbody><tr class="odd">
+<td align="left">C-p, C-n, C-b, C-f</td>
+<td align="left">上下左右への移動</td>
+</tr>
+<tr class="even">
+<td align="left">M-b, M-f</td>
+<td align="left">単語単位での左右移動</td>
+</tr>
+<tr class="odd">
+<td align="left">M-&lt;</td>
+<td align="left">ページ先頭へ移動</td>
+</tr>
+<tr class="even">
+<td align="left">M-&gt;</td>
+<td align="left">ページ末尾へ移動</td>
+</tr>
+<tr class="odd">
+<td align="left">C-M-l</td>
+<td align="left">reposition window</td>
+</tr>
+
+</tbody></table>
+<h3 id="検索">検索</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="left">バインド</th>
+<th align="left">処理</th>
+</tr>
+</thead>
+
+<tbody><tr class="odd">
+<td align="left">C-s</td>
+<td align="left">インクリメンタルサーチ</td>
+</tr>
+<tr class="even">
+<td align="left">C-r</td>
+<td align="left">逆インクリメンタルサーチ</td>
+</tr>
+<tr class="odd">
+<td align="left">C-M-s</td>
+<td align="left">正規表現によるインクリメンタルサーチ</td>
+</tr>
+<tr class="even">
+<td align="left">C-M-r</td>
+<td align="left">正規表現による逆インクリメンタルサーチ</td>
+</tr>
+
+</tbody></table>
+<h3 id="ウインドウ操作">ウインドウ操作</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="left">バインド</th>
+<th align="left">処理</th>
+</tr>
+</thead>
+
+<tbody><tr class="odd">
+<td align="left">C-x 2</td>
+<td align="left">横に分割</td>
+</tr>
+<tr class="even">
+<td align="left">C-x 3</td>
+<td align="left">縦に分割</td>
+</tr>
+<tr class="odd">
+<td align="left">C-x 0</td>
+<td align="left">バッファを閉じる</td>
+</tr>
+<tr class="even">
+<td align="left">C-x k</td>
+<td align="left">バッファの終了</td>
+</tr>
+<tr class="odd">
+<td align="left">C-x 1</td>
+<td align="left">close other buffers</td>
+</tr>
+<tr class="even">
+<td align="left">C-x o</td>
+<td align="left">次のフレームへ行く.(次の表示されているバッファへ</td>
+</tr>
+
+</tbody></table>
+<h3 id="キーボードマクロ">キーボードマクロ</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="left">バインド</th>
+<th align="left">処理</th>
+</tr>
+</thead>
+
+<tbody><tr class="odd">
+<td align="left">F3</td>
+<td align="left">マクロの開始</td>
+</tr>
+<tr class="even">
+<td align="left">F4</td>
+<td align="left">マクロの終了</td>
+</tr>
+
+</tbody></table>
+<h3 id="プログラミング">プログラミング?</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="left">バインド</th>
+<th align="left">処理</th>
+</tr>
+</thead>
+
+<tbody><tr class="odd">
+<td align="left">M-/</td>
+<td align="left">auto completion</td>
+</tr>
+
+</tbody></table>
+<h3 id="ヘルプ">ヘルプ</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="left">バインド</th>
+<th align="left">処理</th>
+</tr>
+</thead>
+
+<tbody><tr class="odd">
+<td align="left">F1</td>
+<td align="left">ヘルプ全般</td>
+</tr>
+<tr class="even">
+<td align="left">F1-b</td>
+<td align="left">キーバインド全てを表示</td>
+</tr>
+<tr class="odd">
+<td align="left">F1-F</td>
+<td align="left">commandのドキュメントを表示</td>
+</tr>
+
+</tbody></table>
+</body>

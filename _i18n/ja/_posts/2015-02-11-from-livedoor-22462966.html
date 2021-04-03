@@ -1,0 +1,28 @@
+---
+layout: post
+title: xmonadでフルスクリーン時にxmobarも表示する.
+subtitle: Livedoorブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<body><p>ネット上に転がっているxmonadの設定だと, <code>M-f</code>でフルスクリーンにするような設定がよく書かれている(<a href="http://blog.blueblack.net/item_425.html">ここ</a>とか). 自分の<code>xmonad.hs</code>から該当する部分を抜き出すと, 以下のようなコードがその設定に該当する.</p>
+<pre class="sourceCode haskell"><code class="sourceCode haskell">  <span class="fu">...</span>
+  (<span class="st">"M-f"</span>, sendMessage <span class="fu">$</span> <span class="dt">Toggle</span> <span class="dt">FULL</span>) <span class="co">-- キーバインドの設定</span>
+  <span class="fu">...</span>
+  , layoutHook <span class="fu">=</span> mkToggle1 <span class="dt">FULL</span> <span class="fu">$</span> (desktopLayoutModifiers (named <span class="st">"V"</span> tall <span class="fu">|||</span> (named <span class="st">"H"</span> <span class="fu">$</span> <span class="dt">Mirror</span> tall) <span class="fu">|||</span> (named <span class="st">"F"</span> <span class="fu">$</span> <span class="dt">Full</span>)))
+  <span class="fu">...</span></code></pre>
+<p>でも, xmobarを用いた場合, フルスクリーンにしてもそのステータスバーだけは見たいってこともあると思う. 自分野調べた限り, そういうような設定はネット上になかったので, メモしておく.</p>
+<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">{-# LANGUAGE DeriveDataTypeable, TypeSynonymInstances,MultiParamTypeClasses #-}</span>
+<span class="fu">...</span>
+xmobarLayoutHook <span class="fu">=</span> drawer <span class="ot">`onTop`</span> <span class="dt">Full</span>
+    <span class="kw">where</span>
+        drawer <span class="fu">=</span> simpleDrawer <span class="dv">0</span><span class="fu">.</span><span class="dv">019</span> <span class="dv">0</span><span class="fu">.</span><span class="dv">3</span> (<span class="dt">ClassName</span> <span class="st">"xmobar"</span>) 
+<span class="kw">data</span> <span class="dt">MyTransformer</span> <span class="fu">=</span> <span class="dt">TOPXMOBAR</span> <span class="kw">deriving</span> (<span class="dt">Read</span>, <span class="dt">Show</span>, <span class="dt">Eq</span>, <span class="dt">Typeable</span>)
+<span class="kw">instance</span> <span class="dt">Transformer</span> <span class="dt">MyTransformer</span> <span class="dt">Window</span> <span class="kw">where</span>
+    transform <span class="dt">TOPXMOBAR</span> x k <span class="fu">=</span> k xmobarLayoutHook (const x)
+<span class="fu">...</span>
+    (<span class="st">"M-f"</span>, sendMessage <span class="fu">$</span> <span class="dt">Toggle</span> <span class="dt">TOPXMOBAR</span>)
+<span class="fu">...</span>
+    , layoutHook <span class="fu">=</span> mkToggle1 <span class="dt">TOPXMOBAR</span> <span class="fu">$</span> (desktopLayoutModifiers (named <span class="st">"V"</span> tall <span class="fu">|||</span> (named <span class="st">"H"</span> <span class="fu">$</span> <span class="dt">Mirror</span> tall) <span class="fu">|||</span> (named <span class="st">"F"</span> <span class="fu">$</span> <span class="dt">Full</span>))) </code></pre>
+<p>ちなみにHaskellの構文は覚えているけど用語は全く知らないので, 詳しい人が見たら怒りそうなプログラムだと思う. 綺麗なコードを書きたい人は自分で書き直すのがおすすめ.</p>
+<p>これ書いててわかったことは, xmonadは所詮行数少ない(1000行程度だっけ？)ので, 困ったらソース読むのが一番早いということ. Ubuntuでaptでインストールしているなら,<code> /usr/share/doc/libghc-xmonad-contrib-doc/html/src</code>と<code>/usr/share/doc/libghc-xmonad-doc/html/src</code>にソースコードが載っている.</p>
+</body>
