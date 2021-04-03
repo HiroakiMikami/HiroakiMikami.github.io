@@ -1,0 +1,53 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    {% if site.lang == "en" %}
+                        <a class="nav-link" href="{{ site.baseurl_root }}/index">
+                            <i class="fa fa-lg fa-user"></i> {% t header.home %}
+                        </a>
+                    {% else %}
+                        <a class="nav-link" href="{{ site.baseurl_root }}/ja/index">
+                            <i class="fa fa-lg fa-user"></i> {% t header.home %}
+                        </a>
+                    {% endif %}
+                </li>
+                <li class="nav-item">
+                    {% if site.lang == "en" %}
+                        <a class="nav-link" href="{{ site.baseurl_root }}/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> {% t header.blog %} (Japanese)
+                        </a>
+                    {% else %}
+                        <a class="nav-link" href="{{ site.baseurl_root }}/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> {% t header.blog %}
+                        </a>
+                    {% endif %}
+                </li>
+
+                <li class="nav-item">
+                {% if site.lang == "en" %}
+                    <a class="nav-link" href="{{ site.baseurl_root }}/ja/{{ page.url }}" >
+                        <i class="fa fa-lg japan"></i> {% t langs.ja %}
+                    </a>
+                {% else %}
+                    <a class="nav-link" href="{{ site.baseurl_root }}{{ page.url }}" >
+                        <i class="fa fa-lg fa-font"></i> {% t langs.en %}
+                    </a>
+                {% endif %}
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

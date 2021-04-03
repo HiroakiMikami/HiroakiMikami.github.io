@@ -1,0 +1,37 @@
+global:
+  name: Hiroaki Mikami
+  tagline: English
+  twitter: Twitter
+  github: GitHub
+
+header:
+  home: Home
+  blog: Blog
+
+index:
+  profile: Profile
+  interest: Interest
+  projects: Projects
+  publications: Publications
+  patents: Patents
+
+blog:
+  title: Blog
+
+langs:
+  en: English
+  ja: 日本語
+
+
+micro_versioning_tool:
+  title: Micro-Versioning Tool to Support Experimentation in Exploratory Programming
+  abstract: "Abstract"
+  video: "Video"
+  prototype: "Prototype"
+  install: "Install"
+  usage: "Usage"
+  publications: "Publications"
+  hiroakimikami: "Hiroaki Mikami"
+  daisukesakamoto: "Daisuke Sakamoto"
+  takeoigarashi: "Takeo Igarash"
+  univtokyo: "The University of Tokyo"

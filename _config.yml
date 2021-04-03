@@ -1,0 +1,64 @@
+# Welcome to Jekyll!
+#
+# This config file is meant for settings that affect your whole blog, values
+# which you are expected to set up once and rarely edit after that. If you find
+# yourself editing this file very often, consider using Jekyll's data files
+# feature for the data you need to update frequently.
+#
+# For technical reasons, this file is *NOT* reloaded automatically when you use
+# 'bundle exec jekyll serve'. If you change this file, please restart the server process.
+#
+# If you need help with YAML syntax, here are some quick references for you: 
+# https://learn-the-web.algonquindesign.ca/topics/markdown-yaml-cheat-sheet/#yaml
+# https://learnxinyminutes.com/docs/yaml/
+#
+# Site settings
+# These are used to personalize your new site. If you look in the HTML files,
+# you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
+# You can create any custom variable you would like, and they will be accessible
+# in the templates via {{ site.myvariable }}.
+
+theme: minima
+
+# header
+header_pages:
+  - home.md
+  - blog/index.html
+
+# footer
+title: Hiroaki Mikami
+email: hiroaki8270@gmail.com
+description: >- # this means to ignore newlines until "baseurl:"
+twitter_username: mhiroaki_
+github_username:  HiroakiMikami
+linkedin_username: hiroaki-mikami-69084b142
+
+# markdown
+markdown: kramdown
+kramdown:
+  input: GFM
+
+# plugins
+plugins:
+  - jekyll-multiple-languages-plugin
+  - jekyll-paginate
+  - jekyll-feed
+
+# pagination
+paginate: 5
+paginate_path: "/blog/page:num/"
+
+# languages
+default_lang: "en"
+languages: ["en", "ja"]
+# exclude_from_localizations: []
+
+exclude:
+  - ".gitignore"
+  - "Gemfile"
+  - "Gemfile.lock"
+  - "Makefile"
+  - "vendor"
+  - ".bundle"
+  - "OLD"
+foo: bar

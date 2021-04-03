@@ -1,0 +1,100 @@
+projects:
+  - title: "mlprogram (Machine Learning for Programming)"
+    links:
+      - text: "GitHub"
+        url: "https://github.com/HiroakiMikami/mlprogram"
+  - title: "Micro-Versioning Tool"
+    image: "images/chi2017.jpg"
+    links:
+      - text: "URL"
+        url: "./micro-versioning-tool/index.html"
+      - text: "Paper (1)"
+        url: "https://doi.org/10.1145/3025453.3025597"
+      - text: "Paper (2)"
+        url: "http://www.wiss.org/WISS2015Proceedings/oral/11.pdf"
+  - title: "Tutorial Generation from Unit Tests"
+    image: "images/ipsj.png"
+    links:
+      - text: "Paper (1)"
+        url: "https://ipsj.ixsq.nii.ac.jp/ej/?action=pages_view_main&active_action=repository_view_main_item_detail&item_id=146453&item_no=1&page_id=13&block_id=8"
+      - text: "Thesis"
+        url: "/files/automatic-generation-of-tutorial-from-unit-tests.pdf"
+activities:
+  - title: Competitive Programming
+    links:
+      - text: GitHub
+        url: "https://github.com/HiroakiMikami/procon-workspace"
+  - title: "nnabla-ggnn"
+    links:
+      - text: "GitHub"
+        url: "https://github.com/HiroakiMikami/nnabla-ggnn"
+      - type: "Blog"
+        url: "https://qiita.com/MikamiHiroaki/items/01258f4bac443e7e86ec"
+  - title: "deep-coder"
+    links:
+      - text: "GitHub"
+        url: "https://github.com/HiroakiMikami/deep-coder"
+  - title: "vscode-micro-versioning-systems"
+    image: "https://github.com/HiroakiMikami/micro-versioning-systems/blob/master/images/screenshot.png?raw=true"
+    links:
+      - text: "GitHub"
+        url: "https://github.com/HiroakiMikami/micro-versioning-systems"
+  - title: "translator-plus-dictionary"
+    image: "https://hiroakimikami.github.io/atom-translator-plus-dictionary/screenshot.gif"
+    links:
+      - text: "GitHub"
+        url: "https://github.com/HiroakiMikami/atom-translator-plus-dictionary"
+      - text: "Blog"
+        url: "https://qiita.com/MikamiHiroaki/items/7620023e6a870ac17e90"
+  - title: "atom-clang-tools-extra"
+    links:
+      - text: "GitHub"
+        url: "https://github.com/HiroakiMikami/atom-clang-tools-extra"
+  - title: "atom-user-support-helper"
+    links:
+      - type: "GitHub"
+        url: "https://github.com/HiroakiMikami/atom-user-support-helper"
+  - title: "gnuplot-streaming"
+    links:
+      - text: "GitHub"
+        url: "https://github.com/HiroakiMikami/gnuplot-streaming"
+      - text: "npm"
+        url: "https://www.npmjs.com/package/gnuplot-streaming"
+  - title: "auto-git-commit"
+    links:
+      - text: "GitHub"
+        url: "https://github.com/HiroakiMikami/auto-git-commit"
+      - text: "npm"
+        url: "https://www.npmjs.com/package/auto-git-commit"
+  - title: "latex-with-markdown"
+    links:
+      - text: "GitHub"
+        url: "https://github.com/HiroakiMikami/generator-latex-with-markdown"
+      - text: "Blog"
+        url: "https://qiita.com/MikamiHiroaki/items/c02e845f7d7f4e2a6e9c"
+      - text: "npm"
+        url: "https://www.npmjs.com/package/generator-latex-with-markdown"
+  - title: "docker-makerbot-desktop"
+    links:
+      - text: "GitHub"
+        url: "https://github.com/HiroakiMikami/docker-makerbot-desktop"
+      - text: "Blog"
+        url: "https://qiita.com/MikamiHiroaki/items/8c22918edcada1ec2aba"
+  - title: "pdiff"
+    image: "https://hiroakimikami.github.io/pdiff/screenshot.png"
+    links:
+      - text: "GitHub"
+        url: "https://github.com/HiroakiMikami/pdiff"
+      - text: "npm"
+        url: "https://www.npmjs.com/package/pdiff"
+  - title: "atom-alloy"
+    image: "https://hiroakimikami.github.io/atom-alloy/atom-alloy.gif"
+    links:
+      - text: "GitHub"
+        url: "https://github.com/HiroakiMikami/atom-translator-plus-dictionary"
+  - title: "extended-dmenu"
+    links:
+      - text: "GitHub"
+        url: "https://github.com/HiroakiMikami/extended-dmenu"
+      - text: "npm"
+        url: "https://www.npmjs.com/package/extended-dmenu"

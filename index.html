@@ -1,0 +1,103 @@
+---
+layout: home
+title: header.home
+---
+
+<div class="container">
+  <div class="jumbtron">
+    <div class="row">
+      <h2 class="mt-5" id="profile">{% t index.profile %}</h2>
+    </div>
+    <div class="row">
+      <div class="col-lg-4">
+        {% tf bio.html %}
+      </div>
+      <div class="col-lg-8">
+        <h3 class="mt-4">{% t index.interest %}</h4>
+          {% tf interest.md %}
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <h2 class=mt-5 id="projects">{% t index.projects %}</h2>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="row">
+          {% for project in site.data["projects"]["projects"] %}
+          <div class="col-lg-4 my-4">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">{{ project["title"] }}</h5>
+                {% if project["image"] != null %}
+                <img class="card-img" src={{ project["image"] }} />
+                {% endif %}
+              </div>
+              <p class="card-footer">
+                {% for link in project["links"] %}
+                [
+                <a href={{ link["url"] }}>{{ link["text"] }}</a>
+                ]
+                {% endfor %}
+              </p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <h2 class=mt-5 id="publications">{% t index.publications %}</h2>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="list-group">
+          {% for publication in site.data["publications"]["publications"] %}
+          <div class="list-group-item">
+            <h4 class="list-group-item-heading">{{ publication["title"] }}</h4>
+            <p class="list-group-item-text">
+              <span>{{ publication["location"] }}</span>
+              {% for resource in publication["resources"] %}
+              [
+              <a href={{ resource["url"] }}>{{ resource["text"] }}</a>
+              ]
+              {% endfor %}
+            </p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <h2 class=mt-5 id="patents">{% t index.patents %}</h2>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="list-group">
+          {% for patent in site.data["patents"]["patents"] %}
+          <div class="list-group-item">
+            <h4 class="list-group-item-heading">{{ patent["title"] }}</h4>
+            <p class="list-group-item-text">
+              {% for resource in patent["resources"] %}
+              [
+              <a href={{ resource["url"] }}>{{ resource["text"] }}</a>
+              ]
+              {% endfor %}
+            </p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr />

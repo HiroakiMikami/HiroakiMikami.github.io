@@ -1,0 +1,33 @@
+global:
+  name: 三上 裕明
+
+header:
+  home: ホーム
+  blog: ブログ
+
+index:
+  profile: プロフィール
+  projects: プロジェクト
+  interest: 興味ある技術・分野
+  publications: 発表文献
+  patents: 特許
+
+blog:
+  title: ブログ
+
+langs:
+  en: English
+  ja: 日本語
+
+micro_versioning_tool:
+  title: "探索的プログラミングのための小規模バージョン管理ツール"
+  abstract: "概要"
+  video: "ビデオ"
+  prototype: "プロトタイプ"
+  install: "インストール"
+  usage: "使用方法"
+  publications: "発表文献"
+  hiroakimikami: "三上 裕明"
+  daisukesakamoto: "坂本 大介"
+  takeoigarashi: "五十嵐 健夫"
+  univtokyo: "東京大学"
