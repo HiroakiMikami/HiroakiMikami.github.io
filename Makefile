@@ -14,4 +14,4 @@ clean:
 	rm -rf vendor Gemfile.lock
 
 deploy:
-	./scripts/deploy.sh
+	./bin/deploy.sh
