@@ -5,52 +5,52 @@ title: header.blog
 
 <div class="container">
   <div class="row">
-    <div class="list-group">
-      {% for post in paginator.posts %}
-      <div class="list-group-item">            
-        <a href="{{ post.url | prepend: site.baseurl | replace: '//', '/' }}">
-            <h3 class="post-title">{{ post.title }}</h2>
-        </a>
-        {% if post.subtitle %}
-          <h4 class="post-subtitle">{{ post.subtitle }}</h3>
-        {% else %}
-          <h4 class="post-subtitle">{{ post.excerpt | strip_html | truncatewords: 15 }}</h3>
-        {% endif %}
-        <p class="post-meta">Posted by
-          {% if post.author %}
-          {{ post.author }}
+    <div class="col-lg-12">
+      <div class="list-group">
+        {% for post in paginator.posts %}
+        <div class="list-group-item">
+          <a href="{{ post.url | prepend: site.baseurl | replace: '//', '/' }}">
+            <h4 class="list-group-item-heading">{{ post.title }}</h4>
+          </a>
+          <p class="list-group-item-text">
+            {% if post.subtitle %}
+          <h5 class="post-subtitle">{{ post.subtitle }}</h5>
           {% else %}
-          {{ site.author }}
+          <h5 class="post-subtitle">{{ post.excerpt | strip_html | truncatewords: 15 }}</h5>
           {% endif %}
-          on {{ post.date | date: '%B %d, %Y' }}
-        </p>
+          <p class="post-meta">Posted by
+            {% if post.author %}
+            {{ post.author }}
+            {% else %}
+            {{ site.author }}
+            {% endif %}
+            on {{ post.date | date: '%B %d, %Y' }}
+          </p>
+          </p>
+        </div>
+        {% endfor %}
       </div>
-      {% endfor %}
     </div>
   </div>
 
 
   <!-- Pager -->
   {% if paginator.total_pages > 1 %}
-  
+
   <div class="clearfix">
     {% if paginator.previous_page %}
-      <a
-        class="float-left btn"
-        href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}"
-        type=button>
-        &larr;Newer<span class="d-none d-md-inline"> Posts</span>
-      </a>
+    <a class="float-left btn" href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}"
+      type=button>
+      &larr;Newer<span class="d-none d-md-inline"> Posts</span>
+    </a>
     {% endif %}
     {% if paginator.next_page %}
-    <a
-      class="btn float-right"
-      href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}"
+    <a class="btn float-right" href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}"
       type=button>
       Older<span class="d-none d-md-inline"> Posts</span> &rarr;
     </a>
     {% endif %}
   </div>
-  
+
   {% endif %}
 </div>
