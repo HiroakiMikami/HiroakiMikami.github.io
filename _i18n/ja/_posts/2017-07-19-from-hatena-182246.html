@@ -1,0 +1,33 @@
+---
+layout: post
+title: ARC078 C： Splitting Pile
+subtitle: はてなブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<div>はてなブログからの移動</div><hr />
+<body><p><iframe class="embed-card embed-webcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=http%3A%2F%2Farc078.contest.atcoder.jp%2Ftasks%2Farc078_a" style="display: block; width: 100%; height: 155px; max-width: 500px; margin: 10px 0px;" title="C: Splitting Pile - AtCoder Regular Contest 078 | AtCoder"></iframe><cite class="hatena-citation"><a href="http://arc078.contest.atcoder.jp/tasks/arc078_a">arc078.contest.atcoder.jp</a></cite></p>
+
+<h2>解き方</h2>
+
+<ul>
+<li>カードに書かれている数字の和を求めるのは<code>O(n)</code></li>
+<li>上から1枚取る場合、2枚取る場合、と順々に<code>x</code>と<code>y</code>を求めるのは、それぞれ<code>O(1)</code>でできる</li>
+<li>全部計算してminを求める</li>
+</ul>
+
+
+<h2>ハマったところ</h2>
+
+<ul>
+<li><code>x</code>をi32で宣言していてオーバーフロー
+
+<ul>
+<li>定数項を作るときはauto使わないほうが良いかもしれない。</li>
+</ul>
+</li>
+</ul>
+
+
+<p><iframe class="embed-card embed-webcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=https%3A%2F%2Fgithub.com%2FHiroakiMikami%2Fprocon-workspace%2Fblob%2Fmaster%2Fsrc%2Fatcoder%2Farc078%2Fc.cc" style="display: block; width: 100%; height: 155px; max-width: 500px; margin: 10px 0px;" title="HiroakiMikami/procon-workspace"></iframe><cite class="hatena-citation"><a href="https://github.com/HiroakiMikami/procon-workspace/blob/master/src/atcoder/arc078/c.cc">github.com</a></cite></p>
+
+</body>

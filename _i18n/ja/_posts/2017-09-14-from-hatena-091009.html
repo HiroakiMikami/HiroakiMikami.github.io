@@ -1,0 +1,32 @@
+---
+layout: post
+title: AOJ2249： Road Construction
+subtitle: はてなブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<div>はてなブログからの移動</div><hr />
+<body><p><a href="http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2249">Road Construction | Aizu Online Judge</a></p>
+
+<h2>解き方</h2>
+
+<ul>
+<li>captalを始点として<a class="keyword" href="http://d.hatena.ne.jp/keyword/dijkstra">dijkstra</a>して、その後経路復元
+
+<ul>
+<li>経路復元のための情報において、条件を満たす辺のなかでコスト最小のものを保存するようにする</li>
+</ul>
+</li>
+<li>多分、priority_queueを使った<a class="keyword" href="http://d.hatena.ne.jp/keyword/dijkstra">dijkstra</a>じゃないとTLEすると思う</li>
+</ul>
+
+
+<h2>ハマったところ</h2>
+
+<ul>
+<li><a class="keyword" href="http://d.hatena.ne.jp/keyword/%BA%C7%BE%AE%C1%B4%B0%E8%CC%DA">最小全域木</a>の問題か、最短経路の問題かで悩んだ</li>
+</ul>
+
+
+<p><iframe class="embed-card embed-webcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=https%3A%2F%2Fgithub.com%2FHiroakiMikami%2Fprocon-workspace%2Fblob%2Fmaster%2Fsrc%2Faoj%2F2249.cc" style="display: block; width: 100%; height: 155px; max-width: 500px; margin: 10px 0px;" title="HiroakiMikami/procon-workspace"></iframe><cite class="hatena-citation"><a href="https://github.com/HiroakiMikami/procon-workspace/blob/master/src/aoj/2249.cc">github.com</a></cite></p>
+
+</body>

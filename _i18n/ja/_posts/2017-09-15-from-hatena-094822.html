@@ -1,0 +1,40 @@
+---
+layout: post
+title: AOJ2200： Mr. Rito Post Office
+subtitle: はてなブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<div>はてなブログからの移動</div><hr />
+<body><p><a href="http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2200">Mr. Rito Post Office | Aizu Online Judge</a></p>
+
+<h2>解き方</h2>
+
+<ul>
+<li><img alt=" z_{i-1}" src="http://chart.apis.google.com/chart?cht=tx&amp;chl=%20z_%7Bi-1%7D"/>から<img alt="z_i" src="http://chart.apis.google.com/chart?cht=tx&amp;chl=z_i"/>への行き方は次の2通り
+
+<ul>
+<li>陸路で行く</li>
+<li>船のあるところまで陸路で行き、船で適当なところまで行き、再度陸路</li>
+</ul>
+</li>
+<li>前計算として、陸路での最短距離、海路での最短距離をWarshall Floydで求めておく</li>
+<li><code>dp[i][j] = 船がjにある状態でz_iまで集配するための最短距離</code>として<a class="keyword" href="http://d.hatena.ne.jp/keyword/%C6%B0%C5%AA%B7%D7%B2%E8%CB%A1">動的計画法</a>
+
+<ul>
+<li><code>dp[0][z_0] = 0</code>、その他<code>INF</code>が初期状態</li>
+<li>[<a class="keyword" href="http://d.hatena.ne.jp/keyword/tex">tex</a>:O(RN<sup>2</sup>)]は間に合うか怪しいと思ったが、間に合った</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>ハマったところ</h2>
+
+<ul>
+<li>Warshall Floydまでは思いついたが、直前の船の位置だけメモ化すればよいことに気づかず、しばらく<code>O(R^N)</code>の解法しか思いつかなかった</li>
+</ul>
+
+
+<p><cite class="hatena-citation"><a href="https://github.com/HiroakiMikami/procon-workspace/blob/master/src/aoj/2200.cc">github.com</a></cite><iframe class="embed-card embed-webcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=https%3A%2F%2Fgithub.com%2FHiroakiMikami%2Fprocon-workspace%2Fblob%2Fmaster%2Fsrc%2Faoj%2F2200.cc" style="display: block; width: 100%; height: 155px; max-width: 500px; margin: 10px 0px;" title="HiroakiMikami/procon-workspace"></iframe></p>
+
+</body>

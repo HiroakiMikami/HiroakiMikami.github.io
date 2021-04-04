@@ -1,0 +1,38 @@
+---
+layout: post
+title: AOJ2224： Save your cats
+subtitle: はてなブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<div>はてなブログからの移動</div><hr />
+<body><p><a href="http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2224">Save your cats | Aizu Online Judge</a></p>
+
+<h2>解き方</h2>
+
+<ul>
+<li><a class="keyword" href="http://d.hatena.ne.jp/keyword/pile">pile</a>を頂点、fenceを辺としたグラフを考えると、その双対グラフの<a class="keyword" href="http://d.hatena.ne.jp/keyword/%BA%C7%BE%AE%C1%B4%B0%E8%CC%DA">最小全域木</a>（コストは、fenceの長さ）を求めれば良い</li>
+<li>双対グラフを求めるためには、最短閉路の列挙などする必要があり面倒</li>
+<li>元の平面グラフの全域木に使われた辺を、双対グラフ上で削除すると、そのグラフは双対グラフの全域木となる
+
+<ul>
+<li>もとのグラフで最大全域木を求めて、辺全体のコストから引けば、双対グラフの<a class="keyword" href="http://d.hatena.ne.jp/keyword/%BA%C7%BE%AE%C1%B4%B0%E8%CC%DA">最小全域木</a>のコストが求められる</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>ハマったところ</h2>
+
+<ul>
+<li>双対グラフの<a class="keyword" href="http://d.hatena.ne.jp/keyword/%BA%C7%BE%AE%C1%B4%B0%E8%CC%DA">最小全域木</a>を考える必要があることはわかったが、双対グラフの性質を存在ごと完全に忘れていた
+
+<ul>
+<li>双対グラフの性質はまとめて覚えておく必要がありそう</li>
+</ul>
+</li>
+</ul>
+
+
+<p><iframe class="embed-card embed-webcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=https%3A%2F%2Fgithub.com%2FHiroakiMikami%2Fprocon-workspace%2Fblob%2Fmaster%2Fsrc%2Faoj%2F2224.cc" style="display: block; width: 100%; height: 155px; max-width: 500px; margin: 10px 0px;" title="HiroakiMikami/procon-workspace"></iframe><cite class="hatena-citation"><a href="https://github.com/HiroakiMikami/procon-workspace/blob/master/src/aoj/2224.cc">github.com</a></cite></p>
+
+</body>

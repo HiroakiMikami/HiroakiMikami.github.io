@@ -1,0 +1,180 @@
+---
+layout: post
+title: DeepCoder 追実装まとめ
+subtitle: はてなブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<div>はてなブログからの移動</div><hr />
+<body><h2>概略</h2>
+
+<p><code>[(Input, Output)] =&gt; Map[関数, 出現確率]</code>の関数を<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%C7%A5%A3%A1%BC%A5%D7%A5%E9%A1%BC%A5%CB%A5%F3%A5%B0">ディープラーニング</a>で学習し，それを利用してプログラム空間を探索・プログラム合成をする．
+詳しくは<a href="https://openreview.net/pdf?id=ByldLrqlx">論文</a>．</p>
+
+<h2>実装</h2>
+
+<p><a href="https://github.com/HiroakiMikami/deep-coder">レポジトリ</a></p>
+
+<p>chainerに慣れていないため、諸々非効率的と思うが、実装自体はそこまで難しいところはなかった。
+細かい反省点としては、デー<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%BF%A5%BB%A5%C3%A5%C8">タセット</a>を<a class="keyword" href="http://d.hatena.ne.jp/keyword/JSON">JSON</a>で保存するのは馬鹿らしかったなどなどがある。ただ、とりあえずやってみることを重要視した以上、実装での汚い点、反省点があるのは当然とは思っている。</p>
+
+<h2>学習</h2>
+
+<p>最終的に学習に用いたデー<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%BF%A5%BB%A5%C3%A5%C8">タセット</a>は800万件ほど。<code>g3.4xlarge</code>を利用して24時間強学習した。lossは下のような感じ。<a class="keyword" href="http://d.hatena.ne.jp/keyword/%B4%C4%B6%AD%CA%D1%BF%F4">環境変数</a>で与える学習パラメータは、<code>ALPHA=0.0001</code>、<code>EPOCH=1000</code>、<code>BATCH_SIZE=1000</code>で行った（詳しい実装はレポジトリを参照）。今考えると学習率上げてもよかったかもしれない。</p>
+
+<p><span itemscope="" itemtype="http://schema.org/Photograph"><img alt="f:id:mhiroaki0000:20170802184110p:plain:w300" class="hatena-fotolife" itemprop="image" src="/images/blog/2017-08-03-from-hatena-213644/0.png" style="width:300px" title="f:id:mhiroaki0000:20170802184110p:plain:w300"/></span></p>
+
+<p>当初は<code>p2.xlarge</code>を利用していたのだが、CPU側メモリが足りなくてabortするという事態が発生したので、急遽<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%A4%A5%F3%A5%B9%A5%BF%A5%F3%A5%B9">インスタンス</a>タイプを変更した。
+デー<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%BF%A5%BB%A5%C3%A5%C8">タセット</a>を生成後S3に上げるというワークフロー、メモリに展開するべきではない制約を鑑みると<a class="keyword" href="http://d.hatena.ne.jp/keyword/SQLite">SQLite</a>が妥当だったと考えている。</p>
+
+<p>また、プロトタイピングという目的からは、学習に1日か<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A4%AB%A4%EB%A4%C8">かると</a>いうのは問題。方法は以下の3つほど考えられる。</p>
+
+<ol>
+<li>小さいデー<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%BF%A5%BB%A5%C3%A5%C8">タセット</a>、単純な問題で実装を進め、最後に規模を大きくする</li>
+<li>複数の<a class="keyword" href="http://d.hatena.ne.jp/keyword/GPU">GPU</a>を積んだEC2<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%A4%A5%F3%A5%B9%A5%BF%A5%F3%A5%B9">インスタンス</a>を利用する</li>
+<li>いくつかの<code>p2.xlarge</code>あたりの<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%A4%A5%F3%A5%B9%A5%BF%A5%F3%A5%B9">インスタンス</a>で<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%AF%A5%E9%A5%B9%A5%BF">クラスタ</a>を組む</li>
+</ol>
+
+
+<p>1は単純なアプローチだけど、結局規模を大きくしたときの<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%C7%A5%D0%A5%C3%A5%B0">デバッグ</a>で苦しむ気がする。2は一番素直だけど、値段が跳ね上がる（余っていないらしくスポット<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%A4%A5%F3%A5%B9%A5%BF%A5%F3%A5%B9">インスタンス</a>による費用抑制ができない）という問題がある。
+3は、上手くスポット<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%A4%A5%F3%A5%B9%A5%BF%A5%F3%A5%B9">インスタンス</a>を組むことができれば、一番潰しが効く気がするけど、実現難易度は高い。</p>
+
+<h2>評価</h2>
+
+<p>ランダムに100個プログラムと入出力サンプルを生成して、プログラム合成をさせた。各サンプルに対し、以下の3パターンを試している。最後のやつの詳細は論文参照。</p>
+
+<ol>
+<li>DFS (DNNなし)</li>
+<li>DFS (DNN利用)</li>
+<li>“Sort and Add” Enumeration (DNN利用)</li>
+</ol>
+
+
+<p>ただし、1800秒たっても合成できない場合は<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%BF%A5%A4%A5%E0%A5%A2%A5%A6%A5%C8">タイムアウト</a>させて終了させている。</p>
+
+<h3>結果</h3>
+
+<p><strong>経過時間平均と<a class="keyword" href="http://d.hatena.ne.jp/keyword/%C9%B8%BD%E0%CA%D0%BA%B9">標準偏差</a> (秒)</strong></p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">DNNなし</th>
+<th style="text-align:left;">DFS with DNN</th>
+<th style="text-align:left;">“Sort and Add” Enumeration</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;"><code>434.55 (695.86)</code></td>
+<td style="text-align:left;"><code>1075.42 (794.41)</code></td>
+<td style="text-align:left;"><code>464.11 (718.14)</code></td>
+</tr>
+</tbody>
+</table>
+
+
+<p>見ての通り、DNNを利用したときの方が遅くなっている。一応DNNの推論分の時間がDNN使用の時には追加されているが、それを考慮してもやはり遅くなっているはず。</p>
+
+<p><strong>経過時間平均と分散（<a class="keyword" href="http://d.hatena.ne.jp/keyword/%B9%E2%B3%AC%B4%D8%BF%F4">高階関数</a>抜き）</strong>
+実行過程を眺めたところ、<a class="keyword" href="http://d.hatena.ne.jp/keyword/%B9%E2%B3%AC%B4%D8%BF%F4">高階関数</a>で時間をとっているような気がしたので、<a class="keyword" href="http://d.hatena.ne.jp/keyword/%B9%E2%B3%AC%B4%D8%BF%F4">高階関数</a>を使っていない場合飲みを抽出して再度計算した。</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">DNNなし</th>
+<th style="text-align:left;">DFS with DNN</th>
+<th style="text-align:left;">“Sort and Add” Enumeration</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;"><code>580.51 (786.43)</code></td>
+<td style="text-align:left;"><code>639.75 (781.70)</code></td>
+<td style="text-align:left;"><code>369.43 (656.61)</code></td>
+</tr>
+</tbody>
+</table>
+
+
+<p>自分の直感どおり、早くなってはいるが、母数が少ない（18件）し、分散は大きいし、よくわからない。</p>
+
+<h2>まとめ・所感</h2>
+
+<h3>DeepCoderそのものについて</h3>
+
+<h4>実装・学習</h4>
+
+<p>一点（整数のembed方法）を除いて元論文の通りに実装しているはず。ただし、デー<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%BF%A5%BB%A5%C3%A5%C8">タセット</a>の生成手法・学習手法については元論文に詳細な記載がないので本当に同じかはわからない。多分違う。</p>
+
+<h4>評価</h4>
+
+<p>全体的には性能向上は見られなかった。一方、<a class="keyword" href="http://d.hatena.ne.jp/keyword/%B9%E2%B3%AC%B4%D8%BF%F4">高階関数</a>を使わない場合は学習が効果があったのかもしれない（ただしよくわからない）。
+総じて、上手く学習できているのかはよくわからないという結論を出さざるを得ないと思う。</p>
+
+<p>なお、評価方法については、以下の2つの懸念点がある。</p>
+
+<ul>
+<li><code>time</code>コマンドを時間計測に利用
+
+<ul>
+<li>より正確なデータが必要なら真面目な計測をしないといけないが、面倒だった</li>
+</ul>
+</li>
+<li>各サンプル1回しかテストをしていない
+
+<ul>
+<li>他に最低限のプロセスしか動いていないEC2<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%A4%A5%F3%A5%B9%A5%BF%A5%F3%A5%B9">インスタンス</a>上でテストしたので、実行時間の分散は比較的小さいと思う</li>
+</ul>
+</li>
+</ul>
+
+
+<p>学習を続ければまだlossが下がりそうなので、もう少し学習時間を取ると予測精度が上がって速度向上につながるかもしれない。ただ、それをやっても自分として得られるものが少ない気がするのでここで追実装としては終わりの予定（暇だったりなんかのついでにできたらやるかも）</p>
+
+<h3><a class="keyword" href="http://d.hatena.ne.jp/keyword/%B5%A1%B3%A3%B3%D8%BD%AC">機械学習</a>とかプログラム合成について</h3>
+
+<h4><a class="keyword" href="http://d.hatena.ne.jp/keyword/%B5%A1%B3%A3%B3%D8%BD%AC">機械学習</a></h4>
+
+<ul>
+<li>比較的簡単なネットワークであっても、1 <a class="keyword" href="http://d.hatena.ne.jp/keyword/GPU">GPU</a>の学習には限界がある
+
+<ul>
+<li>複数の<a class="keyword" href="http://d.hatena.ne.jp/keyword/GPU">GPU</a>を使える環境は優先的に整えたほうが良い</li>
+</ul>
+</li>
+<li>デー<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%BF%A5%BB%A5%C3%A5%C8">タセット</a>は一次記憶に展開しなくて済むよう、最初から実装するべき
+
+<ul>
+<li>それなりの時間を無駄にしかねない</li>
+</ul>
+</li>
+</ul>
+
+
+<h4>プログラム合成について</h4>
+
+<ul>
+<li>結局全探索なので、探索方法の工夫での高速化の余地は大きい
+
+<ul>
+<li>今回で言えば、反復深化法のほうがDFSよりはあっていたという予感がある。</li>
+</ul>
+</li>
+<li>実行速度にダイレクトに関わるのはプログラムの長さ
+
+<ul>
+<li>長さ4, 5のプログラムが一瞬で生成できるわけではない。</li>
+<li>元論文でも、平気で合成に数千secとかかけている。</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>作業記録</h2>
+
+<p><iframe class="embed-card embed-blogcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=http%3A%2F%2Fmhiroaki.hatenablog.com%2Fentry%2F2017%2F07%2F09%2F123832" style="display: block; width: 100%; height: 190px; max-width: 500px; margin: 10px 0px;" title="DeepCoder追実装記録 (1) - 活動記録"></iframe><cite class="hatena-citation"><a href="http://mhiroaki.hatenablog.com/entry/2017/07/09/123832">mhiroaki.hatenablog.com</a></cite>
+<iframe class="embed-card embed-blogcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=http%3A%2F%2Fmhiroaki.hatenablog.com%2Fentry%2F2017%2F07%2F23%2F142403" style="display: block; width: 100%; height: 190px; max-width: 500px; margin: 10px 0px;" title="DeepCoder追実装記録 (2) - 活動記録"></iframe><cite class="hatena-citation"><a href="http://mhiroaki.hatenablog.com/entry/2017/07/23/142403">mhiroaki.hatenablog.com</a></cite>
+<iframe class="embed-card embed-blogcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=http%3A%2F%2Fmhiroaki.hatenablog.com%2Fentry%2F2017%2F07%2F29%2F094952" style="display: block; width: 100%; height: 190px; max-width: 500px; margin: 10px 0px;" title="DeepCoder追実装記録 (3) - 活動記録"></iframe><cite class="hatena-citation"><a href="http://mhiroaki.hatenablog.com/entry/2017/07/29/094952">mhiroaki.hatenablog.com</a></cite>
+<iframe class="embed-card embed-blogcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=http%3A%2F%2Fmhiroaki.hatenablog.com%2Fentry%2F2017%2F08%2F02%2F184458" style="display: block; width: 100%; height: 190px; max-width: 500px; margin: 10px 0px;" title="DeepCoder追実装記録 (4) - 活動記録"></iframe><cite class="hatena-citation"><a href="http://mhiroaki.hatenablog.com/entry/2017/08/02/184458">mhiroaki.hatenablog.com</a></cite></p>
+
+</body>

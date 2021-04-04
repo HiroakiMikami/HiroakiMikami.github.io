@@ -1,0 +1,33 @@
+---
+layout: post
+title: ABC070 D： Transit Tree Path
+subtitle: はてなブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<div>はてなブログからの移動</div><hr />
+<body><p><a href="https://beta.atcoder.jp/contests/abc070/tasks/abc070_d">D - Transit Tree Path</a></p>
+
+<h2>解き方</h2>
+
+<ul>
+<li><code>a</code>から<code>K</code>への距離と<code>K</code>から<code>b</code>への距離の和を出力する</li>
+<li><code>K</code>から各頂点への最短距離は、木なので、DFSすれば<code>O(n)</code>で求まる。</li>
+</ul>
+
+
+<h2>ハマったところ</h2>
+
+<ul>
+<li>0-indexと1-index混ぜてた
+
+<ul>
+<li>読み込み時に変えておくべきという話はありそう</li>
+</ul>
+</li>
+<li>最初全頂点から全頂点を求めようとして、<code>O(n^2)</code>になって困ってた。</li>
+</ul>
+
+
+<p><iframe class="embed-card embed-webcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=https%3A%2F%2Fgithub.com%2FHiroakiMikami%2Fprocon-workspace%2Fblob%2Fmaster%2Fsrc%2Fatcoder%2Fabc070%2Fd.cc" style="display: block; width: 100%; height: 155px; max-width: 500px; margin: 10px 0px;" title="HiroakiMikami/procon-workspace"></iframe><cite class="hatena-citation"><a href="https://github.com/HiroakiMikami/procon-workspace/blob/master/src/atcoder/abc070/d.cc">github.com</a></cite></p>
+
+</body>

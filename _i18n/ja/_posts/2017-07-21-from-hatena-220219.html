@@ -1,0 +1,33 @@
+---
+layout: post
+title: ARC078 D： Fennec VS. Snuke
+subtitle: はてなブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<div>はてなブログからの移動</div><hr />
+<body><p><iframe class="embed-card embed-webcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=http%3A%2F%2Farc078.contest.atcoder.jp%2Ftasks%2Farc078_b" style="display: block; width: 100%; height: 155px; max-width: 500px; margin: 10px 0px;" title="D: Fennec VS. Snuke - AtCoder Regular Contest 078 | AtCoder"></iframe><cite class="hatena-citation"><a href="http://arc078.contest.atcoder.jp/tasks/arc078_b">arc078.contest.atcoder.jp</a></cite></p>
+
+<h1>解き方</h1>
+
+<ul>
+<li><code>1</code>から｀N`へのパス上をまず塗り、その後残りを塗るのが最適解</li>
+<li><code>1</code>と<code>N</code>からの距離でそのマスが黒か白か決まる
+
+<ul>
+<li><code>1</code>と<code>N</code>の2箇所から<a class="keyword" href="http://d.hatena.ne.jp/keyword/%C9%FD%CD%A5%C0%E8%C3%B5%BA%F7">幅優先探索</a>して、黒白それぞれの塗られる数を探索</li>
+</ul>
+</li>
+</ul>
+
+
+<h1>ハマったところ</h1>
+
+<ul>
+<li>Nヶ所から<a class="keyword" href="http://d.hatena.ne.jp/keyword/%C9%FD%CD%A5%C0%E8%C3%B5%BA%F7">幅優先探索</a>する方法を思い浮かばなかった</li>
+<li>パス(サイズ<code>O(n)</code>)を保存するDFS、BFSは<code>O(N^2)</code></li>
+</ul>
+
+
+<p><iframe class="embed-card embed-webcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=https%3A%2F%2Fgithub.com%2FHiroakiMikami%2Fprocon-workspace%2Fblob%2Fmaster%2Fsrc%2Fatcoder%2Farc078%2Fd.cc" style="display: block; width: 100%; height: 155px; max-width: 500px; margin: 10px 0px;" title="HiroakiMikami/procon-workspace"></iframe><cite class="hatena-citation"><a href="https://github.com/HiroakiMikami/procon-workspace/blob/master/src/atcoder/arc078/d.cc">github.com</a></cite></p>
+
+</body>

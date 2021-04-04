@@ -1,0 +1,40 @@
+---
+layout: post
+title: CODE FESTIVAL 2017 qual C D： Yet Another Palindrome Partitioning
+subtitle: はてなブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<div>はてなブログからの移動</div><hr />
+<body><p><iframe class="embed-card embed-webcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=http%3A%2F%2Fcode-festival-2017-qualc.contest.atcoder.jp%2Ftasks%2Fcode_festival_2017_qualc_d" style="display: block; width: 100%; height: 155px; max-width: 500px; margin: 10px 0px;" title="D: Yet Another Palindrome Partitioning - CODE FESTIVAL 2017 qual C | AtCoder"></iframe><cite class="hatena-citation"><a href="http://code-festival-2017-qualc.contest.atcoder.jp/tasks/code_festival_2017_qualc_d">code-festival-2017-qualc.contest.atcoder.jp</a></cite></p>
+
+<h2>解き方</h2>
+
+<ul>
+<li><code>O(n)</code>の前計算で、<code>s[i:j]</code>が入れ替えて回文になるかどうかを計算できるようにする</li>
+<li><code>s[0:i]</code>の最小の分割数でDPを構成する（<code>O(n^2)</code>)</li>
+<li>hash値に対するDPとすることで<code>O(n)</code>に高速化</li>
+</ul>
+
+
+<h2>ハマったところ</h2>
+
+<ul>
+<li>前計算→DPの流れまではわかった</li>
+<li>前計算について、おそらく累積和のような方法で<code>O(n)</code>にするのだろうという予測はついたが、思いつかなかった
+
+<ul>
+<li>64個以内の要素が01を取る時はhashとbit演算の組み合わせを考えるのは有効？</li>
+</ul>
+</li>
+<li>hash値に対するDPが思いつかなかった
+
+<ul>
+<li>今の自分では思いつく気がしない</li>
+</ul>
+</li>
+</ul>
+
+
+<p><iframe class="embed-card embed-webcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=https%3A%2F%2Fgithub.com%2FHiroakiMikami%2Fprocon-workspace%2Fblob%2Fmaster%2Fsrc%2Fatcoder%2Fcode-festival-2017-qualc%2Fd.cc" style="display: block; width: 100%; height: 155px; max-width: 500px; margin: 10px 0px;" title="HiroakiMikami/procon-workspace"></iframe><cite class="hatena-citation"><a href="https://github.com/HiroakiMikami/procon-workspace/blob/master/src/atcoder/code-festival-2017-qualc/d.cc">github.com</a></cite></p>
+
+</body>

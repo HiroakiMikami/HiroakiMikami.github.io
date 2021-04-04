@@ -1,0 +1,51 @@
+---
+layout: post
+title: DeepCoder追実装記録 (1)
+subtitle: はてなブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<div>はてなブログからの移動</div><hr />
+<body><h2>DeepCoder概略</h2>
+
+<p><code>[(Input, Output)] =&gt; Map[関数, 出現確率]</code>の関数を<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%C7%A5%A3%A1%BC%A5%D7%A5%E9%A1%BC%A5%CB%A5%F3%A5%B0">ディープラーニング</a>で学習し，それを利用してプログラム空間を探索・プログラム合成をする．
+詳しくは<a href="https://openreview.net/pdf?id=ByldLrqlx">論文</a>．</p>
+
+<h2>追実装について</h2>
+
+<p>レポジトリ: <a href="https://github.com/HiroakiMikami/deep-coder">ここ</a></p>
+
+<h3>デー<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%BF%A5%BB%A5%C3%A5%C8">タセット</a>の生成</h3>
+
+<p><a class="keyword" href="http://d.hatena.ne.jp/keyword/%BF%BC%A4%B5%CD%A5%C0%E8%C3%B5%BA%F7">深さ優先探索</a>でプログラムを列挙しながら，適当に入出力の組を生成する．同じ挙動をするプログラムを排除する部分の処理が重く，時間がかかっている．</p>
+
+<p>高速化の手段としては，</p>
+
+<ol>
+<li>並列化（入力の型が違えば独立に扱えるので）</li>
+<li>削除する部分が遅いようなので，その処理の見直し</li>
+</ol>
+
+
+<p>あたりが思いついている．恐らく1は重要だと思う．</p>
+
+<h3>学習</h3>
+
+<p>恐らく<a class="keyword" href="http://d.hatena.ne.jp/keyword/%B2%E1%B3%D8%BD%AC">過学習</a>してしまっている．原因は不明だけど，デー<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%BF%A5%BB%A5%C3%A5%C8">タセット</a>の生成の仕方が偏っている気がしないでもない．
+とりあえずデー<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%BF%A5%BB%A5%C3%A5%C8">タセット</a>の生成を高速化して，ちゃんとデー<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%BF%A5%BB%A5%C3%A5%C8">タセット</a>作ってもう一度やり直す．</p>
+
+<h4>ハマった点</h4>
+
+<ul>
+<li><a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%C1%A5%E5%A1%BC%A5%C8%A5%EA%A5%A2%A5%EB">チュートリアル</a>のままでOptimizerを<a class="keyword" href="http://d.hatena.ne.jp/keyword/SGD">SGD</a>にしたら局所解に陥ったのか収束しなかった．Adamだと収束する</li>
+</ul>
+
+
+<h3>今後</h3>
+
+<ol>
+<li><a class="keyword" href="http://d.hatena.ne.jp/keyword/%B2%E1%B3%D8%BD%AC">過学習</a>の問題を解消する．せめて原因を特定する</li>
+<li>小さめのデー<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%BF%A5%BB%A5%C3%A5%C8">タセット</a>(N=100くらい？)で評価をしてみたい</li>
+</ol>
+
+
+</body>

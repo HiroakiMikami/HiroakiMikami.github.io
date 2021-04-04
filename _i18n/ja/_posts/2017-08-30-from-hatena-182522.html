@@ -1,0 +1,27 @@
+---
+layout: post
+title: AGC019 B： Reverse and Compare
+subtitle: はてなブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<div>はてなブログからの移動</div><hr />
+<body><p><iframe class="embed-card embed-webcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=http%3A%2F%2Fagc019.contest.atcoder.jp%2Ftasks%2Fagc019_b" style="display: block; width: 100%; height: 155px; max-width: 500px; margin: 10px 0px;" title="B: Reverse and Compare - AtCoder Grand Contest 019 | AtCoder"></iframe><cite class="hatena-citation"><a href="http://agc019.contest.atcoder.jp/tasks/agc019_b">agc019.contest.atcoder.jp</a></cite></p>
+
+<h2>解き方</h2>
+
+<ul>
+<li><code>A[i] == A[j]</code>を満たす<code>A[i..j]</code>を反転させる時、<code>A[i+1..j-1]</code>を反転させた時と同じになるので、それを引く</li>
+</ul>
+
+
+<h2>ハマったところ</h2>
+
+<ul>
+<li>最初回文を除かないといけないと考え、実装はしたものの<code>O(N^2)</code>から落ちなかった</li>
+<li>回文を除く方針は、サンプルの時点で通らないが、実装ミスで通ってしまっていたので方針から違うことに気づくのが遅れた。</li>
+</ul>
+
+
+<p><a href="https://github.com/HiroakiMikami/procon-workspace/blob/master/src/atcoder/agc019/b.cc">https://github.com/HiroakiMikami/procon-workspace/blob/master/src/atcoder/agc019/b.cc</a><cite class="hatena-citation"><a href="https://github.com/HiroakiMikami/procon-workspace/blob/master/src/atcoder/agc019/b.cc">github.com</a></cite></p>
+
+</body>

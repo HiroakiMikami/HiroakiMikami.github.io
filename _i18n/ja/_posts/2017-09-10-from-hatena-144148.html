@@ -1,0 +1,37 @@
+---
+layout: post
+title: ARC082 F： Sandglass
+subtitle: はてなブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<div>はてなブログからの移動</div><hr />
+<body><p><a href="https://beta.atcoder.jp/contests/arc082/tasks/arc082_d">F - Sandglass</a></p>
+
+<h2>解き方</h2>
+
+<ul>
+<li>ある時刻におけるAの砂の量は、<code>max(E1+C, min(E2+C, a+C))</code>の形で表せる（<code>a</code>は最初にAに入っている砂の量）</li>
+<li>各<code>r_i</code>について、<code>E1</code>, <code>E2</code>, <code>C</code>を前計算しておき、クエリに対しては二分探索→最後だけ計算
+
+<ul>
+<li><code>r_{i-1}</code>のときの関数が求まれば、そこから<code>r_i</code>のときの前計算ができる</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>ハマったところ</h2>
+
+<ul>
+<li><code>r_i</code>について、二分探索→最後だけ計算の流れはそうだろうと思ったが、関数の形に対して思いつかなかった
+
+<ul>
+<li>場合分けもっと増えると思って前計算諦めたんだけど、もう少し真面目に考えれば思いついたのだろうか。</li>
+</ul>
+</li>
+</ul>
+
+
+<p><iframe class="embed-card embed-webcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=https%3A%2F%2Fgithub.com%2FHiroakiMikami%2Fprocon-workspace%2Fblob%2Fmaster%2Fsrc%2Fatcoder%2Farc082%2Ff.cc" style="display: block; width: 100%; height: 155px; max-width: 500px; margin: 10px 0px;" title="HiroakiMikami/procon-workspace"></iframe><cite class="hatena-citation"><a href="https://github.com/HiroakiMikami/procon-workspace/blob/master/src/atcoder/arc082/f.cc">github.com</a></cite></p>
+
+</body>

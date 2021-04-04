@@ -1,0 +1,39 @@
+---
+layout: post
+title: ARC084 D： Small Multiple
+subtitle: はてなブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<div>はてなブログからの移動</div><hr />
+<body><p><iframe class="embed-card embed-webcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=https%3A%2F%2Farc084.contest.atcoder.jp%2Ftasks%2Farc084_b" style="display: block; width: 100%; height: 155px; max-width: 500px; margin: 10px 0px;" title="D: Small Multiple - AtCoder Regular Contest 084 | AtCoder"></iframe><cite class="hatena-citation"><a href="https://arc084.contest.atcoder.jp/tasks/arc084_b">arc084.contest.atcoder.jp</a></cite></p>
+
+<h3>解き方</h3>
+
+<ul>
+<li><code>+1</code>、<code>*10</code>の2つの計算を辺、<a class="keyword" href="http://d.hatena.ne.jp/keyword/%BC%AB%C1%B3%BF%F4">自然数</a>を頂点としてグラフを作る
+
+<ul>
+<li><a class="keyword" href="http://d.hatena.ne.jp/keyword/%BC%AB%C1%B3%BF%F4">自然数</a>全体を頂点にはできないので<code>mod K</code>する</li>
+<li>コストは各桁の和の変化量(それぞれ1, 0)</li>
+</ul>
+</li>
+<li>01BFSで<code>1 mod K</code>から<code>0 mod K</code>までの最短距離を求める</li>
+</ul>
+
+
+<h3>ハマったところ</h3>
+
+<ul>
+<li><a class="keyword" href="http://d.hatena.ne.jp/keyword/%BC%AB%C1%B3%BF%F4">自然数</a>の関係をグラフに落とし込む発想ができなかった</li>
+<li>01BFSを知らなかった
+
+<ul>
+<li>そろそろutil拡充（グラフ関連）をしたい</li>
+</ul>
+</li>
+</ul>
+
+
+<p><iframe class="embed-card embed-webcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=https%3A%2F%2Fgithub.com%2FHiroakiMikami%2Fprocon-workspace%2Fblob%2Fmaster%2Fsrc%2Fatcoder%2Farc084%2Fd.cc" style="display: block; width: 100%; height: 155px; max-width: 500px; margin: 10px 0px;" title="HiroakiMikami/procon-workspace"></iframe><cite class="hatena-citation"><a href="https://github.com/HiroakiMikami/procon-workspace/blob/master/src/atcoder/arc084/d.cc">github.com</a></cite></p>
+
+</body>

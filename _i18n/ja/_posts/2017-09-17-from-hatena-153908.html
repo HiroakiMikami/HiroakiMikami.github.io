@@ -1,0 +1,38 @@
+---
+layout: post
+title: ARC083 C： Sugar Water
+subtitle: はてなブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<div>はてなブログからの移動</div><hr />
+<body><p><a href="https://beta.atcoder.jp/contests/arc083/tasks/arc083_a">C - Sugar Water</a></p>
+
+<h2>解き方</h2>
+
+<ul>
+<li>A, B, C, Dそれぞれの操作を何回するか、全探索
+
+<ul>
+<li>A, Bについては、<code>100A &lt;= F &lt;= 30 * 100</code>より、たかだか30回</li>
+<li>C, Dについては、最大で<code>F/2</code>g溶ける（E=100の時）ので、たかだか1500回</li>
+</ul>
+</li>
+<li>合計で[<a class="keyword" href="http://d.hatena.ne.jp/keyword/tex">tex</a>:O(10<sup>9</sup>)]なので、ダメでは？という気もするが、間に合った
+
+<ul>
+<li>水のありうる量を列挙、砂糖のありうる量を列挙し、各水の量について、最大の砂糖の量を二分探索、とすると、<code>O(1500^2+30^2*log(1500^2))</code>となって十分間に合う感じになりそう</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>ハマったところ</h2>
+
+<ul>
+<li>濃度の比較を整数で行おうとした時、<img alt="\frac{a_1}{a_1+b_1} &gt; \frac{a_2}{a_2+b_2}" src="http://chart.apis.google.com/chart?cht=tx&amp;chl=%5Cfrac%7Ba_1%7D%7Ba_1%2Bb_1%7D%20%3E%20%5Cfrac%7Ba_2%7D%7Ba_2%2Bb_2%7D"/>の式変形で、<img alt="a_1(a_1+b_1)(a_2+b_2) &gt; a_2(a_1+b_1)(a_2+b_2)" src="http://chart.apis.google.com/chart?cht=tx&amp;chl=a_1%28a_1%2Bb_1%29%28a_2%2Bb_2%29%20%3E%20a_2%28a_1%2Bb_1%29%28a_2%2Bb_2%29"/>としていてWA</li>
+</ul>
+
+
+<p><iframe class="embed-card embed-webcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=https%3A%2F%2Fgithub.com%2FHiroakiMikami%2Fprocon-workspace%2Fblob%2Fmaster%2Fsrc%2Fatcoder%2Farc083%2Fc.cc" style="display: block; width: 100%; height: 155px; max-width: 500px; margin: 10px 0px;" title="HiroakiMikami/procon-workspace"></iframe><cite class="hatena-citation"><a href="https://github.com/HiroakiMikami/procon-workspace/blob/master/src/atcoder/arc083/c.cc">github.com</a></cite></p>
+
+</body>

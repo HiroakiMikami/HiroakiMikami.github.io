@@ -1,0 +1,34 @@
+---
+layout: post
+title: APC001 D： Forest
+subtitle: はてなブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<div>はてなブログからの移動</div><hr />
+<body><p><iframe class="embed-card embed-webcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=https%3A%2F%2Fapc001.contest.atcoder.jp%2Ftasks%2Fapc001_d" style="display: block; width: 100%; height: 155px; max-width: 500px; margin: 10px 0px;" title="D: Forest - AtCoder Petrozavodsk Contest 001 | AtCoder"></iframe><cite class="hatena-citation"><a href="https://apc001.contest.atcoder.jp/tasks/apc001_d">apc001.contest.atcoder.jp</a></cite></p>
+
+<h3>解き方</h3>
+
+<ul>
+<li>前提
+
+<ul>
+<li><code>n</code>個の木を連結にするためには、<code>n-1</code>個の辺を追加する必要がある</li>
+<li>条件から辺に含まれる頂点は重複しないので、<code>2n-2</code>個の頂点が辺に含まれる</li>
+<li>連結にするためには、各木から少なくとも1つは頂点を選ばないといけない</li>
+</ul>
+</li>
+<li>実装
+
+<ul>
+<li>森をn個の木に分割（O(N))し、それぞれでコスト最小の頂点を選ぶ</li>
+<li>残った頂点（N-n)個のうちから、コストが小さい順に<code>n-2</code>個選ぶ</li>
+<li>上の2つのコストの和が答え（ただし、最初から木になっているケースがコーナーケース）</li>
+</ul>
+</li>
+</ul>
+
+
+<p><iframe class="embed-card embed-webcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=https%3A%2F%2Fgithub.com%2FHiroakiMikami%2Fprocon-workspace%2Fblob%2Fmaster%2Fsrc%2Fatcoder%2Fapc001%2Fd.cc" style="display: block; width: 100%; height: 155px; max-width: 500px; margin: 10px 0px;" title="HiroakiMikami/procon-workspace"></iframe><cite class="hatena-citation"><a href="https://github.com/HiroakiMikami/procon-workspace/blob/master/src/atcoder/apc001/d.cc">github.com</a></cite></p>
+
+</body>

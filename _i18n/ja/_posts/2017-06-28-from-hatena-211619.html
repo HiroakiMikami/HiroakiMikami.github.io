@@ -1,0 +1,54 @@
+---
+layout: post
+title: ARC 076 D： Built?
+subtitle: はてなブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<div>はてなブログからの移動</div><hr />
+<body><p><a href="http://arc076.contest.atcoder.jp/tasks/arc076_b">http://arc076.contest.atcoder.jp/tasks/arc076_b</a></p>
+
+<h2>解き方</h2>
+
+<ul>
+<li>コストの定義を使って，辺の数を<code>O(N)</code>に削減</li>
+<li><a class="keyword" href="http://d.hatena.ne.jp/keyword/%BA%C7%BE%AE%C1%B4%B0%E8%CC%DA">最小全域木</a>を<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%AF%A5%E9%A5%B9%A5%AB%A5%EB">クラスカル</a>なりプリムなりで求める
+
+<ul>
+<li>プリムの場合は<code>priority_queue</code>を使った実装じゃないと多分間に合わない</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>ハマった所</h2>
+
+<ul>
+<li>プリム，<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%AF%A5%E9%A5%B9%A5%AB%A5%EB">クラスカル</a>の実装からスタート
+
+<ul>
+<li>ライブラリ化した方が良いかも</li>
+<li>長くなりすぎるのでそろそろ分割しないといけなそう</li>
+</ul>
+</li>
+<li>プリムのループ内(最小コストの辺の探索，最小コストの更新の部分)を<code>O(logN)</code>に収める方針を立ててしまった
+
+<ul>
+<li>コンテスト内で迷った結果として，よほど特殊な条件でないと筋が悪そう
+
+<ul>
+<li>更新しないといけない頂点が高々1個で，どの頂点か分かるなら，最初に<code>min_cost</code>をソートしておくと<code>O(logN)</code>で収まる？
+
+<ul>
+<li>最小コストの辺は，<code>min_cost[0]</code>で求まるので<code>O(1)</code></li>
+<li>更新対象を削除したのち，二分探索で挿入場所を決めれば<code>O(logN)</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="keyword" href="http://d.hatena.ne.jp/keyword/%BA%C7%BE%AE%C1%B4%B0%E8%CC%DA">最小全域木</a>は辺の数を削っていくのが王道なのかな</li>
+</ul>
+</li>
+</ul>
+
+
+</body>

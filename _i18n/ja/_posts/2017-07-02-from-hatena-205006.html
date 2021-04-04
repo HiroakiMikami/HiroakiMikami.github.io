@@ -1,0 +1,63 @@
+---
+layout: post
+title: chainer 2.0勉強記録
+subtitle: はてなブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<div>はてなブログからの移動</div><hr />
+<body><p><a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%C1%A5%E5%A1%BC%A5%C8%A5%EA%A5%A2%A5%EB">チュートリアル</a>を一通りやった上で，追加でハマったことのメモ</p>
+
+<h2><code>Dataset</code>の作成方法</h2>
+
+<p>以下のように，<code>DatasetMixin</code>を使って作る．データの生成（ファイル読み込みなど）を<code>get_example</code>まで遅延させるのもOK</p>
+
+<pre class="code lang-python" data-lang="python" data-unlink=""><span class="synStatement">class</span> <span class="synIdentifier">Dataset</span>(chainer.dataset.DatasetMixin):
+    <span class="synStatement">def</span> <span class="synIdentifier">__init__</span>(self):
+        xs = np.array(np.random.uniform(-math.pi, math.pi, (<span class="synConstant">10000</span>, <span class="synConstant">1</span>)), dtype=np.float32)
+        f = <span class="synStatement">lambda</span> t: np.array([math.sin(t)], dtype=np.float32)
+        ys = np.array([f(e) <span class="synStatement">for</span> e <span class="synStatement">in</span> xs])
+        self.<span class="synIdentifier">input</span> = xs
+        self.output = ys
+    <span class="synStatement">def</span> <span class="synIdentifier">__len__</span>(self):
+        <span class="synStatement">return</span> <span class="synIdentifier">len</span>(self.output)
+    <span class="synStatement">def</span> <span class="synIdentifier">get_example</span>(self, i):
+        <span class="synStatement">return</span> self.<span class="synIdentifier">input</span>[i], self.output[i]
+</pre>
+
+
+<ul>
+<li><a href="https://docs.chainer.org/en/stable/reference/core/dataset.html">参考</a></li>
+</ul>
+
+
+<h2><code>Trainer</code>に与える<code>Model</code>の実装方法</h2>
+
+<h3><code>__call__</code>の引数</h3>
+
+<p>第一引数が入力，第二引数が出力（<code>actual</code>）となり，<code>loss</code>関数を実装する．</p>
+
+<h3><code>__call__</code>での引数の扱い</h3>
+
+<p>上記Datasetの場合，引数がただの変数なので，<code>Variable(...)</code>でラップする必要がある．</p>
+
+<h2>その他</h2>
+
+<p>計算途中を変数に置かないと上手く動かないケースがある（？ 未検証）</p>
+
+<p>例えば，</p>
+
+<pre class="code lang-python" data-lang="python" data-unlink="">h1 = l1(x)
+h2 = l2(h1)
+<span class="synStatement">return</span> h2
+</pre>
+
+
+<p>は上手く動くが，</p>
+
+<pre class="code lang-python" data-lang="python" data-unlink=""><span class="synStatement">return</span> l2(l2(x))
+</pre>
+
+
+<p>は上手く動かないような気がする．</p>
+
+</body>

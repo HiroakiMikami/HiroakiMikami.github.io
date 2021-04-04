@@ -1,0 +1,37 @@
+---
+layout: post
+title: ARC081 E： Don&#39;t Be a Subsequence
+subtitle: はてなブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<div>はてなブログからの移動</div><hr />
+<body><p><a href="https://beta.atcoder.jp/contests/arc081/tasks/arc081_c">E - Don't Be a Subsequence</a></p>
+
+<h2>解き方</h2>
+
+<ul>
+<li>部分列でない最小の文字列の、先頭の文字を決める→2文字目以降の文字列について考える、を繰り返すDP
+
+<ul>
+<li>DPする時には、後ろから決めていかないといけない</li>
+<li>どの文字を先頭にするか決めるために、どの文字がどこに現れるかについて前計算が必要</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>ハマったところ</h2>
+
+<ul>
+<li>単純にこのDPが思いつかなかった
+
+<ul>
+<li>辞書順最小に対しては、後ろからDPして、最後に経路復元するのが一つのテンプレートらしい。</li>
+</ul>
+</li>
+</ul>
+
+
+<p><iframe class="embed-card embed-webcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=https%3A%2F%2Fgithub.com%2FHiroakiMikami%2Fprocon-workspace%2Fblob%2Fmaster%2Fsrc%2Fatcoder%2Farc081%2Fe.cc" style="display: block; width: 100%; height: 155px; max-width: 500px; margin: 10px 0px;" title="HiroakiMikami/procon-workspace"></iframe><cite class="hatena-citation"><a href="https://github.com/HiroakiMikami/procon-workspace/blob/master/src/atcoder/arc081/e.cc">github.com</a></cite></p>
+
+</body>

@@ -1,0 +1,55 @@
+---
+layout: post
+title: DeepCoder追実装記録 (2)
+subtitle: はてなブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<div>はてなブログからの移動</div><hr />
+<body><p><strong>前回</strong>: <iframe class="embed-card embed-blogcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=http%3A%2F%2Fmhiroaki.hatenablog.com%2Fentry%2F2017%2F07%2F09%2F123832" style="display: block; width: 100%; height: 190px; max-width: 500px; margin: 10px 0px;" title="DeepCoder追実装記録 (1) - 活動記録"></iframe><cite class="hatena-citation"><a href="http://mhiroaki.hatenablog.com/entry/2017/07/09/123832">mhiroaki.hatenablog.com</a></cite></p>
+
+<h2>デー<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%BF%A5%BB%A5%C3%A5%C8">タセット</a>生成の高速化</h2>
+
+<h3>方法</h3>
+
+<p>入力の型(e.g., [Int], [List], [Int, List, List])ごとに別スレッドでdfsすることで高速化</p>
+
+<ul>
+<li>入力の型が異なるプログラム同士はequivalenceの判定を省いているので、データ競合なく並列化が可能</li>
+<li>CPUでenumerateすることを考えたら、並列度を高くするよりはこの程度のほうが良いという判断</li>
+</ul>
+
+
+<h3>結果</h3>
+
+<p>コミットログによれば、20000件ほどのデー<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%BF%A5%BB%A5%C3%A5%C8">タセット</a>生成に1100secかかっていたのが、238secになったらしい（確か<a class="keyword" href="http://d.hatena.ne.jp/keyword/Core%20i5">Core i5</a>-5200U上）</p>
+
+<h2>学習</h2>
+
+<h3>現状</h3>
+
+<p>学習データを200000件に増やして、再度学習させている。しかし、やはり<a class="keyword" href="http://d.hatena.ne.jp/keyword/%B2%E1%B3%D8%BD%AC">過学習</a>起こしているように見える。</p>
+
+<p><span itemscope="" itemtype="http://schema.org/Photograph"><img alt="f:id:mhiroaki0000:20170723141839p:plain:w300" class="hatena-fotolife" itemprop="image" src="/images/blog/2017-07-23-from-hatena-142403/0.png" style="width:300px" title="f:id:mhiroaki0000:20170723141839p:plain:w300"/></span></p>
+
+<p>モデルをシンプルにすると、（<code>E=8</code>, <code>K=128</code>, 変数の意味は元論文参照）lossが0.15あたりでとまってしまう。従って、モデルが複雑すぎるというよりデータがまだ少ないのかなという印象を持っている。</p>
+
+<p><span itemscope="" itemtype="http://schema.org/Photograph"><img alt="f:id:mhiroaki0000:20170723141832p:plain:w300" class="hatena-fotolife" itemprop="image" src="/images/blog/2017-07-23-from-hatena-142403/1.png" style="width:300px" title="f:id:mhiroaki0000:20170723141832p:plain:w300"/></span></p>
+
+<h3>その他</h3>
+
+<p>学習には、g2.2xlarge<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%A4%A5%F3%A5%B9%A5%BF%A5%F3%A5%B9">インスタンス</a>をスポット<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%A4%A5%F3%A5%B9%A5%BF%A5%F3%A5%B9">インスタンス</a>で利用し、<code>alpha=0.0001</code>としたAdamをOptimizerに、<code>epoch=2500~5000</code>、バッチサイズ<code>500~1000</code>で行っている。</p>
+
+<h2>今後</h2>
+
+<ul>
+<li>N=100万くらいのデー<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%BF%A5%BB%A5%C3%A5%C8">タセット</a>を用意し、そこで学習データさせてみる</li>
+<li>適当なプログラムで評価
+
+<ul>
+<li>元論文みたいな真面目な評価をする気はまったくない</li>
+</ul>
+</li>
+</ul>
+
+
+</body>

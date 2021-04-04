@@ -1,0 +1,43 @@
+---
+layout: post
+title: ARC085 D： ABS
+subtitle: はてなブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<div>はてなブログからの移動</div><hr />
+<body><p><a href="https://beta.atcoder.jp/contests/arc085/tasks/arc085_b">D - ABS</a></p>
+
+<h3>解き方</h3>
+
+<ul>
+<li>本来は2パターンだけ考えれば良いらしい
+
+<ul>
+<li>この手の「何個か取り除いてなくなったら終わり」系のゲームってそういうの多い気がする</li>
+</ul>
+</li>
+<li>DPを使った方法
+
+<ul>
+<li>Yが<code>a_i</code>を持ってXに手番が回ってきたときの最大値、Xが<code>a_i</code>を持ってY似て番が回ってきたときの最小値、をそれぞれ後ろからDPで埋めていけば解けた</li>
+</ul>
+</li>
+</ul>
+
+
+<h3>ハマったところ</h3>
+
+<ul>
+<li>DPの構成に手間取った
+
+<ul>
+<li>最初はXが<code>a_i</code>, Yが<code>a_j</code>で手番がX or Yの3次元のDPをしていて、TLEする解法になっていた</li>
+</ul>
+</li>
+<li>（そもそもDPじゃなくても解けた）</li>
+</ul>
+
+
+<p><iframe class="embed-card embed-webcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=https%3A%2F%2Fgithub.com%2FHiroakiMikami%2Fprocon-workspace%2Fblob%2Fmaster%2Fsrc%2Fatcoder%2Farc085%2Fd.cc" style="display: block; width: 100%; height: 155px; max-width: 500px; margin: 10px 0px;" title="HiroakiMikami/procon-workspace"></iframe><cite class="hatena-citation"><a href="https://github.com/HiroakiMikami/procon-workspace/blob/master/src/atcoder/arc085/d.cc">github.com</a></cite></p>
+
+</body>

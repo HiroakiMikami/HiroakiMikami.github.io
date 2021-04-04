@@ -1,0 +1,33 @@
+---
+layout: post
+title: ARC087 D： FT Robot
+subtitle: はてなブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<div>はてなブログからの移動</div><hr />
+<body><p><iframe class="embed-card embed-webcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=https%3A%2F%2Farc087.contest.atcoder.jp%2Ftasks%2Farc087_b" style="display: block; width: 100%; height: 155px; max-width: 500px; margin: 10px 0px;" title="D: FT Robot - AtCoder Regular Contest 087 | AtCoder"></iframe><cite class="hatena-citation"><a href="https://arc087.contest.atcoder.jp/tasks/arc087_b">arc087.contest.atcoder.jp</a></cite></p>
+
+<h3>解き方</h3>
+
+<ul>
+<li>以下の2つを前計算する
+
+<ul>
+<li>x方向に動ける距離：<code>x_0, x_1, ..., x_n</code></li>
+<li>y方向に動ける距離：<code>y_0, y_1, ..., y_n</code></li>
+</ul>
+</li>
+<li>以下のdpを埋める
+
+<ul>
+<li><code>dp[a] := x座標の絶対値をaとすることができる最大の移動回数</code></li>
+</ul>
+</li>
+<li>同様にyも埋めて、<code>dp[x] = n</code>, <code>dp[y] = n</code>となるかで判定</li>
+<li>移動は正方向、負方向どちらにも動いてよいが、最初の<code>x_0</code>だけは正方向にしか動けないので、座標変換する</li>
+</ul>
+
+
+<p><iframe class="embed-card embed-webcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=https%3A%2F%2Fgithub.com%2FHiroakiMikami%2Fprocon-workspace%2Fblob%2Fmaster%2Fsrc%2Fatcoder%2Farc087%2Fd.cc" style="display: block; width: 100%; height: 155px; max-width: 500px; margin: 10px 0px;" title="HiroakiMikami/procon-workspace"></iframe><cite class="hatena-citation"><a href="https://github.com/HiroakiMikami/procon-workspace/blob/master/src/atcoder/arc087/d.cc">github.com</a></cite></p>
+
+</body>

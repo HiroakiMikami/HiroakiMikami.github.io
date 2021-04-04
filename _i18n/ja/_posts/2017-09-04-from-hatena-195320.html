@@ -1,0 +1,31 @@
+---
+layout: post
+title: AOJ2170： Marked Ancestor
+subtitle: はてなブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<div>はてなブログからの移動</div><hr />
+<body><p><a href="http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2170&amp;lang=jp">Marked Ancestor | Aizu Online Judge</a></p>
+
+<h2>解き方</h2>
+
+<ul>
+<li>対応するMarked Nodeが同じ頂点が同じ集合に含まれるようなunion findを作る
+
+<ul>
+<li>一旦、最終的なunion findを作って、クエリを後ろから辿りながらunion findを更新する</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>ハマったところ</h2>
+
+<ul>
+<li>同じノードに複数回マークつけている時の処理でミスってた</li>
+</ul>
+
+
+<p><iframe class="embed-card embed-webcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=https%3A%2F%2Fgithub.com%2FHiroakiMikami%2Fprocon-workspace%2Fblob%2Fmaster%2Fsrc%2Faoj%2F2170.cc" style="display: block; width: 100%; height: 155px; max-width: 500px; margin: 10px 0px;" title="HiroakiMikami/procon-workspace"></iframe><cite class="hatena-citation"><a href="https://github.com/HiroakiMikami/procon-workspace/blob/master/src/aoj/2170.cc">github.com</a></cite></p>
+
+</body>

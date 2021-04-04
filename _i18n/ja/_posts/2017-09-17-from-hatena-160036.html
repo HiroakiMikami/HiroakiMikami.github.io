@@ -1,0 +1,51 @@
+---
+layout: post
+title: ARC083 E： Bichrome Tree
+subtitle: はてなブログからの移動
+---
+<div>Livedoorブログからの移動</div><hr />
+<div>はてなブログからの移動</div><hr />
+<body><p><a href="https://beta.atcoder.jp/contests/arc083/tasks/arc083_c">E - Bichrome Tree</a></p>
+
+<h2>解き方</h2>
+
+<ul>
+<li>ある頂点<code>i</code>の部分木について、黒白それぞれの重みの和を、<code>b_i, w_i</code>として、それを更新していく
+
+<ul>
+<li>黒白は入れ替えても問題ないので、違う色か同じ色かだけ考えれば良い</li>
+</ul>
+</li>
+<li>頂点<code>i</code>が<a class="keyword" href="http://d.hatena.ne.jp/keyword/leaf">leaf</a>の場合、色はどちらでもよく、重みは<code>x_i</code>になる</li>
+<li>頂点<code>i</code>が<a class="keyword" href="http://d.hatena.ne.jp/keyword/leaf">leaf</a>でない場合
+
+<ul>
+<li>子どもの重みの割当<code>b, w</code>をそれぞれまず計算する</li>
+<li><code>i</code>へ色と重みを割り当てると、<code>b_i = x_i</code>または<code>w_i = x_i</code>を満たすが、ここで<code>x_i</code>でない方はできるだけ小さい方がその後の重み割当がしやすくなる
+
+<ul>
+<li>頂点<code>i</code>の子どものリストを<code>c_1, c_2, ..., c_n</code>として、<code>dp[j][k] = c_1, ... c_iまでを使って、重みの和がjになるような色の割り当て方があるかどうか(true, false)</code>と定義してDP</li>
+<li><code>dp[n][k] = true</code>となる最大の<code>k</code>を用いて<code>i</code>への色の割当を考える</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>計算量の見積もり（怪しい）
+
+<ul>
+<li>DPについて: <code>k &lt;= X_i</code>として問題なく、さらに各辺について、1回しかこのDPで参照されないので、解法全体を通して<code>O(NX)</code>で収まるはず</li>
+<li><code>dp[n][k] = true</code>なる最大の<code>k</code>を求める：<code>O(X)</code>
+
+<ul>
+<li>これは各頂点について行われるので、解法全体で<code>O(NX)</code></li>
+</ul>
+</li>
+<li>解法全体では<code>O(NX)</code>のはず</li>
+</ul>
+</li>
+</ul>
+
+
+<p><iframe class="embed-card embed-webcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=https%3A%2F%2Fgithub.com%2FHiroakiMikami%2Fprocon-workspace%2Fblob%2Fmaster%2Fsrc%2Fatcoder%2Farc083%2Fe.cc" style="display: block; width: 100%; height: 155px; max-width: 500px; margin: 10px 0px;" title="HiroakiMikami/procon-workspace"></iframe><cite class="hatena-citation"><a href="https://github.com/HiroakiMikami/procon-workspace/blob/master/src/atcoder/arc083/e.cc">github.com</a></cite></p>
+
+</body>
