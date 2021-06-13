@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="EC2(スポット)インスタンス上でChainerMNのマルチノード分散学習">
+    
+    
+    <meta property="og:description" content="Qiitaからの移動">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2018/08/11/ec2.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">EC2(スポット)インスタンス上でChainerMNのマルチノード分散学習</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2018-08-11T00:00:00+09:00" itemprop="datePublished">
+                Aug 11, 2018
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <p>Qiitaからの移動</p>
+
+<hr />
+
+<h2 id="ec2スポットインスタンスでchainermnを使うマルチノード分散学習">EC2(スポット)インスタンスでChainerMNを使う（マルチノード分散学習）</h2>
+
+<h1 id="概要">概要</h1>
+<ul>
+  <li>EC2(スポット)インスタンスでChainerMNのマルチノード分散学習をする方法
+    <ul>
+      <li>環境変数の設定方法</li>
+      <li>sshに<code class="language-plaintext highlighter-rouge">StrictHostChecking no</code>を追加</li>
+      <li>セキュリティグループの設定（VPC内からの全アクセスを許可）</li>
+    </ul>
+  </li>
+  <li>EC2上でマルチノード分散学習する場合の注意点
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">p2.xlarge</code>を使ってマルチノード分散学習は性能がでない</li>
+      <li><code class="language-plaintext highlighter-rouge">g3.4xlarge</code>を利用すると良い</li>
+    </ul>
+  </li>
+  <li>マルチノード学習した際の性能の簡単な評価
+    <ul>
+      <li>ImageNetの学習では<code class="language-plaintext highlighter-rouge">p2.8xlarge</code>を使う時と同等かそれ以上のコストパフォーマンス</li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="やりたかったこと">やりたかったこと</h1>
+<p>スポットインスタンスの価格が比較的安いGPU1個のインスタンス（<code class="language-plaintext highlighter-rouge">p2.xlarge</code>や<code class="language-plaintext highlighter-rouge">g3.4xlarge</code>）を複数使って、ディープラーニングの学習を高速化させたかった。</p>
+
+<p>学習を高速にする手段としては、マルチノードで分散する以外に、そもそも1台あたりのGPU数を増やす、という選択肢もある。
+しかし、GPUを複数個積んでいるEC2のインスタンスはどれも高いし、スポットインスタンスで価格を抑えられないことがある。例えば、<code class="language-plaintext highlighter-rouge">p2.8xlarge</code>はオンデマンドインスタンスの場合、$7.2/hかかる。スポットインスタンスの価格は、ここ1週間くらいは<code class="language-plaintext highlighter-rouge">p2.8xlarge</code>が$2.5/h弱のようだが、ちょっと前は$72/hに張り付いていた。
+あるいは、自前で学習用計算機用意する手もあるが、GPU複数台積むマシンとなるとかなり高くつくことになる。個人の趣味の範囲内だと、電気代を抜いてもAWSを使うより高くなる可能性が高そう。</p>
+
+<p>なので、<code class="language-plaintext highlighter-rouge">p2.xlarge</code>などのスポットインスタンスでの値段が低め（〜$0.3/h）で抑えられているインスタンスを複数利用して、学習を高速化させるという方針に至った。オンデマンドの<code class="language-plaintext highlighter-rouge">p2.8xlarge</code>と比べて、スポットインスタンスの<code class="language-plaintext highlighter-rouge">p2.xlarge</code>や<code class="language-plaintext highlighter-rouge">g3.4xlarge</code>は1GPU当たりの値段で1/3ほどなので、マルチノードの分散学習の複雑さや効率の悪さはGPUの台数で補えるという目論見。</p>
+
+<h1 id="chainermnを使った分散学習-in-aws">ChainerMNを使った分散学習 in AWS</h1>
+<p>環境の準備
+—</p>
+<h3 id="chainermnのインストール">ChainerMNのインストール</h3>
+<p>ChainerMNをインストールする方法自体は、もう多数の記事・情報があるので、詳細は省く。自分は<a href="http://qiita.com/pst-ic/items/e01033dee4d389df3a5e">ここ</a>と<a href="http://chainermn.readthedocs.io/en/latest/installation/index.html">ChainerMNのチュートリアル</a>を参考にした。
+やったことを列挙すると、以下の通り。</p>
+
+<ul>
+  <li>CUDA 8.0のインストール</li>
+  <li>cuDNN 6.0のインストール</li>
+  <li>NCCL 1.xのインストール
+    <ul>
+      <li>GitHubのページにはno longer maintainedとあるが、まだNCCL2は使えかった</li>
+    </ul>
+  </li>
+  <li>OpenMPIのビルド・インストール</li>
+  <li>Chainer、ChainerMNのインストール</li>
+</ul>
+
+<p>この作業はGPUを積んでいる中で安いインスタンス（<code class="language-plaintext highlighter-rouge">p2.xlarge</code>）を利用すると良い。</p>
+
+<h3 id="環境変数の設定">環境変数の設定</h3>
+<p>sshに非対話モードで入った時に、<code class="language-plaintext highlighter-rouge">CPATH</code>や<code class="language-plaintext highlighter-rouge">LD_LIBRARY_PATH</code>が適切な値（具体的にはcudaのパスを含む）になっていないと学習スクリプトがうまく動かない。
+<code class="language-plaintext highlighter-rouge">/etc/bash.bashrc</code>を以下のようにした。</p>
+
+<pre><code class="language-bash:/etc/bash.bashrc">export PATH=/usr/local/cuda-8.0/bin:${PATH}
+export LD_LIBRARY_PATH=/usr/local/cuda-8.0/lib64:${LD_LIBRARY_PATH}
+export CPATH=/usr/local/cuda-8.0/targets/x86_64-linux/include:${CPATH}
+</code></pre>
+
+<p>以下のコマンドを叩いた時、<code class="language-plaintext highlighter-rouge">PATH</code>や<code class="language-plaintext highlighter-rouge">LD_LIBRARY_PATH</code>が適切に設定されていれば良い。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh localhost <span class="s1">'env'</span>
+</code></pre></div></div>
+
+<h3 id="sshの設定">sshの設定</h3>
+<p>マルチノード分散学習をする際、インタラクティブな操作なしに別ノードへsshで接続できる必要がある。したがって、鍵認証の設定をする。また、デフォルトでは最初に接続しようとすると、<code class="language-plaintext highlighter-rouge">Are you sure you want to continue connecting (yes/no)? </code>のメッセージが出て、yes/noの入力を求められるので、手間を考えるとこれも対処する必要がある。</p>
+
+<p>まず、鍵認証の設定をする。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh-keygen <span class="c">#パスフレーズなし、~/.ssh/id_rsaに置く</span>
+<span class="nv">$ </span><span class="nb">cat</span> ~/.ssh/id_rsa.pub <span class="o">&gt;&gt;</span> ~/.ssh/authorized_keys
+</code></pre></div></div>
+
+<p>次に、<code class="language-plaintext highlighter-rouge">.ssh/config</code>を以下のとおりにして、yes/no入力をなくす</p>
+
+<pre><code class="language-~/ssh/.config">Host *
+    StrictHostKeyChecking no
+</code></pre>
+
+<p>どちらもセキュリティ上良いとは言えないが、最終的にはAWSのセキュリティグループで外部ネットワークからのインバウンドを遮断して運用すれば許容範囲と思っている。</p>
+
+<h3 id="enaの有効化">ENAの有効化</h3>
+<p>必要なのかはわからないが、UbuntuはデフォルトではENAが有効になっていないようだったので、有効にする。最新の手順は<a href="http://docs.aws.amazon.com/ja_jp/AWSEC2/latest/UserGuide/enhanced-networking-ena.html#enhanced-networking-ena-ubuntu">ここ</a>にあるので、これの通りに行う。
+やるべきことは以下の3つ</p>
+
+<ol>
+  <li>インスタンス上で、ENAのモジュールを追加</li>
+  <li>インスタンスを停止</li>
+  <li>ローカルからaws CLIでENAを有効化</li>
+</ol>
+
+<h3 id="aws上のリソースの準備">AWS上のリソースの準備</h3>
+<h4 id="1-vpcサブネットプレイスメントグループの準備">1. VPC、サブネット、プレイスメントグループの準備</h4>
+<p>それぞれ適当な名前で準備する。VPCとサブネットは一度EC2インスタンスを起動すればついでにできるし、プレイスメントグループは、EC2のコンソールから、ネットワーク&amp;セキュリティ → プレイスメントグループのページに行って作成すれば良い。
+なお、プレイスメントグループはいるのかどうか分からないが、ネットワークの帯域幅をフルに出すには必要らしいので自分は作成した。</p>
+
+<h4 id="2-学習ノード用のセキュリティグループの準備">2. 学習ノード用のセキュリティグループの準備</h4>
+<p>セキュリティグループの準備も必要。インバウンドルールでは、「すべてのトラフィック・すべてのポート範囲へのVPCからのアクセス」を許可する。本来はもっと絞りこめると思うが、調べるのが面倒だったのでVPC内に全部公開した。
+EC2コンソール上では、<code class="language-plaintext highlighter-rouge">すべてのトラフィック すべて 0-65535 カスタム &lt;VPCのCIDR&gt;</code>となっていれば良い。</p>
+
+<h4 id="3-optional-amiの作成">3. (Optional) AMIの作成</h4>
+<p>必要はないが、ここまで終えた時点でAMIを作っておくと別のことをしたい時に無駄な出費を防げる。
+AMIの作成方法は省略。</p>
+
+<h3 id="学習スクリプトなどの準備">学習スクリプトなどの準備</h3>
+<p>最後に、学習用のスクリプト、データセットなどを準備する。</p>
+
+<p>今回、自分はchainermnについているImageNetのサンプルを使った。
+<code class="language-plaintext highlighter-rouge">git clone --depth 1 https://github.com/chainer/chainermn.git</code>として、chainermnのソースを落とすと<code class="language-plaintext highlighter-rouge">chainermn/examples/imagenet</code>の下にImageNetのサンプルがあるのでこれを用いる。また、自分の場合、<code class="language-plaintext highlighter-rouge">models_v2/nin.py</code>をchainerの<code class="language-plaintext highlighter-rouge">examples/imagenet/nin.py</code>に置き換えないと動かなかったので、chainerのソースも落としてきて<code class="language-plaintext highlighter-rouge">cp</code>した。</p>
+
+<p>次に、データセットを準備する。データセットの準備方法は、<a href="http://d.hatena.ne.jp/shi3z/20150709/1436397615">ここ</a>や<a href="http://pongsuke.hatenadiary.jp/entry/2017/03/15/101127">ここ</a>などが参考になる。</p>
+
+<p>ここまで終えたら、インスタンスを止めてAMIを作成する。</p>
+
+<h2 id="実行方法1ノード">実行方法（1ノード）</h2>
+<p>テストも兼ねて1ノードで学習を走らせる場合は、インスタンスを起動した後、sshでログインして、</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpiexec <span class="nt">-n</span> 1 python3 ~/chainermn/examples/imagenet/train_imagenet.py train.txt test.txt
+</code></pre></div></div>
+
+<p>などとすれば良い。ここで、train.txt、test.txtはそれぞれ準備したデータセットのパス</p>
+
+<p><strong>参考</strong>: <a href="http://chainermn.readthedocs.io/en/latest/tutorial/step1_communicators_optimizers.html#run">ChainerMN チュートリアル</a></p>
+
+<h2 id="実行方法マルチノード">実行方法（マルチノード）</h2>
+
+<p>上で作成した学習スクリプトの入ったAMIを利用し、スポットインスタンスを適当に何個か立ち上げる。この時、VPC、プレイスメントグループ、セキュリティグループは上で準備したものを忘れず利用する。
+なお、別にスポットインスタンスでなくてもいいが、費用を抑えて実験してみたいだけならスポットインスタンスの方が適していると思う。ただし、スポットインスタンスが突然中断するリスクを減らすため、高めに価格を設定しておくと安心。</p>
+
+<p>また、多少値段は上がるが、<code class="language-plaintext highlighter-rouge">p2.xlarge</code>でなく、<strong><code class="language-plaintext highlighter-rouge">g3.4xlarge</code>を使うと良い</strong> (理由は”注意点”で後述)。</p>
+
+<p>以下では、2台の<code class="language-plaintext highlighter-rouge">g3.4xlarge</code>インスタンスを立ち上げ、それぞれのプライベートIPが<code class="language-plaintext highlighter-rouge">172.31.41.13</code>、<code class="language-plaintext highlighter-rouge">172.31.41.14</code>となったとする。
+まず、どちらか1台（以下では<code class="language-plaintext highlighter-rouge">172.31.41.13</code>の方とする）にsshでログインする。ログインしたら、以下の内容のホストファイルを<code class="language-plaintext highlighter-rouge">~/hostfile</code>に作成する（パスはどこでも良い）。</p>
+
+<pre><code class="language-:~/hostfile">172.31.41.13 cpu=1
+172.31.41.14 cpu=1
+</code></pre>
+<p>（プライベートIPは、その時立ち上げたスポットインスタンスを見て適宜修正する必要あり。）</p>
+
+<p>次に、以下のコマンドを叩くと、2台のマシンで分散学習される。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpiexec <span class="nt">-n</span> 2 <span class="nt">--hostfile</span> ~/hostfile python3 ~/chainermn/examples/imagenet/train_imagenet.py train.txt test.txt
+</code></pre></div></div>
+
+<p><strong>参考</strong>: <a href="http://chainermn.readthedocs.io/en/latest/tutorial/step1_communicators_optimizers.html#multi-node-execution">ChainerMN チュートリアル</a></p>
+
+<h3 id="注意点ネットワークの帯域幅を考慮する必要あり">注意点（ネットワークの帯域幅を考慮する必要あり）</h3>
+<p>GPU付きインスタンスの中では<strong><code class="language-plaintext highlighter-rouge">p2.xlarge</code>が値段は安いのだが、ネットワークの帯域幅が小さく、性能が出なかった</strong>。iperfを使ってはかった結果では、<code class="language-plaintext highlighter-rouge">1.44Gbps</code>。一方、<code class="language-plaintext highlighter-rouge">g3.4xlarge</code>は<code class="language-plaintext highlighter-rouge">10Gbps</code>でるというスペックだし、実際iperfではかると10Gbpsでた（情報提供：https://twitter.com/grafi_tt/status/895274632177000449 ）。</p>
+
+<p>いくら安く分散学習させたいと言っても、<code class="language-plaintext highlighter-rouge">p2.xlarge</code>だと性能向上が見られなかったので、<code class="language-plaintext highlighter-rouge">g3.4xlarge</code>を使う方が良いと思う。</p>
+
+<h1 id="性能確認">性能確認</h1>
+<p>学習が高速化できるのか確認するため簡単な性能測定をした。なお、どれも1回しか計測してないし、真面目に条件を揃えたわけではないので、数字は参考程度に。</p>
+
+<p>以下のパターンで、ImageNetの学習にかかる時間を測定した。</p>
+
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">g3.4xlarge</code>1台で、ChainerMNを利用</li>
+  <li><code class="language-plaintext highlighter-rouge">g3.4xlarge</code>複数台（2, 4, 6, 8, 10, 12)で、ChainerMNを利用</li>
+  <li><code class="language-plaintext highlighter-rouge">p2.8xlarge</code>(8GPU)で、ChainerMNを利用</li>
+</ol>
+
+<h2 id="結果">結果</h2>
+
+<p>以下の通り。
+分散すればちゃんと高速化されるし、<code class="language-plaintext highlighter-rouge">p2.8xlarge</code>と比べても安いまたは同等程度の値段でほぼ同じ性能を出せている。ただ、この辺は学習させるネットワークやデータセ��トによって色々異なるんだろうな。</p>
+
+<p><strong>表1: 1エポック当たりの時間</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">条件</th>
+      <th style="text-align: left">1エポックあたりの平均時間 (sec)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">g3.4xlarge*1</code></td>
+      <td style="text-align: left">34.4</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">g3.4xlarge*2</code></td>
+      <td style="text-align: left">21.8</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">g3.4xlarge*4</code></td>
+      <td style="text-align: left">12.5</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">g3.4xlarge*6</code></td>
+      <td style="text-align: left">9.2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">g3.4xlarge*8</code></td>
+      <td style="text-align: left">7.9</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">g3.4xlarge*10</code></td>
+      <td style="text-align: left">6.3</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">g3.4xlarge*12</code></td>
+      <td style="text-align: left">5.2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">p2.8xlarge</code></td>
+      <td style="text-align: left">7.9</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>ちゃんと分散するにつれて短い時間で学習できている。</p>
+
+<hr />
+
+<p><strong>表2: 値段 - 総実行時間</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">条件</th>
+      <th style="text-align: left">値段 ($/h)</th>
+      <th style="text-align: left">総実行時間 (sec)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">g3.4xlarge*1</code></td>
+      <td style="text-align: left">0.3</td>
+      <td style="text-align: left">344.3</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">g3.4xlarge*2</code></td>
+      <td style="text-align: left">0.6</td>
+      <td style="text-align: left">217.8</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">g3.4xlarge*4</code></td>
+      <td style="text-align: left">1.2</td>
+      <td style="text-align: left">125.2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">g3.4xlarge*6</code></td>
+      <td style="text-align: left">1.8</td>
+      <td style="text-align: left">92.4</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">g3.4xlarge*8</code></td>
+      <td style="text-align: left">2.4</td>
+      <td style="text-align: left">79.2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">g3.4xlarge*10</code></td>
+      <td style="text-align: left">3.0</td>
+      <td style="text-align: left">63.0</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">g3.4xlarge*12</code></td>
+      <td style="text-align: left">3.6</td>
+      <td style="text-align: left">51.7</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">p2.8xlarge</code></td>
+      <td style="text-align: left">7.2(オンデマンド) / 2.5(スポットインスタンス利用時)</td>
+      <td style="text-align: left">79.1</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>備考：<code class="language-plaintext highlighter-rouge">g3.4xlarge</code>のスポットインスタンスの値段は$0.3/hとして計算</p>
+
+<p><code class="language-plaintext highlighter-rouge">p2.8xlarge</code>をオンデマンドで利用する場合に比べると、より安く高速な学習ができる。<code class="language-plaintext highlighter-rouge">p2.8xlarge</code>がスポットインスタンスの場合と比べても、ほぼ同等の性能が今回の例では出た。</p>
+
+<hr />
+
+<p><strong>グラフ1: epoch - elapsed_time</strong>
+<img src="https://qiita-image-store.s3.amazonaws.com/0/111070/e3662fc5-bd4c-b7c2-e6d9-31f0ec56e3f7.png" alt="graph1.png" width="1000px" /></p>
+
+<hr />
+
+<p><strong>グラフ2: epoch-validation/main/accuracy</strong>
+<img src="https://qiita-image-store.s3.amazonaws.com/0/111070/753d6611-72bb-a402-cda2-80986f32346a.png" alt="graph2.png" width="1000px" /></p>
+
+<p>epochが少なすぎてわかりやすいデータにならなかったが、分散させるほど同エポックでの精度は悪化する傾向にあるらしい。直感的にもそんな気はする。とはいえ、マルチノードの場合と<code class="language-plaintext highlighter-rouge">p2.8xlarge</code>でノード内で分散した場合では大きな精度の差は見つけられない。分散学習するなら、エポックを大きめに設定する必要があるようだが、それはマルチノード分散学習の問題というより、現在のChainerMN全体の問題の可能性が高い。</p>
+
+<hr />
+
+<p><strong>その他備考</strong>：
+分散学習では、最初の1回の<code class="language-plaintext highlighter-rouge">mpiexec</code>は時間がかかるらしい。上記計測は、2回目の<code class="language-plaintext highlighter-rouge">mpiexec</code>で行っている。原因は、ノード間の接続を確立する時間が追加されているからではないかと思うが、詳細は不明。ただし、学習時間が長くなるにつれて、その時間は無視できるものになると思��れる。</p>
+
+<h1 id="まとめとか">まとめとか</h1>
+<p>少なくともImageNetでは、マルチノードの分散学習でも相当の学習時間の短縮が見込める。また、8/7からChainerMNを初めて5日でここまでできたので、非常に難しい作業が必要というわけでもない。
+そのため、AWS上でのディープラーニング学習を高速化させたい時、選択肢に入れる価値はあると思う。最初に書いたような、複数GPUを積んだスポットインスタンスが高い時にも使えるし、あるいは<code class="language-plaintext highlighter-rouge">p2.8xlarge</code>を複数使ってさらに高速化する、という使い方もマルチノードの分散学習はできるはず。</p>
+
+<p>一方で、データセットが増えた時どうなるのか、モデルが複雑になった時どうなるのか、などは調べてない。実際に使ってみるとたいして高速化されなかった、みたいなケースはありそう。</p>
+
+<h2 id="要改善点">要改善点</h2>
+<p>とりあえずテストするだけなら上記手順でもできたが、実際にディープラーニングを利用するプロジェクトに組み込むとなると以下の点を改善しないといけない。</p>
+
+<h4 id="学習スクリプトの実行方法">学習スクリプトの実行方法</h4>
+<p>本来は、aws CLIとかSDKからスポットインスタンスを立ち上げて、自動で学習を回したい（<a href="http://qiita.com/halhorn/items/ae402e8c22bc1083ff23">ここ</a>みたいに）。
+そのためには、<code class="language-plaintext highlighter-rouge">UserData</code>のスクリプトで学習スクリプトを実行する必要があるが、以下の点に注意が必要。</p>
+
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">mpiexec</code>をするインスタンスの決定方法</li>
+  <li>ホストファイルの作成方法</li>
+  <li>すべてのインスタンスが立ち上がるまでの待ち合わせ処理</li>
+</ol>
+
+<p>1については、特定のタグを全インスタンスに付けておき、<code class="language-plaintext highlighter-rouge">aws ec2 describe-instances</code>で全インスタンスのプライベートIPを取得、辞書順最小のインスタンスで<code class="language-plaintext highlighter-rouge">mpiexec</code>すれば解決しそう。
+2は、<code class="language-plaintext highlighter-rouge">describe-instances</code>した時に全部のプライベートIPがわかるんだからホストファイルもついでに生成できる。
+3は、ポーリングなりなんなりでやればできるはず。この時、ついでに学習パラメータの環境変数への展開やS3からデータセットのダウンロードも待ち合わせ処理すると色々便利そう。</p>
+
+<h4 id="中断時の対処">中断時の対処</h4>
+<p>スポットインスタンスなので、たまに強制終了させられることがある。</p>
+
+<ol>
+  <li>定期的なS3へのスナップショットアップロード（systemd-timer）</li>
+  <li>1台でも終了したら全台終了して無駄な出費の削減</li>
+  <li>学習開始時にスナップショットがあればそれを読み込み</li>
+</ol>
+
+<p>の3つの対処が必要。</p>
+
+          </div><a class="u-url" href="/ja/2018/08/11/ec2.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="Node.jsで，標準入力のecho backを止める">
+    
+    
+    <meta property="og:description" content="Qiitaからの移動">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2016/03/26/node.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">Node.jsで，標準入力のecho backを止める</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2016-03-26T00:00:00+09:00" itemprop="datePublished">
+                Mar 26, 2016
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <p>Qiitaからの移動</p>
+
+<hr />
+
+<p>何かしらシェルコマンドを作ろうとすると，パイプから入力を読まなければならない事がある．必要は無くとも，ファイルを受け取る所は標準入力からも受け取れるようにしておくと後々便利なことは多いと思う(<code class="language-plaintext highlighter-rouge">diff</code>，<code class="language-plaintext highlighter-rouge">grep</code>とかみたいに)．</p>
+
+<p>シェルコマンドでは大抵の場合，echo backを止める必要があるが，ググってもQiitaでも方法が見つからなかったのでメモがてら投稿．
+(Node.jsでecho backとするとecho serverが出てきてしまい標準入力の話に中々行き着かなかった．)</p>
+
+<h1 id="まとめ">まとめ</h1>
+<ul>
+  <li>Node.jsでパイプを扱う際には<code class="language-plaintext highlighter-rouge">readline</code>モジュールを使用．</li>
+  <li>echo backをなくすには<code class="language-plaintext highlighter-rouge">terminal: false</code>を追加．</li>
+</ul>
+
+<h1 id="基本的なstdinの扱い方">基本的な<code class="language-plaintext highlighter-rouge">stdin</code>の扱い方</h1>
+<p>Node.jsでstdinを読む方法を調べると，いくつかのWebページ(<a href="http://qiita.com/hiroqn@github/items/c927bc97780c34eda562">これ</a>など)が見つかる．
+これらを参考にすると，<code class="language-plaintext highlighter-rouge">readline</code>モジュールを使って，</p>
+
+<pre><code class="language-javascript:test1.js">var readline = require('readline');
+var reader = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+reader.on('line', function (line) {
+  console.log(line);
+});
+reader.on('close', function () {
+  console.log("---close---");
+});
+</code></pre>
+
+<p>のように書けばプラットフォーム間の動作の差異もなく，望ましいということがわかる．</p>
+
+<p>しかし，自分の環境(Arch Linux，Node.js 5.7.1)では，次のように表示されてしまった．</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">echo </span>a | node test1.js
+a
+a
+<span class="nt">---close---</span>
+</code></pre></div></div>
+
+<p>標準入力のecho backがなくなっていないため，<code class="language-plaintext highlighter-rouge">a</code>が2つ表示されてしまっている．</p>
+
+<h1 id="echo-backをさせない読み方">echo backをさせない読み方</h1>
+<p>これを修正するためには，</p>
+
+<pre><code class="language-javascript:test2.js">var readline = require('readline');
+var reader = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+    terminal: false
+});
+reader.on('line', function (line) {
+  console.log(line);
+});
+reader.on('close', function () {
+  console.log("---close---");
+});
+</code></pre>
+
+<p>というように，<code class="language-plaintext highlighter-rouge">createInterface</code>で<code class="language-plaintext highlighter-rouge">terminal: false</code>を追加する．
+こうすると，</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">echo </span>a | node test2.js
+a
+<span class="nt">---close---</span>
+</code></pre></div></div>
+
+<p>となり，echo backが消える．</p>
+
+          </div><a class="u-url" href="/ja/2016/03/26/node.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="Scala.jsでのremoveEventListener等使用の注意点">
+    
+    
+    <meta property="og:description" content="Qiitaからの移植">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/scala,%20scala.js/2016/02/02/scalajs.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">Scala.jsでのremoveEventListener等使用の注意点</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2016-02-02T00:00:00+09:00" itemprop="datePublished">
+                Feb 2, 2016
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <p>Qiitaからの移植</p>
+
+<hr />
+
+<p><a href="http://www.scala-js.org/">Scala.js</a>メモ3つ目</p>
+
+<p>暗黙の型変換周りで躓いたのでメモ</p>
+
+<h1 id="環境">環境</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">ソフトウェア</th>
+      <th style="text-align: left">バージョン</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Scala</td>
+      <td style="text-align: left">2.11.7</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Scala.js</td>
+      <td style="text-align: left">0.6.6</td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="まとめ">まとめ</h1>
+<ul>
+  <li>JSに登録するイベントハンドラの型は<code class="language-plaintext highlighter-rouge">js.Function1[dom.Event, Any]</code>にするべき</li>
+</ul>
+
+<h1 id="問題-removeeventlistenerが上手く動かない">問題: <code class="language-plaintext highlighter-rouge">removeEventListener</code>が上手く動かない</h1>
+<p>Scala.jsで，<code class="language-plaintext highlighter-rouge">addEventListener</code>，<code class="language-plaintext highlighter-rouge">removeEventListener</code>を使ったソースコードを書いていた．
+元のJavaScriptの仕様通り，Scala.jsでも無名関数だと<code class="language-plaintext highlighter-rouge">removeEventListener</code>は使えないので，削除するためには，変数にキャプチャする必要がある．というわけで，</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">org.scalajs.dom</span>
+
+<span class="k">val</span> <span class="nv">callback</span> <span class="k">=</span> <span class="o">(</span><span class="n">e</span><span class="k">:</span> <span class="kt">dom.Event</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="o">{</span>
+  <span class="nf">println</span><span class="o">(</span><span class="s">"called"</span><span class="o">)</span>
+<span class="o">}</span>
+<span class="nv">button</span><span class="o">.</span><span class="py">addEventListener</span><span class="o">(</span><span class="s">"click"</span><span class="o">,</span> <span class="n">callback</span><span class="o">)</span>
+<span class="nv">button</span><span class="o">.</span><span class="py">removeEventListener</span><span class="o">(</span><span class="s">"click"</span><span class="o">,</span> <span class="n">callback</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p>というコードを書いてみたが，<code class="language-plaintext highlighter-rouge">removeEventListener</code>が働いてくれない．<code class="language-plaintext highlighter-rouge">button.click()</code>を呼び出すと，上のコードは，<code class="language-plaintext highlighter-rouge">called</code>とコンソールに出力してしまう．</p>
+
+<p>これは，<code class="language-plaintext highlighter-rouge">addEventListener</code>，<code class="language-plaintext highlighter-rouge">removeEventListener</code>の呼び出しの際，第二引数が，<code class="language-plaintext highlighter-rouge">js.Function1[dom.Event, Any]</code>にキャストされていて，それぞれの呼び出しで<code class="language-plaintext highlighter-rouge">callback</code>が指すオブジェクトが異なっていたからのようだ．</p>
+
+<h1 id="解決方法">解決方法</h1>
+<p>変数にキャプチャする時点でキャストすれば良いので，</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">org.scalajs.dom</span>
+<span class="k">import</span> <span class="nn">scala.scalajs.js</span>
+
+<span class="k">val</span> <span class="nv">callback</span><span class="k">:</span> <span class="kt">js.Function1</span><span class="o">[</span><span class="kt">dom.Event</span>, <span class="kt">Any</span><span class="o">]</span> <span class="k">=</span> <span class="o">(</span><span class="n">e</span><span class="k">:</span> <span class="kt">dom.Event</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="o">{</span>
+  <span class="nf">println</span><span class="o">(</span><span class="s">"called"</span><span class="o">)</span>
+<span class="o">}</span>
+<span class="nv">button</span><span class="o">.</span><span class="py">addEventListener</span><span class="o">(</span><span class="s">"click"</span><span class="o">,</span> <span class="n">callback</span><span class="o">)</span>
+<span class="nv">button</span><span class="o">.</span><span class="py">removeEventListener</span><span class="o">(</span><span class="s">"click"</span><span class="o">,</span> <span class="n">callback</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p>とすれば想定通りcallbackを削除してくれる．試してはいないが(動いて満足したので)，動作原理からいってjQueryの方も同様の問題(ないし仕様)が発生するのではないかと思う．</p>
+
+          </div><a class="u-url" href="/ja/scala,%20scala.js/2016/02/02/scalajs.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

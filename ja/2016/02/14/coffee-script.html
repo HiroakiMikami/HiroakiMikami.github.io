@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="CoffeeScriptでPromiseを使ったときにハマった">
+    
+    
+    <meta property="og:description" content="Qiitaからの移動">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2016/02/14/coffee-script.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">CoffeeScriptでPromiseを使ったときにハマった</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2016-02-14T00:00:00+09:00" itemprop="datePublished">
+                Feb 14, 2016
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <p>Qiitaからの移動</p>
+
+<hr />
+
+<p>Atomのプラグインを書こうとして，CoffeeScriptを書いていたら<code class="language-plaintext highlighter-rouge">Promise</code>の使用中にハマった．
+もう既に誰かが踏んだ地雷な気がするし，Qiitaに記事があると思ったが，見つからなかったのでメモがてら残しておく．</p>
+
+<h1 id="やりたい事とコード">やりたい事とコード</h1>
+<p>CoffeeScriptを使って，次のような<code class="language-plaintext highlighter-rouge">Promise</code>の使用をしたかった．</p>
+
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">then</code>の引数関数内で，メンバへのアクセスをする</li>
+  <li><code class="language-plaintext highlighter-rouge">then</code>の引数関数内で，<code class="language-plaintext highlighter-rouge">resolve</code>，<code class="language-plaintext highlighter-rouge">reject</code>を使う</li>
+</ol>
+
+<p><code class="language-plaintext highlighter-rouge">then</code>内で，非同期APIの結果の例外処理(JSON，DOMのパースなど)をして，さらに，成功時はメンバへアクセスして処理をするような感じで，例えば，次のようなコード（<code class="language-plaintext highlighter-rouge">Promise</code>の必要がないコードだが，例という事で）</p>
+
+<pre><code class="language-CoffeeScript">class Class
+  n: 2
+
+  func: -&gt;
+    new Promise(
+      (resolve) -&gt; resolve(10)
+    ).then(
+      (value) -&gt;
+        if value is 0
+          reject("value is 0")
+        else
+          resolve(value * @n)
+    ).then((value) -&gt; console.log(value + " #result"))
+</code></pre>
+
+<p>が，これを動かすと，<code class="language-plaintext highlighter-rouge">@n</code>が<code class="language-plaintext highlighter-rouge">undefined</code>となり（CoffeeScriptの仕様への自分の理解が正しければ当然），<strong>コンソールには<code class="language-plaintext highlighter-rouge">NaN #result</code>が表示</strong>されてしまう．</p>
+
+<p>こういうcallbackを簡単にかくために，CoffeeScriptには<code class="language-plaintext highlighter-rouge">=&gt;</code>という記法があるので，これを使うと次のように書ける．</p>
+
+<pre><code class="language-CoffeeScript">class Class
+  n: 2
+
+  func: -&gt;
+    new Promise(
+      (resolve) -&gt; resolve(10)
+    ).then(
+      (value) =&gt;
+        if value is 0
+          reject("value is 0")
+        else
+          resolve(value * @n)
+    ).then((value) -&gt; console.log(value + " #result"))
+</code></pre>
+
+<p>しかし，今度は<code class="language-plaintext highlighter-rouge">Uncaught (in promise) ReferenceError: resolve is not defined</code>というエラーメッセージが表示される．
+あまりちゃんと調べていないが，<code class="language-plaintext highlighter-rouge">resolve</code>は，<code class="language-plaintext highlighter-rouge">this.resolve</code>の意味であり，<code class="language-plaintext highlighter-rouge">=&gt;</code>によって<code class="language-plaintext highlighter-rouge">this</code>の動きが変わっているのだろう．</p>
+
+<h1 id="実験">実験</h1>
+<p>どういうふうに書けば適切な動作をするのかを調べるべく，書き方を思いつく限り試して見た所，次のような結果になった．結局，<code class="language-plaintext highlighter-rouge">new Promise</code>を使って記述するのが今回の場合は最善なのかな．</p>
+
+<h2 id="上手く動くコード">上手く動くコード</h2>
+<div class="language-coffeescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">then</span><span class="p">((</span><span class="nx">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">value</span><span class="p">)</span>
+<span class="k">then</span><span class="p">((</span><span class="nx">value</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">value</span> <span class="o">*</span> <span class="vi">@</span><span class="na">n</span><span class="p">)</span>
+<span class="k">then</span><span class="p">((</span><span class="nx">value</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="k">new</span> <span class="nx">Promise</span><span class="p">((</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">reject</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">resolve</span><span class="p">(</span><span class="nx">value</span> <span class="o">*</span> <span class="vi">@</span><span class="na">n</span><span class="p">))</span>
+</code></pre></div></div>
+
+<h2 id="メンバにアクセス出来ずに変な動作をするコード">メンバにアクセス出来ずに変な動作をするコード</h2>
+<div class="language-coffeescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">then</span><span class="p">((</span><span class="nx">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">value</span> <span class="o">*</span> <span class="vi">@</span><span class="na">n</span><span class="p">)</span>
+</code></pre></div></div>
+<h2 id="referenceerrorが起こるコード">ReferenceErrorが起こるコード</h2>
+<div class="language-coffeescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">resolve</span><span class="p">(</span><span class="nx">value</span> <span class="o">*</span> <span class="vi">@</span><span class="na">n</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h1 id="最後に">最後に</h1>
+<p>他にもっと簡単な解決策があれば教えて頂けると嬉しいです．CoffeeScriptは触り始めたばっかりなので．</p>
+
+          </div><a class="u-url" href="/ja/2016/02/14/coffee-script.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

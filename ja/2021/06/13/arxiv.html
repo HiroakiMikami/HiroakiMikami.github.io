@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="Neural Program Synthesis with Priority Queue Training メモ">
+    
+    
+    <meta property="og:description" content="Neural Program Synthesis with Priority Queue Trainingを読んだ時の記録">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2021/06/13/arxiv.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">Neural Program Synthesis with Priority Queue Training メモ</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2021-06-13T00:00:00+09:00" itemprop="datePublished">
+                Jun 13, 2021
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <p><a href="https://arxiv.org/abs/1801.03526">論文</a></p>
+
+<hr />
+
+<h1 id="論文内容">論文内容</h1>
+
+<p>Program Synthesisに機械学習を適用する際、specificationとground truthプログラムが揃ったデータセットの用意が課題となる。強化学習を用いることでそれ以外のデータセットに対してもProgram Synthesisの学習を可能とした。RLの性能をあげるための学習アルゴリズムを提案した。</p>
+
+<h2 id="背景">背景</h2>
+
+<p>Program Synthesisに機械学習/DNNを適用する際、入力となるspecificationと出力となるground truthプログラムが揃ったデータセットが必要となる。また、既存研究ではsynthesize対象の言語を制約の強いDSLに絞っている。</p>
+
+<p>強化学習を用いてProgram Synthesisをすることを考えると、必要なのはreward functionだけとなる。reward functionを計算するためにはground truthプログラムは必須ではない。</p>
+
+<p>このため、RLの活用によってより広い範囲のProgram Synthesisに機械学習/DNNを適用することが可能となると考えられる。この論文では、RLを利用したProgram Synthesisの方法を提案した。</p>
+
+<h2 id="提案手法">提案手法</h2>
+
+<p>基礎となるのは通常のpolicy gradientなRL (REINFORCE) である。</p>
+
+<p>提案手法 (Priority Queue Training) では、REINFORCEのlossに加えtopk lossを最適化の目的関数に追加 (加算) している。topk lossは今までの学習中でrewardが高かったtop k個のプログラムに対するlog liklihoodである。</p>
+
+<h2 id="評価">評価</h2>
+
+<p>BFに対するProgram Synthesisで提案手法を評価した。遺伝的アルゴリズムやPriority Queue Traininigを用いないRLに比べ、提案手法はより多くのケースでtest caseをpassするプログラムを生成できた。また、topk lossだけで学習しREINFORCEのlossをなくしても性能が劣化しないことを明らかにした。</p>
+
+<h1 id="メモコメント">メモ・コメント</h1>
+
+<p>“3. Approach”にあるDNNモデルの図を見ると、encoderはなくdecoderだけからなるDNNを用いているらしい。したがって、test caseの入出力は本当に一切見ずにrewardだけから正しいプログラムを探す、という問題設定で手法の設計・評価をしている。</p>
+
+<p>合成ごとに学習を回すというのはかなり時間がかかるはず。また、人間の行うプログラミングを考えても仕様の情報を陽に使わないというのは無理があるように思う。</p>
+
+<p>一方で、「推論時に強化学習のような枠組みで正しいプログラムを探索する」というのはProgram Synthesisの性能を上げる上で効果的かもしれないと思う。むやみにbeam searchのbeam sizeを上げるよりは効率よく探索できる可能性がありそう。</p>
+
+          </div><a class="u-url" href="/ja/2021/06/13/arxiv.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>
