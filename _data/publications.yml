@@ -1,4 +1,13 @@
 publications:
+  - title: "A Scaling Law for Synthetic-to-Real Transfer: A Measure of Pre-Training"
+    location: "arXiv"
+    resources:
+      - text: "PDF"
+        url: "https://arxiv.org/pdf/2108.11018v1"
+  - title: "プレイグラムでのプログラミング学習を支える技術"
+    resources:
+      - text: "page"
+        url: "https://playgram.jp/blog/developer/playgram-lang-impl/"
   - title: "Online-Codistillation Meets LARS, Going beyond the Limit of Data Parallelism in Deep Learning"
     location: "2020 IEEE/ACM Fourth Workshop on Deep Learning on Supercomputers (DLS)"
     resources:
