@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="Sublime Text 3の導入 (2)">
+    
+    
+    <meta property="og:description" content="Livedoorブログからの移動">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2015/02/14/from-livedoor-22681630.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">Sublime Text 3の導入 (2)</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2015-02-14T00:00:00+09:00" itemprop="datePublished">
+                Feb 14, 2015
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <div>Livedoorブログからの移動</div><hr />
+<body><p><a href="http://blog.livedoor.jp/hiroaki8270/archives/22480584.html">前記事</a>の続き. 今回は, scalaの設定等を行う. 今回からは, 情報を短くまとめるために, 各パッケージについて(コマンド名, やれること)の2つを羅列していく. 最終的にはGithubかなんかに全部まとめていきたい. <br/></p><p>コマンド名は, キーバインドに書く類のものと, Command Paletteにある類のものも混在しているので注意. そのへんは命名規則で察することを期待しています.</p>
+<h2 id="デフォルトコマンド">デフォルトコマンド</h2>
+<table border="1">
+<thead>
+<tr class="header">
+<th align="left">機能</th>
+<th align="left">コマンド</th>
+</tr>
+</thead>
+
+<tbody><tr class="odd">
+<td align="left">やり直し</td>
+<td align="left"><code>undo</code></td>
+</tr>
+<tr class="even">
+<td align="left">タブの切り替え/移動</td>
+<td align="left"><code>next_view_in_stack</code></td>
+</tr>
+<tr class="odd">
+<td align="left">ファイルを閉じる</td>
+<td align="left"><code>close_file</code></td>
+</tr>
+<tr class="even">
+<td align="left">コマンドパレット</td>
+<td align="left"><code>show_overlay(overlay="command_palette")</code></td>
+</tr>
+
+</tbody></table>
+<p>コマンドパレットは, (ちょっと違うけど)使い道としてはemacsの<code>M-x</code>に近いと感じたので, また, デフォルトバインドの<code>Ctrl-Shift-P</code>は押しづらいので, <code>Alt-x</code>に変えるのがおすすめ.</p>
+<h2 id="scala">scala</h2>
+<h3 id="sublimesbt">SublimeSBT</h3>
+<table border="1">
+<thead>
+<tr class="header">
+<th align="left">コマンド名</th>
+<th align="left">やれること</th>
+</tr>
+</thead>
+
+<tbody><tr class="odd">
+<td align="left">show_sbt</td>
+<td align="left">sbt画面を開く/sbt画面にフォーカスを移す</td>
+</tr>
+<tr class="even">
+<td align="left">SBT: Start SBT</td>
+<td align="left">sbtを開始</td>
+</tr>
+<tr class="odd">
+<td align="left">SBT: Start Continuous Compiling</td>
+<td align="left"><code>sbt ~compile</code></td>
+</tr>
+
+</tbody></table>
+<p>他にも色々あるけど, Command Paletteを開いて<code>sbt</code>と打てばあとはわかると思う.</p>
+<p>これを使って関心したのは, Command Paletteには現在実行できるものしか表示されないこと. 例えば, SBT: Stop SBTは, sbtが立ち上がっている状態じゃないと候補に表示されない. また, sbtプロジェクトじゃなければこれらsbtのコマンドは表示されない. emacsの<code>M-x</code>と比べても候補が少なくなり見やすいし, 他のIDEみたいに全部メニューなのと比べたら段違いに作業が早い.</p>
+<p>でも, zshの補間みたいに, 開発する段になったら逆に面倒くさくなりそうな予感もする. どうなんだろう.</p>
+<h3 id="ensime">Ensime</h3>
+<table border="1">
+<thead>
+<tr class="header">
+<th align="left">コマンド名</th>
+<th align="left">やれること</th>
+</tr>
+</thead>
+
+<tbody><tr class="odd">
+<td align="left">Ensime: Startup</td>
+<td align="left">ensimeの開始</td>
+</tr>
+<tr class="even">
+<td align="left">Ensime: Go To Definition</td>
+<td align="left">定義へ飛ぶ</td>
+</tr>
+<tr class="odd">
+<td align="left">Ensime: Inspect Type at Point</td>
+<td align="left">カーソルのあるexpressionの型をステータスバーに表示する.</td>
+</tr>
+
+</tbody></table>
+<p>emacsでscalaを書く際によく用いられるensimeのsublime textバインディング. まずはEnsimeの方の使い方を学ばないと色々とお話にならないかなって感じだけど, とりあえずは補間(<code>auto-complete</code>)と, ジャンプくらいは使えたのでまぁいいや. <br/></p><p>Startup直後異常に重い気がするけど, すぐに軽くなるのでSublime Text起動直後にstartupさせてしまえばいい. それでもどうせ他のIDEよりは起動は早い. <br/></p><p>インストールは参考サイトの通りだけど, <code>ensime-server</code>のインストール時のコマンドは, Ubuntu14.04の場合は</p>
+<pre><code>$ cd ~/.config/sublime-text-3/Packages/
+$ mkdir -p Ensime/server
+$ cd Ensime/server
+$ mv (ダウンロード場所)/ensime_2.10.0-0.9.8.9/* .</code></pre>
+<p>となる. できればDropboxからでなくgithubやsbtから落としたい(バージョン管理のため)がやり方がわからないので妥協している.</p>
+<h3 id="scalaformat">ScalaFormat</h3>
+<table border="1">
+<thead>
+<tr class="header">
+<th align="left">コマンド名</th>
+<th align="left">やれること</th>
+</tr>
+</thead>
+
+<tbody><tr class="odd">
+<td align="left">ScalaFormat: Format Current File</td>
+<td align="left">現在のファイルをフォーマットする.</td>
+</tr>
+
+</tbody></table>
+<p>scalaのcode formatter. scalariformを中では使っているらしい. 保存時の自動フォーマットもあるけど, 若干処理が重いのでやめたほうがいいように思えた. どちらかというと, sbtかCLツールと組み合わせてgitのpre-commit-hookとしてscalariformを使うほうが適切なように思う.</p>
+<p>ただ, scalaの標準スタイルを, Sublime Textの設定でやろうとすると問題が解決できず(以下のようなケース), ちょっと困っている.</p>
+<pre><code>val x = 1 + 2 + 3
+  + 4 + 5 + 6</code></pre>
+<p>Sublime Textだと</p>
+<pre><code>val x = 1 + 2 + 3
++ 4 + 5 + 6</code></pre>
+<p>になってしまう. これが解決できれば大体のインデントはSublime Textで揃えられるから, 後は細かいところをgitのpre-commit hookとかで修正させればいいのではないか.<br/></p>
+<h2 id="markdownmonokai-extended-markdown-extended">markdown(Monokai Extended, Markdown Extended)</h2>
+<p>markdownをsublime上で書くためのプラグイン2つ. 基本的なsyntax highlightだけど. Markdown Extendedのコード内syntax highlightは結構強力だと感じた.</p>
+<h2 id="プログラミング一般">プログラミング一般</h2>
+<h3 id="editorconfig">EditorConfig</h3>
+<p>どうせならコーディングスタイルはEditorConfigで他のエディタと同期とったほうが綺麗だよねってことで導入.</p>
+<p>EditorConfig自体あまり使えてないので不明点多数だけど, 最低限は動いた. <code>~/.editorconfig</code>にデフォルトの設定を書くみたいな(<code>.gitconfig</code>的な)ことはできないのかな？</p>
+<p>ScalaFormatと役割がかぶるのがちょっと気になる. これはmarkdownとか用になるのだろうか.</p>
+<h3 id="smart-delete">Smart Delete</h3>
+<p>コードの一部を削除するときに, インデントも同時に削除するよみたいな. 入れとくと自然な動きをするのでとりあえず入れておけばいいと思う.</p>
+<h3 id="brackethighlighter">BracketHighlighter</h3>
+<table border="1">
+<thead>
+<tr class="header">
+<th align="left">コマンド名</th>
+<th align="left">やれること</th>
+</tr>
+</thead>
+
+<tbody><tr class="odd">
+<td align="left">BacketHighlighter: Fold Bracket Content</td>
+<td align="left">カーソル位置の内容を折りたたみする</td>
+</tr>
+
+</tbody></table>
+<p>パッケージ名はHighlighterだけど, ハイライト以外にも色々(選択, 折りたたみ, 括弧で選択テキストを囲うなど)やってくれるパッケージ. 便利.</p>
+<h2 id="git">git</h2>
+<h3 id="sublimegit">SublimeGit</h3>
+<p>Installして, Command Palette開いて, gitって打ち込んだら後は大体CUIの時と同じ感じに使える. addとcommitは, <code>git status</code>をして, そこからaddするファイルを指定(s)し, コミット(c)するのが一番確実かな.</p>
+<h3 id="gitgutter">GitGutter</h3>
+<p>いれておけば横にaddされたか否かなどを表示してくれる.</p>
+<h2 id="その他">その他</h2>
+<h3 id="sidebarenhancements">SideBarEnhancements</h3>
+<p>なんか参考サイトで必須とか言われたから入れてみた. まぁ確かにmove filesとかすらなかったから必須は必須かな.</p>
+<h3 id="sublimefiles">SublimeFiles</h3>
+<table border="1">
+<thead>
+<tr class="header">
+<th align="left">コマンド名</th>
+<th align="left">やれること</th>
+</tr>
+</thead>
+
+<tbody><tr class="odd">
+<td align="left">File: New File Relative to Project Root</td>
+<td align="left">プロジェクト(ディレクトリ)を開いている時に, そのルートからの相対パスでファイル名を指定して新しいファイルを作る.</td>
+</tr>
+
+</tbody></table>
+<p>ファイル操作をCommand Paletteから叩けるようにする. マウスから離れるためには必須と言える. Advanced New Fileの方が適切かもしれないけどまだちゃんと使っていないので不明.</p>
+<h3 id="findkeyconflicts">FindKeyConflicts</h3>
+<p>キーバインドの衝突を見てくれるらしい. そのうち衝突しそうだったので導入.</p>
+<h3 id="shell-command">Shell Command</h3>
+<p>Command PaletteからShell Commandを選択すると1行シェルコマンドが打てる. でその結果が新しいタブに出力される. emacsの<code>M-x shell-command</code>に似ているけど, 新しいタブを作る点が若干微妙. 別グループにして欲しかった(emacsみたいに)</p>
+<h2 id="現状できないこと">現状できないこと</h2>
+<ol style="list-style-type: decimal">
+<li>scaladocの表示
+<ul>
+<li>emacs clientだとできるみたいなので, 多分プラグインの実装か自分の読解力かどちらかに問題がある.</li>
+</ul></li>
+<li>ensimeによるデバッガの起動
+<ul>
+<li>多分ensimeの使い方を自分がわかっていないことに起因する.</li>
+</ul></li>
+<li>エラーが起きた箇所でのimport
+<ul>
+<li>Ensime: Add Importで十分な気もするけど, あったほうが便利だなぁとも思う.</li>
+</ul></li>
+<li>エラー箇所へのジャンプ
+<ul>
+<li>sbtの方にあったような気がするけどちゃんと見ていない.</li>
+</ul></li>
+<li>Indentation Guidesがscalaの関数をインデントとして認識しない.
+<ul>
+<li>forは認識するのでなんかよくわからない.</li>
+</ul></li>
+<li>testとテスト対象の間の移動
+<ul>
+<li>IntelliJ IDEAで実装されていたのはただのNaming Conventionを用いたものなので, 実装する気になれば割と簡単にできると思う.</li>
+</ul></li>
+<li><code>C-x 2</code>とかで開いたグループを閉じるコマンド及びバインド</li>
+</ol>
+<h2 id="現状わからないこと">現状わからないこと</h2>
+<ol style="list-style-type: decimal">
+<li>EditorConfigとsublime textとScalaFormatのスタイルが矛盾した時どっちが優先されるのか.</li>
+<li>git-flowなどの使い方.</li>
+</ol>
+<h2 id="入れてみたいかもしれないもの">入れてみたいもの</h2>
+<ul>
+<li>Alignment</li>
+<li>Project Manager</li>
+</ul>
+<h2 id="感想">感想</h2>
+<p>メイン環境のSublime Textへの移動は決まった感じ. 個人的には初めてEclipseを使った時(それまでTeraPadだった)と同じくらい衝撃的(Command Paletteが特に).</p>
+<h2 id="参考サイト">参考サイト</h2>
+<ul>
+<li><a href="http://www.buildinsider.net/small/sublimetext/03">http://www.buildinsider.net/small/sublimetext/03</a></li>
+<li><a href="https://github.com/jisaacks/GitGutter">https://github.com/jisaacks/GitGutter</a></li>
+<li><a href="http://arata.hatenadiary.com/entry/2013/12/08/165323">http://arata.hatenadiary.com/entry/2013/12/08/165323</a></li>
+<li><a href="http://qiita.com/f81@github/items/d2bd694babc132f44416">http://qiita.com/f81@github/items/d2bd694babc132f44416</a></li>
+<li><a href="http://webmem.hatenablog.com/entry/sublime-text-markdown">http://webmem.hatenablog.com/entry/sublime-text-markdown</a></li>
+</ul>
+<!--
+
+Yet another scala formatter
+
+http://www.scalatest.org/user_guide/using_matchers
+http://www.scalatest.org/user_guide/testing_with_mock_objects
+http://www.scalatest.org/user_guide/property_based_testing
+-->
+</body>
+          </div><a class="u-url" href="/ja/2015/02/14/from-livedoor-22681630.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

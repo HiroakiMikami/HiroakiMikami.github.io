@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="Learning to Infer and Execute 3D Shape Programs メモ">
+    
+    
+    <meta property="og:description" content="Learning to Infer and Execute 3D Shape Programsを読んだ時の記録">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/%E8%AB%96%E6%96%87/2021/04/18/arxiv.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">Learning to Infer and Execute 3D Shape Programs メモ</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2021-04-18T00:00:00+09:00" itemprop="datePublished">
+                Apr 18, 2021
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <p><a href="https://arxiv.org/abs/1901.02875">論文</a>, ICLR2019ポスター</p>
+
+<hr />
+
+<h1 id="論文内容">論文内容</h1>
+
+<p>DNNによってプログラムのinterpreterを模倣し、gradient descentによる最適化でProgram Synthesisする手法を提案した。
+研究目的はProgram Synthesisではなくて、3D物体のsemanticな識別・理解のための道具としてProgram Synthesisを用いている。</p>
+
+<h2 id="背景">背景</h2>
+
+<p>人間のような3D物体の理解には、物体形状に対する事前知識の利用が必要となる。一方で現在主流の方法はmeshやvoxelを3D物体のデータ形式として用いており事前知識が活用できない。
+CSGNet等の手法はデータ形式としてより人間の理解しやすいprimitive (例えば直方体、球など) を用いている。しかしこれらで利用しているデータ形式は、「同じ形が繰り返されている」や「対称な形状である」のような抽象度の高い特徴を表すことはできない。</p>
+
+<p>3D物体を表すデータ形式として、「3D物体を生成するプログラム (DSL) 」をもちいることで、このような問題を解決し人間と同じように3D物体を認識する機械学習モデルが実現できる。</p>
+
+<h2 id="提案手法">提案手法</h2>
+
+<p>プログラムをデータ形式として用いる課題として、新しいデータ形式であるためデータセットが存在せず機械学習の適用が難しいというものがある。</p>
+
+<p>この問題を解決するため、A) 3D形状からプログラムを推論するDNN、A) プログラムから3D形状を推論するDNNの2つを用意し、半教師あり学習のような手法でDNNの学習を可能とした。学習自体はAとBのDNNをそれぞれ独立にランダムに生成したデータセット (3D形状とプログラムのペアが得られる) で学習している。これだけだと複雑な形状に対するProgram Synthesisがうまくいかなかった。そのため、</p>
+
+<ol>
+  <li>AのDNNでプログラムを生成</li>
+  <li>BのDNNでプログラムを (近似的に実行)</li>
+  <li>2の結果と欲しい3D形状でlossを計算</li>
+  <li>backpropしてAの重みを更新</li>
+</ol>
+
+<p>というステップを踏み、AのDNNを修正した (guided adaptation) 。</p>
+
+<p>guided adaptationをするにあたり、複数のstatementの結果をmax poolで統合することで可変長のプログラムに対応している。max poolで扱えるのはこの論文が扱うDSLの特徴によるもの</p>
+
+<h2 id="評価">評価</h2>
+
+<p>ShapeNetなどにおいて既存手法 (CSGNetなど) と比較し、提案手法が優れた数値指標を示すこと、対称性のような特徴を捉えられること、を確認した。</p>
+
+<h1 id="メモコメント">メモ・コメント</h1>
+
+<p>Guided Adaptationの処理自体は微分可能レンダラとかの考え方にかなり近い気がする。微分可能レンダラのほうを実際に使ったことないので間違っているかもしれないけど。</p>
+
+<p>ランダムに生成したデータセットだけでもprogram generator (B) のDNNは十分に学習できているのがこの手法の実用性を支えている部分に見える。ただ、program generatorが近似するプログラムはかなり短いので複雑なデータセットはいらなそう。</p>
+
+<p>一方で、interpreterをDNNで近似するProgram Synthesis手法全体を考えると、</p>
+
+<ol>
+  <li>求めている出力との差分をどう計算するか</li>
+  <li>複雑なプログラムをどう実行するか</li>
+</ol>
+
+<p>あたりは難しい問題らしい。この論文だと1については3D形状が出力なので自然なロス関数があって、2については短いプログラムの結果をmax poolすることで複雑なプログラムを実行している。どちらもドメインの特徴を活用した手法なので、他ドメインに適用しようとすると問題になりそう。</p>
+
+          </div><a class="u-url" href="/ja/%E8%AB%96%E6%96%87/2021/04/18/arxiv.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

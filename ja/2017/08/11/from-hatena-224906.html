@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="ARC080 E： Young Maids">
+    
+    
+    <meta property="og:description" content="はてなブログからの移動">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2017/08/11/from-hatena-224906.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">ARC080 E： Young Maids</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2017-08-11T00:00:00+09:00" itemprop="datePublished">
+                Aug 11, 2017
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <div>Livedoorブログからの移動</div><hr />
+<div>はてなブログからの移動</div><hr />
+<body><p><iframe class="embed-card embed-webcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=http%3A%2F%2Farc080.contest.atcoder.jp%2Ftasks%2Farc080_c" style="display: block; width: 100%; height: 155px; max-width: 500px; margin: 10px 0px;" title="E: Young Maids - AtCoder Regular Contest 080 | AtCoder"></iframe><cite class="hatena-citation"><a href="http://arc080.contest.atcoder.jp/tasks/arc080_c">arc080.contest.atcoder.jp</a></cite></p>
+
+<h1>解き方</h1>
+
+<ul>
+<li>辞書順なので、先頭から埋める
+
+<ul>
+<li>最初の数列で、奇数番目が解答の先頭に、偶数番目が解答の2番目にくる
+
+<ul>
+<li>奇数番目の最小の数字が先頭に、それより後ろで最小の偶数番目が2番目にくる</li>
+</ul>
+</li>
+<li>3つの領域に分割されるので、それらについて同じように考える</li>
+</ul>
+</li>
+<li>ある領域の中で最小の数字を見つけるのはセグメント木（RMQ）</li>
+<li>いくつかの領域のなかで奇数番目が最小の領域を見つけるには、<code>priority_queue</code>を使う</li>
+</ul>
+
+
+<h1>ハマったところ</h1>
+
+<ul>
+<li>最小の領域を見つけるのに、<code>priority_queue</code>を使わず<code>min_element</code>を使用
+
+<ul>
+<li>いい加減<code>O(n)</code>の<a class="keyword" href="http://d.hatena.ne.jp/keyword/STL">STL</a>を使ってTLEはやめたい</li>
+</ul>
+</li>
+<li>セグメント木の実装をコンテスト中にバグらせずにやるのは時間が足りない</li>
+<li>不要なところを埋めるmaxに<code>10^5</code>を使っていた。
+
+<ul>
+<li><code>1e7</code>とか書くと<a class="keyword" href="http://d.hatena.ne.jp/keyword/%C9%E2%C6%B0%BE%AE%BF%F4">浮動小数</a>点になるから嫌だなぁと思っていたけど、わかりやすさのためには使った方が良い気がする</li>
+</ul>
+</li>
+</ul>
+
+
+<p><iframe class="embed-card embed-webcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=https%3A%2F%2Fgithub.com%2FHiroakiMikami%2Fprocon-workspace%2Fblob%2Fmaster%2Fsrc%2Fatcoder%2Farc080%2Fe.cc" style="display: block; width: 100%; height: 155px; max-width: 500px; margin: 10px 0px;" title="HiroakiMikami/procon-workspace"></iframe><cite class="hatena-citation"><a href="https://github.com/HiroakiMikami/procon-workspace/blob/master/src/atcoder/arc080/e.cc">github.com</a></cite></p>
+
+</body>
+          </div><a class="u-url" href="/ja/2017/08/11/from-hatena-224906.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

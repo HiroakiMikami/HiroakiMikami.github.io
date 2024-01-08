@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="ARC083 D： Restoring Road Network">
+    
+    
+    <meta property="og:description" content="はてなブログからの移動">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2017/09/17/from-hatena-154912.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">ARC083 D： Restoring Road Network</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2017-09-17T00:00:00+09:00" itemprop="datePublished">
+                Sep 17, 2017
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <div>Livedoorブログからの移動</div><hr />
+<div>はてなブログからの移動</div><hr />
+<body><p><a href="https://beta.atcoder.jp/contests/arc083/tasks/arc083_b">D - Restoring Road Network</a></p>
+
+<h2>解き方</h2>
+
+<ul>
+<li>これまでに追加した辺のコストの合計と、その辺による各都市間の最短距離(<code>d[i][j]</code>)を保持、更新する</li>
+<li>距離が小さい方から順に考えていく。
+町<code>i, j</code>間の最短距離が<code>c</code>の時、
+
+<ul>
+<li>もし、<code>d[i][j] == c</code>ならば、もう辺を追加する必要はない (A)</li>
+<li><code>d[i][j] &lt; c</code>ならば、<code>c</code>が最短距離であることに矛盾するので、そのようなグラフはない</li>
+<li><code>d[i][j] &gt; c</code>の時、<code>i, j</code>間にコスト<code>c</code>の辺を追加する。コストの合計に<code>c</code>を足し、最短距離を<code>d[s][t] = min(d[s][t], d[s][i] + c + d[j][t], d[s][j] + c + d[i][t])</code>で更新する</li>
+</ul>
+</li>
+<li>すべての町のペアに対して行うので、外側のループが<code>N^2</code>回、内側のコストの更新が<code>O(N^2)</code>なので、全体で<code>O(N^4)</code>の解法となり、<code>N &lt;= 300</code>なので間に合う</li>
+</ul>
+
+
+<h2>その他</h2>
+
+<ul>
+<li>Warshall Floydをしながら、各辺が更新された回数を記録する（2回以上更新された時、その部分は上記解法でいう(A)に当たる）という解法もあり、こっちのほうが綺麗に解けそう</li>
+</ul>
+
+
+<p><iframe class="embed-card embed-webcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=https%3A%2F%2Fgithub.com%2FHiroakiMikami%2Fprocon-workspace%2Fblob%2Fmaster%2Fsrc%2Fatcoder%2Farc083%2Fd.cc" style="display: block; width: 100%; height: 155px; max-width: 500px; margin: 10px 0px;" title="HiroakiMikami/procon-workspace"></iframe><cite class="hatena-citation"><a href="https://github.com/HiroakiMikami/procon-workspace/blob/master/src/atcoder/arc083/d.cc">github.com</a></cite></p>
+
+</body>
+          </div><a class="u-url" href="/ja/2017/09/17/from-hatena-154912.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>
