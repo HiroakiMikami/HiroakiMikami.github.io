@@ -1,4 +1,16 @@
 publications:
+  - title: "sparseなDNNモデルの分散学習"
+    resources:
+      - text: "スライド"
+        url: https://speakerdeck.com/pfn/20231220_wandb_pfn_sparse_dnn
+  - title: "大規模言語モデル PLaMo-13Bの事前学習"
+    resources:
+      - text: "スライド"
+        url: https://drive.google.com/file/d/1lQM1xeSm7BeQbeVAfxAvMZQIIJfGgB5l/view
+  - title: "PLaMo-13Bを公開しました"
+    resources:
+      - text: "page"
+        url: https://tech.preferred.jp/ja/blog/llm-plamo/
   - title: "A Scaling Law for Synthetic-to-Real Transfer: A Measure of Pre-Training"
     location: "arXiv"
     resources:
