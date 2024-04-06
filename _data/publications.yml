@@ -1,8 +1,14 @@
 publications:
+  - title: "LLMの事前学習を支えるPreferred Networksのソフトウェア"
+    resources:
+      - text: "シンポジウムサイト"
+        url: https://www.titech.ac.jp/event/2024/068334
   - title: "sparseなDNNモデルの分散学習"
     resources:
       - text: "スライド"
         url: https://speakerdeck.com/pfn/20231220_wandb_pfn_sparse_dnn
+      - text: "ビデオ"
+        url: https://www.youtube.com/watch?v=-nWz4EMBpl8
   - title: "大規模言語モデル PLaMo-13Bの事前学習"
     resources:
       - text: "スライド"
