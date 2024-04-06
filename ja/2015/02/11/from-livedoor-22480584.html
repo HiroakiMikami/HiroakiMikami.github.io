@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="Sublime Text 3の導入 (1)">
+    
+    
+    <meta property="og:description" content="Livedoorブログからの移動">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2015/02/11/from-livedoor-22480584.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">Sublime Text 3の導入 (1)</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2015-02-11T00:00:00+09:00" itemprop="datePublished">
+                Feb 11, 2015
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <div>Livedoorブログからの移動</div><hr />
+<body><h1 id="sublime-text-3の試用と環境設定">Sublime Text 3の試用と環境設定</h1>
+<p>IntelliJ IDEAを長らくscalaの開発環境として使ってきたが,</p>
+<ul>
+<li>動作が(eclipseよりは軽くても)重い.</li>
+<li>gitプラグインが残念
+<ul>
+<li>git commit時にインスペクション走らせるのはいいけど, 時間がかかりすぎ.</li>
+</ul></li>
+<li>スクリプトをちょっと書くには向かない.</li>
+<li>プラグイン書くの面倒くさい. </li>
+</ul>
+等の理由から何かないものかと探していた.<br/><p>emacsという線も考えていたけれども, プロジェクトごとの設定等には難があるように感じたので, Sublime Textを使ってみることにした. 選んだ理由としては,</p>
+<ol style="list-style-type: decimal">
+<li>設定ファイルがJSONなので書きやすそう.</li>
+<li>プラグインがPythonな(scalaではない)のは若干残念だけどどうせシェルコマンドのラッパしか作らないので問題無さそう.</li>
+<li>いわゆるIDE的な使用をするのに最低限の機能は持っていそう.</li>
+</ol>
+<p>といった感じ.<br/></p><p><br/></p><p>Sublime Textはweb上の情報が分散しているように感じされたので, 自分の環境設定と使い方についてをまとめておく. <br/></p><p>ただし, 全部まとめると長くなるので, 今記事は基本設定(具体的にはインストール, 外観, 基本的なキーバインド)についてのみ触れる.<br/></p>
+<h2 id="インストール">インストール</h2>
+<p>Sublime Textは無料版と有料版があるが, 無料版は機能制限ではなく, たまに購入を促されるだけで無期限・全機能を使える.</p><p>70ドルとこの手のソフトとして高くはないので, ダイアログが鬱陶しくなったら買おうかな, みたいなことを考えている. 現状まだIntelliJから乗り換えるかが検討段階なので買う気になれない.</p>
+<p>今回は無料版のインストール方法(in Ubuntu 14.04)を説明する.インストールは以下のコマンドで行える.</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">sudo</span> add-apt-repository ppa:webupd8team/sublime-text-3
+$ <span class="kw">sudo</span> aptitude update
+$ <span class="kw">sudo</span> aptitude install sublime-text</code></pre>
+<p>Sublime Text 3はベータ版との噂もあるが, エディタなんてバグってもシステムには影響しないことが大半だし, どうせなら最新版を使ってしまったほうが後々のバージョンアップ時に楽だというのが自分の意見. そもそもSublime Textに詳しくないのでベータ版ってのもどっかで見ただけなので間違ってたらごめんなさい.<br/></p><p><br/></p>
+<h2 id="パッケージ管理システム">パッケージ管理システム</h2>
+<p>当然ないと始まらない. <strike>というか大体のIDEはなんでパッケージ管理弱いんだろうね.</strike></p>
+<p><a href="https://packagecontrol.io/installation">このページ</a>へいって, 左側の"SUBLIME TEXT 3"って書かれている箇所の読みにくいスクリプトをコピーする. で, <code>C-</code> `でなんかコンソールっぽいのを開いて, Enterで実行.</p><p>しばらく待つとインストール完了.</p>
+<h2 id="日本語入力">日本語入力</h2>
+<p>このままではLinuxだと日本語入力ができないので, コメントが書きづらい. というわけで, <a href="http://qiita.com/wakaba260/items/b2a1b40ccabc820917cb">このへん</a>を参考にインストール.</p>
+<p><code>mozc</code>と<code>emacs-mozc</code>が必要なので,</p>
+<pre><code>$ sudo apt-get install mozc emacs-mozc</code></pre>
+<p>を忘れずに. あと, デフォルト切り替えキーバインドの<code>C-\</code>はよくいろんなものと競合するので<code>C-:</code>あたりにでもしておくと良い.<br/></p>
+<h2 id="外観設定">外観設定</h2>
+<p>いつもどおり, xmonad使用を前提とした設定なので, 普通のウインドウマネージャを使っている人には色々合わないことはあろうかと思う.</p>
+<h3 id="フォントサイズ">フォントサイズ</h3>
+<p>デフォルトのフォントサイズ10はちょっと小さすぎだったので, フォントサイズを変更する. Preferences -&gt; Settings - Userでユーザ設定のファイルを開き,</p>
+<pre class="sourceCode json"><code class="sourceCode json">    <span class="er">"font_size":</span> <span class="er">15,</span></code></pre>
+<p>とか書いてフォントサイズを変更する.</p>
+<p>ついでに, フォントも<code>Source Code Pro</code>にでも変更しておく. 他の環境に移っても動作が変わらないよう, 今のフォントに文句がなくとも何かしら統一する, というのは重要だと思う.</p>
+<pre><code>  "font_face": "Source Code Pro",</code></pre>
+<h3 id="フリーモード">フリーモード</h3>
+<p>フリーモード(集中モード)とはコーディングに集中したい時のモード. とはいえ, デフォルトの設定だと単純化させすぎだと自分は思う. 具体的にはステータスバーとミニマップは表示して欲しかった. なんだけど, いくら調べても, そういう設定がない.</p>
+<p>で, <a href="http://www.sublimetext.com/docs/3/distraction_free.html">公式のドキュメント</a>みたら, メニュー(とか)のView -&gt; Show Status Barでステータスバーを表示するとそれをsublime textが覚えてくれるそうです.</p><p>なんだそりゃ. <code>"show_status_bar": true</code>とか設定ファイルに書き込む方が自然だと思うんですが.</p><p><br/></p>
+<p>他には行番号とか欲しいなとか, 一つのファイルしかみないなら行折り返しいらないなとか思ったので, 結局こんな設定に落ち着いた.</p>
+<pre><code>{
+  "line_numbers": true,
+  "gutter": true,
+  "draw_centered": false,
+  "wrap_width": 0,
+  "word_wrap": false,
+  "scroll_past_end": true
+}</code></pre>
+<h3 id="画面分割">画面分割</h3>
+<p>デフォルトではemacsのような縦横への分割はできない(?). 下の通りにemacsバインドにすると<code>C-x 2</code>とかで分割ができるのでまぁいいか.</p>
+<h2 id="キーバインド">キーバインド</h2>
+<h3 id="emacs風に">emacs風に</h3>
+<p>まずはemacs bindにしないと色々話が始まらない. これについては, <a href="http://namamugi2011.blog.fc2.com/blog-entry-40.html">この記事</a>が参考になる, というかほぼそのままでOK.</p>
+<p>が, このままだと<code>C-@</code>によるmark-setができないので, ユーザのキーバインド設定に以下のようにして, それを追加する.</p>
+<pre><code>{"keys": ["ctrl+@"], "command": "sbp_set_mark"}</code></pre>
+<h2 id="参考になった情報">参考になった情報</h2>
+<ul>
+<li><a href="http://www.amazon.co.jp/Web%E5%88%B6%E4%BD%9C%E8%80%85%E3%81%AE%E3%81%9F%E3%82%81%E3%81%AESublime-Text%E3%81%AE%E6%95%99%E7%A7%91%E6%9B%B8-%E4%BB%8A%E3%81%99%E3%81%90%E6%9C%80%E9%AB%98%E3%81%AE%E3%82%A8%E3%83%87%E3%82%A3%E3%82%BF%E3%82%92%E4%BD%BF%E3%81%84%E3%81%93%E3%81%AA%E3%81%99%E3%83%97%E3%83%AD%E3%81%AE%E3%83%8E%E3%82%A6%E3%83%8F%E3%82%A6-%E4%B8%8A%E9%87%8E%E6%AD%A3%E5%A4%A7/dp/4844335677/ref=sr_1_1?ie=UTF8&amp;qid=1423642163&amp;sr=8-1&amp;keywords=sublime+text">本</a>
+<ul>
+<li>内容がまとまっていて最初の一歩としてはすごく便利だと感じた. まだ読書中.<br/></li>
+</ul></li>
+<li><a href="http://www.sublimetext.com/docs/3/">公式ドキュメント</a>
+<ul>
+<li>いきなり「非公式のドキュメントは一杯情報があるすごいドキュメントです!」とか書かれているあたりに不安を感じるけど, ちゃんとしたドキュメント.</li>
+<li>基本的な使い方, Vintage Mode(viモード?), プラグインの書き方, ひと通りのことが大体書かれている.</li>
+</ul></li>
+</ul>
+<h2 id="現在残っている問題点">現在残っている問題点</h2>
+<ul>
+<li>ファイルを閉じるキーバインドがわからない.</li>
+<li>mark時に色が変わらないので見づらい.</li>
+<li>タブ間を移動するキーバインドがわからない.</li>
+<li>全角半角で日本語入力の切り替えをしたい.</li>
+<li>Undoが<code>M-/</code>でない(コメントに使われているからかな).</li></ul><ul>
+</ul>
+
+<h2>使ってみての感想</h2>
+動作が軽快・設定が簡単とプログラミング用エディタとして重要な要素は揃っているように思う.<br/>当初はscala用エディタとして導入を検討していたが, markdown, latex, javascript, html, cssについても環境設定して完全にemacsを置き換えることも視野に入ってきた.
+</body>
+          </div><a class="u-url" href="/ja/2015/02/11/from-livedoor-22480584.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

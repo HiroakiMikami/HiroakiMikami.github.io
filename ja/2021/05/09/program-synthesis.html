@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="Neural Programming by Exampleのデータセットについて思うこと">
+    
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2021/05/09/program-synthesis.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">Neural Programming by Exampleのデータセットについて思うこと</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2021-05-09T00:00:00+09:00" itemprop="datePublished">
+                May 9, 2021
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <p>(DNNを用いた) Programming by Exampleについて、この1カ月くらいで考えていたことをまとめる。</p>
+
+<p>ずっとDNNの手法の方を調査したり実験したりしてきたが、このGWで色々行き詰ってきてデータセットのことを考えたほうが良いのではないかと思いつつある。</p>
+
+<h3 id="programming-by-exampleのデータセットの種類">Programming by Exampleのデータセットの種類</h3>
+
+<p>DNNによるProgramming by Exampleには今のところデファクトのデータセットは今のところ存在しない。<a href="https://openreview.net/forum?id=ByldLrqlx">DeepCoder</a>で使用された整数リストに対するDSL、<a href="https://msr-redmond.github.io/karel-dataset/">Karel</a>(特定の状態を実現するようロボットを移動させる)、<a href="https://arxiv.org/abs/1703.07469">RobustFill</a>で使われた文字列変換のデータセット、あたりを用いる論文が多い印象がある。また、3D形状をプログラムであらわす (CSGみたいな) タスクの場合はShapeNetなどの3Dモデルのデータセットが用いられている。</p>
+
+<p>RobustFill, ShapeNetを除いて、ランダムに生成したプログラムとI/O exampleでデータセットを構成している。データセットをランダム生成できるのはProgramming by Exampleの大きな利点と言える。データセットのランダム生成というと多くの場合ground truthのannotationがネックになるが、Programming by Exampleの場合は処理系があれば比較的簡単にannotationを追加できる。</p>
+
+<h3 id="ランダム生成データセットの問題">ランダム生成データセットの問題</h3>
+
+<p>この手のランダム生成データセットのsampleを見るとIn/Out exampleとground truthのプログラムがパッと自分には結びつかないサンプルが多かった。人間がsampleを作る場合、「これをヒントに<code class="language-plaintext highlighter-rouge">while</code>を使うことを推測できるはず」みたいな解くときの論理を考えながらI/O Exampleを作ることになると思うが、コンピュータでランダムに生成する場合はそういった論理なしにexampleを作るのでまとまりのないI/O exampleによるデータセットとなっている。</p>
+
+<p>結果として、ランダム生成データセットによるPbEは、プログラミングというよりも実行Traceをうまくまとめていくパズルタスクといった方が近いように思える。</p>
+
+<p>あるいは、そもそもDeepCoderやKarelで扱っているようなプログラムは、そもそもspecificationをIn/Outのexampleだけで与えるのが無理なのではないか、とも感じている。例えば、<code class="language-plaintext highlighter-rouge">in=[1, 3, -5], [-2, 4, 1], out=5</code>, <code class="language-plaintext highlighter-rouge">in=[9, -3, 2], [3, -6, 3], out=51</code>という2つのexampleだけからこれが「2つのリストをうけとってその内積を出力する」プログラムを求めていることを認識するのは難しいというか無理じゃないかと思う。「2つのリストの内積を計算せよ」という自然言語でのspecificationのほうが人間にとっては遥かに有用な情報となる。</p>
+
+<p>同様にExample以外のspecificationを入力とし含むか、あるいはDSLを丁寧に設計してIn/Out exampleだけでspecificationを与えられるようにするか、したデータセットを作らないと、一定以上に複雑なProgramming by Exampleは現実的にはならないかもしれないと思っている。ただ、どちらにせよデータセットの作成にかなりの手間がかかるので、もともとのProgramming by Exampleのメリットが消えてしまうのが難点となる。</p>
+
+          </div><a class="u-url" href="/ja/2021/05/09/program-synthesis.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

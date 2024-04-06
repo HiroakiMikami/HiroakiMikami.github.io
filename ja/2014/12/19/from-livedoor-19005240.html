@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="scala備忘録">
+    
+    
+    <meta property="og:description" content="Livedoorブログからの移動">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2014/12/19/from-livedoor-19005240.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">scala備忘録</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2014-12-19T00:00:00+09:00" itemprop="datePublished">
+                Dec 19, 2014
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <div>Livedoorブログからの移動</div><hr />
+<body>忘れててひどい目にあったものを書いておく.<br/><br/><b><span style="font-size: medium;">scala.collection.Setとscala.Predef.Setは違う</span></b><br/>scala.Predef.Setは, immutableなSetのこと. 一方, scala.collection.Setはmutableも含む.<br/>mutableであるものをmutableと明示しようとして, <br/> 
+<pre>def func(s: Set[Int]) = println(s)
+import scala.collection._
+val set1 = mutable.Set[Int]()
+val set2 = Set(1, 2, 3)
+func(set2)<br/>
+</pre>
+とかやると, funcの引数のsはscala.Predef.Set, set2はscala.collection.Setとなってエラーを起こす.<br/>こういう場合は面倒くさくても import scala.collection.mutableと書くべき.<br/><br/><b><span style="font-size: medium;">Arrayのequalsは要素比較をしない.</span></b><br/>scalaのArrayは要するにJavaの配列のラッパ. なので, toStringしても要素が並ぶわけではないし, 例えば, Array(1, 2, 3) == Array(1, 2, 3)はfalseとなる.<br/>どうするのが適切なのかはわからないが, toSeqとかでSeqに直せば比較できる. <br/><br/><b><span style="font-size: medium;">scala.sys.processにおける"" </span></b>(2015/1/2追記)<br/>scala.sys.processは面倒くさい処理を全部シェルスクリプトに投げられる便利なライブラリ. 特に自分はファイルアクセスなどに使っている. 例えば, カレントディレクトリ以下の拡張子がscalaのファイルすべてを取得する際, sys.processを使えば以下だけで良い(Unix専用? windowsでｓcala使ったことがないので知らない).<br/><pre>// scala.sys.processを使う場合
+import scala.sys.process._
+("find ./ -name *.scala" lines_!) map (x =&gt; s"cat $x".!!)
+</pre>
+これをjavaの標準ライブラリでやろうとした場合にどれだけの行数になるかは考えたくもないし, scala.ioは遅い.<br/>もちろんOS依存が強いので, 個人的に使うプログラムや, 小規模なスクリプトに使用は限定するべき.<br/><br/>ただ, ""がいわゆるシェルスクリプトの""や''と違うことに注意する必要がある. 例えば, 以下は1列目だけを表示する簡単なawkスクリプトを実行するコマンドである.<br/><pre>$ awk '{print $1}' file
+</pre>
+この時, shell(bash, zsh等, 他は知らない)は, まず"awk", "'{print $1}'" "file"の3引数に分解し, 次に, '{print $1}'を{print $1}と評価し(評価っていうのだろうか), "awk" "{print $1}" "file"という3引数として実行する.<br/><br/>一方,  
+<pre>import scala.sys.process._
+"awk \"{print $1}\" file".!!
+</pre>
+は, "awk" "{print" "$1}" "file"の4引数に分解される. なのでこれはawkスクリプトとしてparseできずにエラーを吐いて死ぬ.<br/>こういう場合はSeq[String]からProcessへのimplicit conversionを用いて,  
+<pre>Seq("awk", "{print $1}", "file").!!
+</pre>
+と書かなければならない. ""と''と``の違いなど, shell scriptをそのまま実行しようとするには面倒くさいことが多いので, しょうがない仕様だとは思うが, 若干面倒.<br/><br/>
+
+<b><span style="font-size: medium;">Console.outとかの取得方法<br/><br/></span></b>標準入力や標準出力の内容を取得したくなった時の方法について. まぁ特にテスト中に用いるかな？　javaだと, System.setOut(...)して, その後, System.out.println(...)をして, また, System.setOut(original)で戻すみたいな流れを踏む.<br/>scalaの場合は昔はConsole.setOutがあったんだけど非推奨になっていたので, 代わりのAPIを見たらwithOutというのがあった. <br/>最初見た時は"without"だと思ったんだけど, "with (std)out"という意味らしい. 使い方は, <br/>
+<pre>Console.withOut(new ByteArrayOutputStream) {
+  println("foo")
+  println("bar")
+}
+</pre>
+みたいな感じ. こうすると, printlnしているところだけstdoutがByteArrayOutputStreamになり, それ以外は標準出力に行く.<br/>遅延評価と複数引数リストを組み合わせたこの定義は割とscalaらしいと思った.
+</body>
+          </div><a class="u-url" href="/ja/2014/12/19/from-livedoor-19005240.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

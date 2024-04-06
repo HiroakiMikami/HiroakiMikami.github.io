@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="tagsistantの感想等">
+    
+    
+    <meta property="og:description" content="Livedoorブログからの移動">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2015/02/10/from-livedoor-22411082.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">tagsistantの感想等</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2015-02-10T00:00:00+09:00" itemprop="datePublished">
+                Feb 10, 2015
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <div>Livedoorブログからの移動</div><hr />
+<body><h2 id="tagsistant">Tagsistant</h2>
+<p>論文だったり自分のメモだったりをまとめるためのシステムとして, Dropboxとか, Google Scholarのマイライブラリだとか色々使ってみたけど, どれも一長一短だった. <br/></p><p>で, 今回tagsistantというものを見つけて, 適当にスクリプト書いたら上手く使えそうだったので使ってみた. この作業時の所感をまとめておく. 細かい使い方等は書いていないのでそういうのを知りたい人は他のところみてください.</p>
+<h1 id="どんなもの">どんなもの？</h1>
+<p>一般的なファイルシステムにタグシステムを導入して統合したもの. タグを用いて管理しつつ, 同時にそれをただのファイルシステムとしてシェルから叩ける. 多分だけど論文としては<a href="http://www.tagsistant.net/documents-about-tagsistant/31-0-8-1-manual">TagFS</a>が近いのではないか. その後継研究としてtagsistantの論文あるかもしれないけど自分は読んでいない.</p>
+<h1 id="インストール">インストール</h1>
+<p>githubから落としてきてコンパイルしようと思ったのだが, なぜか上手くいかない. なので, Debian/Ubuntu用のpackageを持ってきて,</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">sudo</span> dpkg -i tagsistant_0.8.1a-1_14.04-amd64.deb</code></pre>
+<p>でインストールした(自分は). 本当を言うとバージョン管理のためにgithubから落としてきたいのだけれども.</p>
+<h1 id="使い方">使い方</h1>
+<p><a href="http://www.tagsistant.net/documents-about-tagsistant/31-0-8-1-manual">公式のドキュメント</a>参照. 細かく触れるのは色々大変だし, 自前でスクリプト書いた後生で触ってないので最近忘れてきたので.</p>
+<h1 id="スクリプト">スクリプト</h1>
+<p>自分用のスクリプトを<a href="https://github.com/HiroakiMikami/tagsistant-tools">github</a>に公開した. zshを使っている人なら補間(最低限)ありなのでそれなりに使えると思う. 使い方はREADME参照のこと.</p>
+<p>ちなみに, 全部英語で書いているのは英語力を高めようとする意思の現れ. 間違ってても怒らないで.</p>
+<h1 id="感想">感想</h1>
+<p>これを使ってみようと思ったきっかけは, 「ファイルシステムだとファイル管理が面倒，でもタグ付けはGUI上でしかできないことが多いからシェルにいることの多い自分には使いづらい」という問題を解決しようとしたから. 結果として, この問題はある程度解決できた. スクリプトかけるし, 関係の定義もできるし, 自分的には満足.</p>
+<p>一方で問題点としては, 閲覧が面倒なことが一番大きいと思う. ただし, これについては, 自作スクリプトの難点というのも少なからず存在する.</p>
+<h2 id="利点">利点</h2>
+<ul>
+<li>ウェブブラウザやSNS等では一般的なタグ管理を, ローカルのファイルシステムにも適用できる.</li>
+<li>ファイル構造の作り方で悩まなくていい.</li>
+<li>適当にファイル放り込んでもそこまでごちゃごちゃにはならない.</li>
+<li><b>スクリプトが書きやすい.</b></li>
+</ul>
+<h2 id="欠点">欠点</h2>
+<ul>
+<li>閲覧・検索には弱い. 具体的には, ファイルシステムとして全部扱おうとした限界と, 補間機能の弱さが原因で使い勝手が悪くなっているように思えた.</li>
+<li>オンラインストレージ上での使用が難しい. これはUNIXファイルシステムに載せた以上当然の結果.</li>
+</ul>
+<h1 id="以後の予定">以後の予定</h1>
+<p>tagsistantを使う最低限のインフラは整ったけど, まだまだやりたいことはある. 大きく上げると以下のとおりかな.</p>
+<ol style="list-style-type: decimal">
+<li>スクリプトの改良
+<ul>
+<li>alias機能に触っていないのと, 色々と検索機能が残念.</li>
+<li>検索機能については, Consoleアプリケーションの作成も考えている.</li>
+</ul></li>
+<li>Firefoxへの統合
+<ul>
+<li>最近, evince(ドキュメントビューア)がemacsバインドじゃないことに疲れてきている. そこにきてFirefoxはkeysnailのおかげでemacsバインドかつpdf閲覧が可能</li>
+<li>emacsでpdfがちゃんと見られればいいんだけどかつそれを可能にする能力はありそう(pdftools)なんだけど・・・
+<ul>
+<li>いかんせん一度pngにレンダリングというのが足を引っ張っているのか遅いのが気になる.</li>
+<li>非同期IOとか組み合わせてどうにかできるならしたい.</li>
+</ul></li>
+</ul></li>
+<li>Google Scholarとの連携
+<ul>
+<li>そもそもが論文管理が目的なので, Google Scholarから学会名・著者名等を引っ張ってこれるならすごく便利.</li>
+<li>Google ScholarにはそもそもAPIが無いので, 使うとすればfirefox上からの使用となるだろうと思う.</li>
+</ul></li>
+<li>色々とデータ提示方法が残念
+<ul>
+<li>タグ間の関係とか, machine tagの状態とかがよくわからない.</li>
+<li><p>scalaのDSL書くかもしれない. 現状では以下のような設定ファイルを作り, それを事前にコンパイルしておくことを考えている.</p>
+<pre class="sourceCode scala"><code class="sourceCode scala"><span class="st">"tag1"</span> &lt; <span class="st">"tag2"</span> <span class="co">// tag2 includes tag2</span>
+<span class="st">"tag1"</span> == <span class="st">"tag2"</span> <span class="co">// tag1 is equivalent tag2</span>
+<span class="fu">empty</span>(<span class="st">"tag1"</span> * <span class="st">"tag2"</span>) <span class="co">// tag1 excludes tag2</span>
+(x, y) =&gt; x.<span class="fu">startsWith</span>(y) -&gt; x &lt; y <span class="co">// yがxのprefixであるならば, x include y</span></code></pre></li>
+</ul></li>
+<li>レポジトリ単位のプラグイン
+<ul>
+<li>レポジトリごとにプラグインを設定して, タグ付けの方法などを変更したい.</li>
+</ul></li>
+</ol>
+</body>
+          </div><a class="u-url" href="/ja/2015/02/10/from-livedoor-22411082.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>
