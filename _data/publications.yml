@@ -1,4 +1,10 @@
 publications:
+  - title: 大規模言語モデル (LLM)における低精度数値表現
+    resources:
+      - text: 第194回HPC研究発表会
+        url: https://www.ipsj.or.jp/kenkyukai/event/hpc194.html
+      - text: "スライド"
+        url: https://speakerdeck.com/pfn/20240508-hpckenkyukai-pfn-llm
   - title: "LLMの事前学習を支えるPreferred Networksのソフトウェア"
     resources:
       - text: "シンポジウムサイト"
