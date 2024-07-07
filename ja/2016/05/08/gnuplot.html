@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="gnuplotでストリームデータをプロットする">
+    
+    
+    <meta property="og:description" content="Qiitaからの移動">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2016/05/08/gnuplot.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">gnuplotでストリームデータをプロットする</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2016-05-08T00:00:00+09:00" itemprop="datePublished">
+                May 8, 2016
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <p>Qiitaからの移動</p>
+
+<hr />
+
+<p><code class="language-plaintext highlighter-rouge">gnuplot</code>でストリームデータ（パイプなど）をプロットしたいと思ったが，案外面倒だったので方法とモジュール．</p>
+
+<h1 id="ストリームデータのプロット方法">ストリームデータのプロット方法</h1>
+<p>ストリームデータのプロット方法を見ると，<code class="language-plaintext highlighter-rouge">pause</code>，<code class="language-plaintext highlighter-rouge">reread</code>の組み合わせなどが載っている（<a href="http://hiroohongo.sblo.jp/article/174930701.html?1460805147">ここ</a>など）．ただ，どれも基本的にpollingで追加データをプロットしているので，更新間隔は必要に応じて変える必要がある．</p>
+
+<p>一方，ファイルの変更を監視する(e.g., <code class="language-plaintext highlighter-rouge">inotify</code>)しようとすると，<code class="language-plaintext highlighter-rouge">gnuplot</code>上では動かないので，<code class="language-plaintext highlighter-rouge">reread</code>は使えない（と思う)．すなわち，<code class="language-plaintext highlighter-rouge">gnuplot</code>でpollingに頼らずストリームデータをプロットするには，</p>
+
+<ol>
+  <li>ファイルや<code class="language-plaintext highlighter-rouge">stdin</code>の変更を監視する．</li>
+  <li>変更されたら一時ファイルにその変更を反映する．</li>
+  <li><code class="language-plaintext highlighter-rouge">gnuplot</code>上で，<code class="language-plaintext highlighter-rouge">replot</code>または，<code class="language-plaintext highlighter-rouge">plot ...</code>をすることでプロットを更新する．</li>
+</ol>
+
+<p>という3つの処理を行う必要がある．</p>
+
+<h1 id="npmモジュール-sgnuplot">npmモジュール (<a href="https://www.npmjs.com/package/gnuplot-streaming">sgnuplot</a>)</h1>
+<p>上記処理は案外面倒だったので，npmのモジュールにまとめて公開した（使い方はREADME参照）．<code class="language-plaintext highlighter-rouge">inotify</code>があればシェルスクリプトでも書ける程度の内容だが，エコシステムがなく管理が難しいと感じたためnpmにした．
+また，logrotate等は考慮していないが，長期間の可視化をするためのものではないので，問題はないのではないかと思う．</p>
+
+<p>時間がかかる計算のログを確認したい時に，<code class="language-plaintext highlighter-rouge">tail -F</code>よりは見やすいツールとして使えるのではと期待（使ってはいない）．</p>
+
+          </div><a class="u-url" href="/ja/2016/05/08/gnuplot.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

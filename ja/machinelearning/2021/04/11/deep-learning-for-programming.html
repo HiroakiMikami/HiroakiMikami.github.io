@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="Deep Learningによるプログラミングタスク (Program Synthesis以外)">
+    
+    
+    <meta property="og:description" content="code completionとcode repairにDNNを使うことについての考えをdumpする">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/machinelearning/2021/04/11/deep-learning-for-programming.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">Deep Learningによるプログラミングタスク (Program Synthesis以外)</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2021-04-11T00:00:00+09:00" itemprop="datePublished">
+                Apr 11, 2021
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <p>Program Synthesis以外のプログラミングタスクへのDeep Learningの応用についても考えをまとめておく。</p>
+
+<h3 id="deep-learningの適用が考えられているプログラミングタスクの種類">Deep Learningの適用が考えられているプログラミングタスクの種類</h3>
+
+<p><a href="http://arxiv.org/abs/2102.04664">CodeXGLUEの論文</a>でベンチマークが、機械学習の分野でプログラミングを扱う際のタスクリストとして参考になりそう。CodeXGLUEの論文は以下のベンチマークを提案している。</p>
+
+<ul>
+  <li>clone detection</li>
+  <li>defect detection</li>
+  <li>cloze test</li>
+  <li>code completion</li>
+  <li>code translation</li>
+  <li>code search</li>
+  <li>code repair</li>
+  <li>text-to-code generation</li>
+  <li>code summarization</li>
+  <li>documentation translation</li>
+</ul>
+
+<p>また、Related Workのsectionでは他のタスクとして”idiom mining”、”bug localization”、”test case generation”、”program synthesis”が挙げられている。この論文では別物として扱われているが、”text-to-code generation”はProgram Synthesisの一部とみなせると思う。</p>
+
+<p>個人的には”cloze test”だけがこの論文で始めて知ったタスクだった。自然言語処理におけるMasked Language Modelみたいにソースコード中の1単語がmaskになっていて、そこに何が入るかを当てるタスクらしい。実タスクではなくて、おそらく特徴抽出能力の評価みたいな機械学習モデルそのものを評価するためのベンチマークに見える。</p>
+
+<p>正直大半のものは試したことがなかったりで意見がない。ただ、DNNや機械学習を使うという事を考えるとプログラミング言語ごとに作りこむのは割に合わないのではないかと思っている。プログラミング言語ごとに作りこむならちゃんとプログラムの静的解析を書いたほうが良い場面が多そうなイメージがある。
+だとすると、自然言語処理の応用というか流用のような形で実用的な性能になる日を待つべきなのかな、と思う。</p>
+
+<p>タスク単位で気になるのはcode completionとcode repairの2つ。code completionは普段一番使うツールだし repairは以前から興味があって<a href="https://aaai.org/ocs/index.php/AAAI/AAAI17/paper/view/14603">DeepFix</a>データセットを使ったテストとかもしてみたので。</p>
+
+<h3 id="code-completion">code completion</h3>
+
+<p>DNNをcode completionに使う上で一番気になるのは実行時間。CodeXGLUEでベースラインに使われているようなTransformerを使う場合、今のテキストエディタ・IDEで使われているような時間で候補を出すのは無理だと思う。試しに手元のPC (WSL-2) でCodeGPT2の生成を回してみると、sequence length=128で700msくらい候補生成にかかっている。
+Transformerの性質として、sequence lengthの二乗の計算量がかかること、実際のソースコードは128 tokenどころではないこと、を考えると厳しそう。</p>
+
+<p>実行時間を伸ばす代わりに今のコード補完よりも長いコードを補完するという手もある。CodeXGLUEではcode completionのタスクとしてtoken-level, line-levelの2種類あるが、line-levelの方がこれに当たる。
+この方針のほうがDNNを使ったコード補完としては筋がいいように思う。IDEにある他のツールと動作間隔が違うので (エディタ上で動くツールで~1secくらいでどんどん表示が更新されていく印象がある) ユーザーが慣れるまで時間かかりそうではあるけれど。</p>
+
+<h3 id="code-repair">code repair</h3>
+
+<p>code repairの方は、説明可能性は不要なのかというのが気になっている。今の手法を見ると大体seq2seq taskと捉えていて、「正しい修正後のコードを出すこと」を目的としている。</p>
+
+<p>何の情報もなしに「こう変更したらエラーが直る」と言われるだけのツールで困ることはないのかな。プログラマであれば修正内容を見たらエラー原因が分かるから問題ない？ そんなパッと見てわかるようなエラーの修正ならルールベースに書くだけでできそうな気もするけど、そういった作りこみをしないで済むことがDNN/機械学習のメリットということなんだろうか。</p>
+
+          </div><a class="u-url" href="/ja/machinelearning/2021/04/11/deep-learning-for-programming.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

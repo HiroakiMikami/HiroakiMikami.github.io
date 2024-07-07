@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="Synthesize, Execute and Debug Learning to Repair for Neural Program Synthesis メモ">
+    
+    
+    <meta property="og:description" content="Synthesize, Execute and Debug Learning to Repair for Neural Program Synthesisを読んだ時の記録">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2021/05/16/arxiv.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">Synthesize, Execute and Debug Learning to Repair for Neural Program Synthesis メモ</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2021-05-16T00:00:00+09:00" itemprop="datePublished">
+                May 16, 2021
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <p><a href="https://arxiv.org/abs/2007.08095">論文</a>, NeurIPS2020</p>
+
+<hr />
+
+<h1 id="論文内容">論文内容</h1>
+
+<p>Program Synthesisの性能を上げるために、一度SynthesizeしたプログラムをDNNによってrefinementする手法を提案した。</p>
+
+<h2 id="背景">背景</h2>
+
+<p>DNNによるProgram Synthesis (主にProgramming by Example) には大きく2つの種類がある。</p>
+
+<ol>
+  <li>実行途中のプログラムの状態を用いてプログラムを逐次生成するもの</li>
+  <li>実行途中の状態をもちいず一気にプログラムを生成するもの</li>
+</ol>
+
+<p>1はsequentialなプログラムの実行には適しているが、ループや分岐のようなcontrol flowを扱うことができないという問題がある。2は、それまで生成したプログラムの情報を使うことができないという問題がある。</p>
+
+<p>人間がプログラミングをやる時の事を考えると、ループや分岐を用いることは多いし、一度書いたプログラムをデバッグしながら正しいプログラムとしていく方が一般的である。このような人間のプログラミング能力を現在のProgram Synthesis技術は模倣できない。</p>
+
+<h2 id="提案手法">提案手法</h2>
+
+<p>DNNを用いプログラムのdebugをするcomponentを追加することで、Program Synthesisの性能を上げる手法を提案した。</p>
+
+<p>出発点となるプログラムを生成するためのProgram Synthesis手法には特に制約はなく、任意の手法を用いることができる。ここで生成したプログラムがtestcaseをpassしない場合、提案するdebug componentによりプログラムを修正する。</p>
+
+<p>プログラムの修正は (現在のプログラム, I/O example, プログラムの実行Trace)の3つを入力として受け取りtokenの追加・削除・変更を実行することで行う。token単位での編集なので同時に複数tokenの追加・削除・変更を行うことができるような設定をしている。そうでないと例えば <code class="language-plaintext highlighter-rouge">if</code>や <code class="language-plaintext highlighter-rouge">while</code>のような処理を追加することができないはずである。</p>
+
+<p>学習では、正しいプログラムにmutationを加えて間違ったプログラムを用意し、これを用いて教師あり学習を行う。</p>
+
+<h2 id="評価">評価</h2>
+
+<p><a href="https://msr-redmond.github.io/karel-dataset/">Karelというベンチマークデータセット</a>によって評価を行った。test caseのpass率を指標として評価し、debug componentの追加によってpass率が2pt～23pt向上することを示した。</p>
+
+<h1 id="メモコメント">メモ・コメント</h1>
+
+<p>アイデアとしては自然で有望そうに思えたが、性能向上がそこまででもないなぁという印象を受けた。Table1, Table2を組み合わせると、EGNPSで探索回数を増やした方が性能が良かったりする可能性はありそうな気がする。</p>
+
+          </div><a class="u-url" href="/ja/2021/05/16/arxiv.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

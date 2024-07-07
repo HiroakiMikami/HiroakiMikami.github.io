@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="Scala.jsでローカルにあるファイルをテストに利用する">
+    
+    
+    <meta property="og:description" content="Qiitaからの移動">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2016/02/02/scala-js-2.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">Scala.jsでローカルにあるファイルをテストに利用する</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2016-02-02T00:00:00+09:00" itemprop="datePublished">
+                Feb 2, 2016
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <p>Qiitaからの移動</p>
+
+<hr />
+
+<p><a href="http://www.scala-js.org/">Scala.js</a>メモ4つ目</p>
+
+<h1 id="環境">環境</h1>
+<p>|ソフトウェア|バージョン|
+|:—|:—|
+|Scala|2.11.7|
+|Scala.js|0.6.6|
+|sbt-httpserver|0.3.1|</p>
+
+<h1 id="目的">目的</h1>
+<p>Scala.jsでクライアント側の処理を書いている時，ローカルにあるファイルをテストに使いたいと思った．
+本来データはWebサーバから取得するのだけど，テストのたびに本番サーバにアクセスする訳には行かない，真面目なテスティングサーバを用意するのは面倒でやりたくない，といった感じの状況．</p>
+
+<p>そこで，<code class="language-plaintext highlighter-rouge">src/test/resources/</code>にhtmlファイル等を置き，そこへアクセスする事で，テストを書きつつ本番サーバへのアクセスをなくす，という戦略を考えた．</p>
+
+<h1 id="sbt-httpserver-プラグイン">sbt-httpserver プラグイン</h1>
+<p>調べたら具合の良いプラグイン(<a href="https://github.com/wav/sbt-httpserver">sbt-httpserver</a>)が見つかったので試してみた．まず，<code class="language-plaintext highlighter-rouge">plugins.sbt</code>に</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* sbt-httpserver */</span>
+<span class="n">resolvers</span> <span class="o">++=</span> <span class="nc">Seq</span><span class="o">(</span>
+  <span class="nv">Resolver</span><span class="o">.</span><span class="py">url</span><span class="o">(</span><span class="s">"wav"</span><span class="o">,</span> <span class="nf">url</span><span class="o">(</span><span class="s">"https://dl.bintray.com/wav/maven"</span><span class="o">))(</span><span class="nv">Resolver</span><span class="o">.</span><span class="py">ivyStylePatterns</span><span class="o">),</span>
+  <span class="s">"Scalaz Bintray Repo"</span> <span class="n">at</span> <span class="s">"http://dl.bintray.com/scalaz/releases"</span><span class="o">)</span> <span class="c1">// scalaz-stream</span>
+<span class="nf">addSbtPlugin</span><span class="o">(</span><span class="s">"wav.devtools"</span> <span class="o">%</span> <span class="s">"sbt-httpserver"</span> <span class="o">%</span> <span class="s">"0.3.1"</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p>と書いてpluginを追加し，<code class="language-plaintext highlighter-rouge">build.sbt</code>に以下のように書くと，</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">wav.devtools.sbt.httpserver.</span><span class="o">{</span><span class="nc">SbtHttpServerPlugin</span><span class="o">,</span><span class="nc">FileServer</span><span class="o">}</span>
+<span class="k">import</span> <span class="nn">SbtHttpServerPlugin.autoImport._</span>
+
+<span class="nf">enablePlugins</span><span class="o">(</span><span class="nc">SbtHttpServerPlugin</span><span class="o">)</span>
+<span class="nf">addHttpServices</span><span class="o">(</span>
+  <span class="k">_</span> <span class="o">+=</span> <span class="nv">FileServer</span><span class="o">.</span><span class="py">service</span><span class="o">(</span><span class="s">"test"</span><span class="o">,</span> <span class="o">(</span><span class="n">resourceDirectories</span> <span class="n">in</span> <span class="nc">Test</span><span class="o">).</span><span class="py">value</span><span class="o">)</span>
+<span class="o">)</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">sbt</code>起動中，<code class="language-plaintext highlighter-rouge">http://localhost:8083/test/</code>以下にアクセスする事で，リソースファイル(デフォルトでは<code class="language-plaintext highlighter-rouge">src/test/resources/</code>以下)へアクセスできる．</p>
+
+<p>これで当初目的は大凡達成できたが，ファイルサーバとしての設定記述をしたので，<code class="language-plaintext highlighter-rouge">post</code>メソッドが利用できないのは問題として残っている．実際に処理をするのではなく，想定されているフロー通りに動くモックがあればいいので，是非どうにかしたい．</p>
+
+          </div><a class="u-url" href="/ja/2016/02/02/scala-js-2.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

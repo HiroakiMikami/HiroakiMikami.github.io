@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="ツールと環境">
+    
+    
+    <meta property="og:description" content="Livedoorブログからの移動">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2015/02/21/from-livedoor-23122728.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">ツールと環境</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2015-02-21T00:00:00+09:00" itemprop="datePublished">
+                Feb 21, 2015
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <div>Livedoorブログからの移動</div><hr />
+<body><p>最近考えていること.</p>
+<p>IDEは日本語訳すると統合開発環境だし, よくemacs/vimは環境だ, とか言われる. ここでいう環境とは, おそらく, 「タスクに必要な作業を全てそのツールの上で行える.」というのがおおよその意味ではなかろうか. IDEは開発に必要な作業(コンパイルetc)をそのうえで全て行える(語弊は色々あるが)し, emacs, vimは設定すればだいたいのことはできる. また, 最近ではブラウザが環境っぽくなっている感じもある.</p>
+<p><br/></p><p>この定義では, OSとは環境であるとも言える. でも, じゃあOS上で全部の作業ができるからツールの統合はいらなくね, って言われると違うようにも思う. エディタとgitは連携させたいし, diffだってエディタ上で見たい(=そのためにはOSではなくエディタを環境とする必要がある).</p><p><br/></p>
+<p>結局, OS以外のツールを使ってそれを「環境」にするというのは, 行うタスクごとに最適化された環境を持ちたい, という欲求から来るのではないか. 例えば, emacsやvimはコーディングに最適化された環境として, ブラウザはネットサーフィンに最適化された環境とするような感じ.</p>
+<p>自分のよく使うツールと対応するタスクを考えると,</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">ツール</th>
+<th align="left">タスク</th>
+</tr>
+</thead>
+
+<tbody><tr class="odd">
+<td align="left">emacs</td>
+<td align="left">pdfビューア</td>
+</tr>
+<tr class="even">
+<td align="left">Sublime Text 3</td>
+<td align="left">コーディング</td>
+</tr>
+<tr class="odd">
+<td align="left">Firefox</td>
+<td align="left">ネットサーフィン・論文サーベイ・ライブラリの使用法調査</td>
+</tr>
+<tr class="even">
+<td align="left">xmonad</td>
+<td align="left">ウィンドウのopen/close</td>
+</tr>
+<tr class="odd">
+<td align="left">zsh</td>
+<td align="left">その他</td>
+</tr>
+
+</tbody></table>
+<p><br/></p><p>といった感じである. なんか明らかにFirefoxだけ, 複数のタスクを割り当てられているように思う. 行うタスクごとに最適化された環境を持つ, という観点で言えば, 今Firefoxで割り当てられているタスクを別のツールに上手く再分配・または新しいツールを導入するべきなんじゃないのか.</p>
+<p><br/></p><p>この観点を元に考えると, 次のようになった</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">ツール</th>
+<th align="left">タスク</th>
+</tr>
+</thead>
+
+<tbody><tr class="odd">
+<td align="left">emacs</td>
+<td align="left">論文サーベイ</td>
+</tr>
+<tr class="even">
+<td align="left">Sublime Text 3</td>
+<td align="left">コーディング/開発</td>
+</tr>
+<tr class="odd">
+<td align="left">Firefox</td>
+<td align="left">ネットサーフィン</td>
+</tr>
+<tr class="even">
+<td align="left">xmonad</td>
+<td align="left">ウインドウ・ハードウェアの管理</td>
+</tr>
+<tr class="odd">
+<td align="left">zsh</td>
+<td align="left">その他</td>
+</tr>
+
+</tbody></table>
+<p>ここで, Sublime Text 3における開発には, ライブラリの使用法調査も含まれる. 要するに, 論文をサーベイして, 読むときにはemacs, 何かしらのコーディングをするときに関連する作業はSublime Text, ネットサーフィンしたいときはFirefox, その他の作業はzsh内で全部やって, 他の(ウインドウを持つ)ツールは使わないようにすると非常に効率がいいのでは. xmonadはウインドウとハードウェア(無線LANのon/offなど)を管理することに専念する.</p>
+<p>そのためには,</p>
+<ul>
+<li>emacsにおける論文サーベイ環境</li>
+<li>Sublime Text 3におけるライブラリ使用方法調査環境</li><li>xmonadから音量等を調整する手段</li>
+</ul>
+<p>の3つが新たに必要だということになる. がんばろう.</p>
+<p><br/></p><p>書いてて, 論文執筆とプレゼン資料の作成が抜けていることに気づいた. どうせどっちもmarkdownとその派生である(pandocの使用により)ことを考えると, Sublime Text 3でもいいような気もする.</p><br/><p><b>2015/1/22 追記</b><br/></p><p>emacsを論文サーベイ環境にしようとしたけど, 調査するページがpdfだけとは限らない以上emacsよりもFirefoxに別モードみたいなのを作ってそこでやったほうがいい気がした. でもfirefoxのアドオン書くの面倒くさい.</p>
+</body>
+          </div><a class="u-url" href="/ja/2015/02/21/from-livedoor-23122728.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>
