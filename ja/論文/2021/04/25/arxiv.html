@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="Robot Program Parameter Inference via Differentiable Shadow Program Inversion メモ">
+    
+    
+    <meta property="og:description" content="論文メモ">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/%E8%AB%96%E6%96%87/2021/04/25/arxiv.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">Robot Program Parameter Inference via Differentiable Shadow Program Inversion メモ</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2021-04-25T00:00:00+09:00" itemprop="datePublished">
+                Apr 25, 2021
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <p><a href="http://arxiv.org/abs/2103.14452">論文</a>, ICRA2021</p>
+
+<hr />
+
+<h1 id="論文内容">論文内容</h1>
+
+<p>DNNによるinterpreterの模倣とgradient descentによる最適化を組み合わせた手法の提案。
+一般的なProgram Synthesisではなく、ロボットのプログラムにおけるパラメータのチューニングが目的となっている。</p>
+
+<h2 id="背景">背景</h2>
+
+<p>ロボットのプログラミングでは、複数の機能 (skill) を組み合わせて所望の動作を実現することが一般的である。skillにはおのおのパラメータがありチューニングが必要となる。
+人手によるパラメータチューニングでは何度も試行錯誤する必要があり、これを自動化することができるとロボットのプログラミングを簡単にすることができる。</p>
+
+<p>微分可能プログラミング (Differentiable Programming) はパラメータチューニングを効率化できる可能性がある。プログラムが微分可能であれば、gradient basedな最適化手法によりパラメータを更新し、最適なパラメータを見つけることができる。
+一方で、「プログラムが微分可能である」という制約は現実的でなく、多くのロボットプログラムのskillは微分可能な実装は普通存在しない。</p>
+
+<h2 id="提案手法">提案手法</h2>
+
+<p>ロボットのSkillをDNNで模倣することで微分可能な実装を作り、これを用いてパラメータ最適化を行う手法を提案した。</p>
+
+<p>DNNの学習はSkillで完結して行い、skillの組み合わせはDNNのstackで実現する。skillの組み合わせを直接DNNで模倣しないことで学習すべき問題を簡潔にできている。</p>
+
+<h2 id="評価">評価</h2>
+
+<p>ロボットプログラムのベンチマーク詳しくなくて土地勘がない。</p>
+
+<h1 id="メモコメント">メモ・コメント</h1>
+
+<p>Program Synthesisという立場から見ると、「計算グラフ (呼び出す関数と呼び出し順) は固定で入力の定数だけ合成する」という問題設定のように見える。
+templateの穴埋めみたいなケースを考えるとロボットプログラム以外のProgram Synthesisでも活用できる場面はありそう。</p>
+
+<p>この論文における「各skillを1つのDNNで模倣し、その組み合わせはDNNのstackで模倣する」という方針は凄いpromisingに見える。この方針の利点は、1) 関数の組み合わせを考えなくてよいので学習が簡単、2) 各DNNが十分精度よくプログラムを近似できていればそれらの組み合わせの精度もある程度保証される、の2つがあると思う。2は長いプログラムのProgram Synthesisでかなり重要になるのではないかという予想。</p>
+
+          </div><a class="u-url" href="/ja/%E8%AB%96%E6%96%87/2021/04/25/arxiv.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

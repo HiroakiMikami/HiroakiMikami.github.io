@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="Conkeror(Webブラウザ)で終了時のバッファの保存，復元をする">
+    
+    
+    <meta property="og:description" content="Qiitaからの移動">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2016/02/02/conkeror.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">Conkeror(Webブラウザ)で終了時のバッファの保存，復元をする</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2016-02-02T00:00:00+09:00" itemprop="datePublished">
+                Feb 2, 2016
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <p>Qiitaからの移動</p>
+
+<hr />
+
+<p>Webブラウザとして良く<a href="http://conkeror.org/">conkeror</a>を使い始めたのだが，前回終了時のバッファ(いわゆるタブ)を保存することがデフォルトではできない．
+公式のWikiや適当にググった結果を見る限り，そのような設定ファイルは見つからなかったので，自分で書いてみた．</p>
+
+<h2 id="conkerorとは">Conkerorとは</h2>
+<p>Mozilla XULRunnerをベースにしたWebブラウザで，</p>
+
+<ul>
+  <li>CUI/TUIでの利用がベース</li>
+  <li>Emacsとかviのように，設定ファイルで動作をカスタマイズ可能</li>
+</ul>
+
+<p>という特徴がある．KeySnailが使えなくなる日に備えて徐々にconkerorへの移動を自分は開始してみたが，まだまだ先は長い．</p>
+
+<h2 id="設定ファイル">設定ファイル</h2>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * The browser restore the windows and buffers from last time.
+ */</span>
+<span class="kd">var</span> <span class="nx">ioService</span> <span class="o">=</span> <span class="nx">Components</span><span class="p">.</span><span class="nx">classes</span><span class="p">[</span><span class="dl">"</span><span class="s2">@mozilla.org/network/io-service;1</span><span class="dl">"</span><span class="p">].</span><span class="nx">getService</span><span class="p">(</span><span class="nx">Components</span><span class="p">.</span><span class="nx">interfaces</span><span class="p">.</span><span class="nx">nsIIOService</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">startup_filename</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">.conkeror_startup</span><span class="dl">"</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">startup_file</span> <span class="o">=</span> <span class="nx">get_home_directory</span><span class="p">();</span>
+
+<span class="nx">startup_file</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">startup_filename</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">can_restore_windows_and_buffers</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">flag</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+  <span class="nx">for_each_buffer</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">buffer</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">count</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+
+    <span class="kd">var</span> <span class="nx">uri</span> <span class="o">=</span> <span class="nx">buffer</span><span class="p">.</span><span class="nx">current_uri</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">uri</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="nx">uri</span> <span class="o">!=</span> <span class="nx">homepage</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">flag</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+  <span class="k">return</span> <span class="nx">count</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="nx">flag</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">should_save_windows_and_buffers</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="nx">for_each_window</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">w</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">count</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">});</span>
+  <span class="c1">// if the number of windows is 1, save windows and buffers.</span>
+  <span class="k">return</span> <span class="nx">count</span> <span class="o">==</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="cm">/* save windows and buffers */</span>
+<span class="kd">function</span> <span class="nx">save_windows_and_buffers</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">windows</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="nx">for_each_window</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">w</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">buffers</span> <span class="o">=</span> <span class="p">[];</span>
+      <span class="nx">w</span><span class="p">.</span><span class="nx">buffers</span><span class="p">.</span><span class="nx">for_each</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">buffer</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">buffers</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">current_uri</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="kc">null</span><span class="p">));</span>
+      <span class="p">});</span>
+      <span class="nx">windows</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">buffers</span><span class="p">);</span>
+    <span class="p">});</span>
+
+    <span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">windows</span><span class="p">);</span>
+
+    <span class="cm">/* write file
+    (https://developer.mozilla.org/ja/docs/Code_snippets/File_I_O#.E3.83.95.E3.82.A1.E3.82.A4.E3.83.AB.E3.81.AB.E6.9B.B8.E3.81.8D.E5.87.BA.E3.81.99)
+    */</span>
+    <span class="kd">var</span> <span class="nx">foStream</span> <span class="o">=</span> <span class="nx">Components</span><span class="p">.</span><span class="nx">classes</span><span class="p">[</span><span class="dl">"</span><span class="s2">@mozilla.org/network/file-output-stream;1</span><span class="dl">"</span><span class="p">]</span>
+                       <span class="p">.</span><span class="nx">createInstance</span><span class="p">(</span><span class="nx">Components</span><span class="p">.</span><span class="nx">interfaces</span><span class="p">.</span><span class="nx">nsIFileOutputStream</span><span class="p">);</span>
+    <span class="nx">foStream</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="nx">startup_file</span><span class="p">,</span> <span class="mh">0x02</span> <span class="o">|</span> <span class="mh">0x08</span> <span class="o">|</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mi">0664</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="nx">foStream</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="nx">data</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+    <span class="nx">foStream</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">dumpln</span><span class="p">(</span><span class="dl">"</span><span class="s2">Error in save buffers: </span><span class="dl">"</span> <span class="o">+</span> <span class="nx">e</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// add hook to save the windows and buffers when the conkeror exit.</span>
+<span class="nx">add_hook</span><span class="p">(</span><span class="dl">"</span><span class="s2">quit_hook</span><span class="dl">"</span><span class="p">,</span> <span class="nx">save_windows_and_buffers</span><span class="p">);</span>
+<span class="nx">add_hook</span><span class="p">(</span><span class="dl">"</span><span class="s2">window_before_close_hook</span><span class="dl">"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">w</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">should_save_windows_and_buffers</span><span class="p">())</span> <span class="p">{</span>
+    <span class="nx">save_windows_and_buffers</span><span class="p">();</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+<span class="p">});</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">startup_file</span><span class="p">.</span><span class="nx">exists</span><span class="p">())</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/* read file
+(https://developer.mozilla.org/ja/docs/Code_snippets/File_I_O#.E3.83.95.E3.82.A1.E3.82.A4.E3.83.AB.E3.81.AB.E6.9B.B8.E3.81.8D.E5.87.BA.E3.81.99)
+*/</span>
+<span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="dl">""</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">fstream</span> <span class="o">=</span> <span class="nx">Components</span><span class="p">.</span><span class="nx">classes</span><span class="p">[</span><span class="dl">"</span><span class="s2">@mozilla.org/network/file-input-stream;1</span><span class="dl">"</span><span class="p">]</span>
+                        <span class="p">.</span><span class="nx">createInstance</span><span class="p">(</span><span class="nx">Components</span><span class="p">.</span><span class="nx">interfaces</span><span class="p">.</span><span class="nx">nsIFileInputStream</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">sstream</span> <span class="o">=</span> <span class="nx">Components</span><span class="p">.</span><span class="nx">classes</span><span class="p">[</span><span class="dl">"</span><span class="s2">@mozilla.org/scriptableinputstream;1</span><span class="dl">"</span><span class="p">]</span>
+                        <span class="p">.</span><span class="nx">createInstance</span><span class="p">(</span><span class="nx">Components</span><span class="p">.</span><span class="nx">interfaces</span><span class="p">.</span><span class="nx">nsIScriptableInputStream</span><span class="p">);</span>
+<span class="nx">fstream</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="nx">startup_file</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="nx">sstream</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="nx">fstream</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">str</span> <span class="o">=</span> <span class="nx">sstream</span><span class="p">.</span><span class="nx">read</span><span class="p">(</span><span class="mi">4096</span><span class="p">);</span>
+<span class="k">while</span> <span class="p">(</span><span class="nx">str</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">data</span> <span class="o">+=</span> <span class="nx">str</span><span class="p">;</span>
+  <span class="nx">str</span> <span class="o">=</span> <span class="nx">sstream</span><span class="p">.</span><span class="nx">read</span><span class="p">(</span><span class="mi">4096</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nx">sstream</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
+<span class="nx">fstream</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
+
+<span class="kd">var</span> <span class="nx">windows</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+
+<span class="nx">add_hook</span><span class="p">(</span><span class="dl">"</span><span class="s2">window_initialize_late_hook</span><span class="dl">"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">w</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">can_restore_windows_and_buffers</span><span class="p">())</span> <span class="k">return</span> <span class="p">;</span>
+
+  <span class="kd">var</span> <span class="nx">buffer</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+  <span class="nx">w</span><span class="p">.</span><span class="nx">buffers</span><span class="p">.</span><span class="nx">for_each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">buffer</span> <span class="o">=</span> <span class="nx">b</span><span class="p">;</span>
+  <span class="p">});</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nx">buffer</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span> <span class="k">return</span> <span class="p">;</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">l1</span> <span class="o">=</span> <span class="nx">windows</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">l1</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nb">window</span> <span class="o">=</span> <span class="nx">windows</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">l2</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">j</span> <span class="o">&lt;</span> <span class="nx">l2</span><span class="p">;</span> <span class="nx">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">uri</span> <span class="o">=</span> <span class="nx">ioService</span><span class="p">.</span><span class="nx">newURI</span><span class="p">(</span><span class="nb">window</span><span class="p">[</span><span class="nx">j</span><span class="p">],</span> <span class="kc">null</span><span class="p">,</span> <span class="kc">null</span><span class="p">);</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">j</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">i</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">browser_object_follow</span><span class="p">(</span><span class="nx">buffer</span><span class="p">,</span> <span class="nx">OPEN_NEW_WINDOW</span><span class="p">,</span> <span class="nx">uri</span><span class="p">.</span><span class="nx">spec</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+          <span class="nx">browser_object_follow</span><span class="p">(</span><span class="nx">buffer</span><span class="p">,</span> <span class="nx">OPEN_CURRENT_BUFFER</span><span class="p">,</span> <span class="nx">uri</span><span class="p">.</span><span class="nx">spec</span><span class="p">);</span>
+        <span class="p">}</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">browser_object_follow</span><span class="p">(</span><span class="nx">buffer</span><span class="p">,</span> <span class="nx">OPEN_NEW_BUFFER</span><span class="p">,</span> <span class="nx">uri</span><span class="p">.</span><span class="nx">spec</span><span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">${HOME}/.conkeror_startup</code>ファイルに，前回終了時のバッファ一覧が保存され，起動時にはそのファイルを読んで復元するようになっている．
+書いているときにハマったのは，</p>
+
+<ol>
+  <li>conkerorの終了は，次の2つのhookを併用して検出する必要がある(ここが結構ハマった)．
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">quit_hook</code>
+        <ul>
+          <li><code class="language-plaintext highlighter-rouge">C-x C-c</code>等での終了時のhook</li>
+        </ul>
+      </li>
+      <li><code class="language-plaintext highlighter-rouge">window_before_close_hook</code>が呼び出され，かつ，windowの個数が1個
+        <ul>
+          <li>何らかの手段で，最後のwindowを閉じたときのhook</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>スクリプトが呼び出されているタイミングでは，まだwindowは初期化されていない
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">window_initialize_late_hook</code>を使って，windowが開かれたときに復元処理を行う必要がある</li>
+    </ul>
+  </li>
+</ol>
+
+<p>の2箇所．この2点を除けば難しいところのないスクリプトだったし，参考URLはコメントで載せてあるので説明は省く．</p>
+
+          </div><a class="u-url" href="/ja/2016/02/02/conkeror.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

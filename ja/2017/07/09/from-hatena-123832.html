@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="DeepCoder追実装記録 (1)">
+    
+    
+    <meta property="og:description" content="はてなブログからの移動">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2017/07/09/from-hatena-123832.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">DeepCoder追実装記録 (1)</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2017-07-09T00:00:00+09:00" itemprop="datePublished">
+                Jul 9, 2017
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <div>Livedoorブログからの移動</div><hr />
+<div>はてなブログからの移動</div><hr />
+<body><h2>DeepCoder概略</h2>
+
+<p><code>[(Input, Output)] =&gt; Map[関数, 出現確率]</code>の関数を<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%C7%A5%A3%A1%BC%A5%D7%A5%E9%A1%BC%A5%CB%A5%F3%A5%B0">ディープラーニング</a>で学習し，それを利用してプログラム空間を探索・プログラム合成をする．
+詳しくは<a href="https://openreview.net/pdf?id=ByldLrqlx">論文</a>．</p>
+
+<h2>追実装について</h2>
+
+<p>レポジトリ: <a href="https://github.com/HiroakiMikami/deep-coder">ここ</a></p>
+
+<h3>デー<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%BF%A5%BB%A5%C3%A5%C8">タセット</a>の生成</h3>
+
+<p><a class="keyword" href="http://d.hatena.ne.jp/keyword/%BF%BC%A4%B5%CD%A5%C0%E8%C3%B5%BA%F7">深さ優先探索</a>でプログラムを列挙しながら，適当に入出力の組を生成する．同じ挙動をするプログラムを排除する部分の処理が重く，時間がかかっている．</p>
+
+<p>高速化の手段としては，</p>
+
+<ol>
+<li>並列化（入力の型が違えば独立に扱えるので）</li>
+<li>削除する部分が遅いようなので，その処理の見直し</li>
+</ol>
+
+
+<p>あたりが思いついている．恐らく1は重要だと思う．</p>
+
+<h3>学習</h3>
+
+<p>恐らく<a class="keyword" href="http://d.hatena.ne.jp/keyword/%B2%E1%B3%D8%BD%AC">過学習</a>してしまっている．原因は不明だけど，デー<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%BF%A5%BB%A5%C3%A5%C8">タセット</a>の生成の仕方が偏っている気がしないでもない．
+とりあえずデー<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%BF%A5%BB%A5%C3%A5%C8">タセット</a>の生成を高速化して，ちゃんとデー<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%BF%A5%BB%A5%C3%A5%C8">タセット</a>作ってもう一度やり直す．</p>
+
+<h4>ハマった点</h4>
+
+<ul>
+<li><a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%C1%A5%E5%A1%BC%A5%C8%A5%EA%A5%A2%A5%EB">チュートリアル</a>のままでOptimizerを<a class="keyword" href="http://d.hatena.ne.jp/keyword/SGD">SGD</a>にしたら局所解に陥ったのか収束しなかった．Adamだと収束する</li>
+</ul>
+
+
+<h3>今後</h3>
+
+<ol>
+<li><a class="keyword" href="http://d.hatena.ne.jp/keyword/%B2%E1%B3%D8%BD%AC">過学習</a>の問題を解消する．せめて原因を特定する</li>
+<li>小さめのデー<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%BF%A5%BB%A5%C3%A5%C8">タセット</a>(N=100くらい？)で評価をしてみたい</li>
+</ol>
+
+
+</body>
+          </div><a class="u-url" href="/ja/2017/07/09/from-hatena-123832.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

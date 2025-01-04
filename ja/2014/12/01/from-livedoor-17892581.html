@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="HTML5関連のURLメモ">
+    
+    
+    <meta property="og:description" content="Livedoorブログからの移動">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2014/12/01/from-livedoor-17892581.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">HTML5関連のURLメモ</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2014-12-01T00:00:00+09:00" itemprop="datePublished">
+                Dec 1, 2014
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <div>Livedoorブログからの移動</div><hr />
+<body>完全にブックマークのかわりと化してる.<br/><br/><a href="http://weboook.blog22.fc2.com/blog-entry-359.html" target="_blank"><span style="font-size: x-large;">CSSだけで作る動きのあるドロップダウンメニュー</span></a><br/>こんなことできるんだーっていう話. jQueryとか使うともっと色々簡単にできるらしいけど．．．？ 使ったことがないどころか, javascriptすら触ったことがある程度なので不明.<br/><br/>(12/3 追記)<br/>上記のままだと, ページ下部にコンテンツを作るとメニューがうまく働かなくなる. どうやら, ページ下部のコンテンツの下にメニューが表示されるようにhtmlが解釈されてしまうらしい.<br/>それを避けるためには, cssでz-indexをいじる必要がある. 深く考えずに, 上記ページのcssの全要素のz-index: 1を追記したらうまく動くようになった. <br/><br/><a href="http://www.marguerite.jp/Nihongo/WWW/Introduction/QuasiFrame.html" target="_blank"><span style="font-size: x-large;">擬似フレームについて</span></a><br/>久々にHTMLを書こうと思ったらframeが非推奨になってたので. <br/><br/>今だとcss使って色々できるんだなー. 昔もできたのかもしれないけど.<br/>GUIの実装はjavascriptとhtmlに任せてNode.jsで外部プロセス呼び出して内部ロジックを実行...ってやるとModel-Viewが分離できて綺麗なのかもしれないとか思った. <strike>でもscala-swingのlistenerの書き方綺麗だよね</strike><br/><br/> GUIをswingに任せるのは時代の潮流からは離れていっているのかもしれないけど, scala-swingのあの 
+<pre>listeners += {
+  case (event) if condition =&gt; ...
+}
+</pre>
+って書き方は色々なevent drivenなプログラムをする場面で役に立つと思う. 例えば, io処理とか.<br/>というわけで誰か or どこかがあの枠組みを一般化したようなライブラリを作っていないだろうか.
+</body>
+          </div><a class="u-url" href="/ja/2014/12/01/from-livedoor-17892581.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

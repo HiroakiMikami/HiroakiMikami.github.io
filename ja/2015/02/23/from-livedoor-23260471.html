@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="scalaと設定ファイル">
+    
+    
+    <meta property="og:description" content="Livedoorブログからの移動">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2015/02/23/from-livedoor-23260471.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">scalaと設定ファイル</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2015-02-23T00:00:00+09:00" itemprop="datePublished">
+                Feb 23, 2015
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <div>Livedoorブログからの移動</div><hr />
+<body><p>何かしらのアプリケーション(シェルコマンドレベルでも)を書くとき, 設定ファイルが必要になることは多い. rubyだったらYAMLとか, jsだったらJSONとか, いくつかの言語にはデファクトスタンダードがあるけどscalaにはまだ無いように思えるので, scalaで(比較的)簡単に使える設定ファイルの方式の一覧と, その選び方について自分の考え方をまとめてみようと思う.</p>
+<h2 id="propertiesファイル-java">propertiesファイル (Java)</h2>
+<p>Javaで用いられていた, 以下のようなファイル.</p>
+<pre><code>key = value1
+key.child = value2</code></pre>
+<h4 id="利点">利点</h4>
+<p>awk・シェルスクリプトとの相性が良い. そのため, これらと組み合わせる場合には便利である. 例えば, scalaでコマンドラインインターフェイスを作って, その補完ファイルをzshで書いた時に, 双方から設定ファイルを読み込まさなきゃいけない時など.</p>
+<p>後, Java組み込みのAPIを使うのでもしかすると高速に読み書きができるかも. 未調査なので本当かは知らない.</p>
+<h4 id="欠点">欠点</h4>
+<p>階層的データ構造をつくろうとした時の記述量の増大, 多言語との互換性の低下, 文字列しかデータが扱えない, など欠点はいっぱいある.</p>
+<h2 id="xml">XML</h2>
+<h4 id="利点-1">利点</h4>
+<p>scala言語構造にXMLリテラルがある. 実のところそれくらいしか利点はないように思う.</p>
+<h4 id="欠点-1">欠点</h4>
+<p>記述量が多い. 文字列しか扱えない. 正直設定ファイルとしてみるとJSONの下位互換なのではないかと思っている.</p>
+<h2 id="json">JSON</h2>
+<h4 id="利点-2">利点</h4>
+<p>記述量が比較的少なく, また人間が読みやすい. JavaScriptなどでも用いられるので多言語との互換性も高められる.</p>
+<h4 id="欠点-2">欠点</h4>
+<p>組み込みのパーサは使いづらいので, play-jsonなど別途ライブラリを追加しないと使えない.</p>
+<h2 id="scalaプログラム">scalaプログラム</h2>
+<p>scalaで型(objectなりclassなり)を定義し, それを<a href="http://d.hatena.ne.jp/xuwei/20140607/1402128646">このページ</a>のようにリフレクション経由でコンパイルすることで設定ファイルとする方法.</p>
+<h4 id="利点-3">利点</h4>
+<p>静的型付きの設定ファイルが書ける. 設定ファイルの入力ミスについて自分であーだこーだやる必要がない..</p>
+<p>また, scalaであるので関数を設定ファイルにかける. 従って, 例えば操作対象のファイルの情報を設定ファイルで記述したいとき, 他の方法だと拡張子のリストとか, 正規表現とかで扱うしかないが, scalaであれば<code>File -&gt; Boolean</code>の関数として書ける.</p>
+<p>最後に, scalaの暗黙変換とかを使うことで, 記法もかなり自由に設定できる.</p>
+<h4 id="欠点-3">欠点</h4>
+<p>readが遅く, writeが難しい. ただ, 事前コンパイルができるのであれば多分事前コンパイルしてそのバイナリをクラスパスに動的追加することで高速なreadが可能になると思われる. また, 非同期IOを用いて, その間に別の処理を行うこともscalaだと割と簡単なのでそれによる高速化もできる.</p>
+<h2 id="選択方法">選択方法</h2>
+<p>個人的には, 静的型安全であるとか色々な理由でscalaプログラムを使いたい. そしてそれがだめならJSON, propertiesファイルの順で使いたい. 従って, 設定ファイルの選択方法は次のような感じかなぁ.</p>
+<ul>
+<li>そもそも起動に時間がかかるアプリケーションである(IDEなど). または, 設定ファイル読み込み以外にボトルネックがある(e.g. ネットワークアクセス)</li>
+<li>Yes
+<ul>
+<li>scalaプログラム + 非同期IO</li>
+</ul></li>
+<li>No
+<ul>
+<li>設定ファイルはめったに変更されない.</li>
+<li>Yes
+<ul>
+<li>scalaプログラム + 事前コンパイル</li>
+</ul></li>
+<li>No
+<ul>
+<li>シェルスクリプトからも読み込む必要がある.</li>
+<li>Yes
+<ul>
+<li>propertiesファイル</li>
+</ul></li>
+<li>No
+<ul>
+<li>JSONフォーマット</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</body>
+          </div><a class="u-url" href="/ja/2015/02/23/from-livedoor-23260471.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

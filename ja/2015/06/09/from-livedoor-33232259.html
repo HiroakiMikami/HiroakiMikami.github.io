@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="Dynabook kira v73へのArch Linuxインストール">
+    
+    
+    <meta property="og:description" content="Livedoorブログからの移動">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2015/06/09/from-livedoor-33232259.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">Dynabook kira v73へのArch Linuxインストール</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2015-06-09T00:00:00+09:00" itemprop="datePublished">
+                Jun 9, 2015
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <div>Livedoorブログからの移動</div><hr />
+<body>Kira v73にArch Linuxを入れる時の諸々のメモ.<br/><br/>久しぶりのArch Linuxインストールかつラップトップは不思議な仕様していることも多いので慎重にインストールを進めたかった．が，kiraにインストールした例はWeb上では出てこないので，手探りするしか無かった．
+<h2 id="内容">内容</h2>
+<p>書いてあることは,</p>
+<ol style="list-style-type: decimal">
+<li>Arch Linuxのインストール(デュアルブート)</li>
+<li>各種基本的な設定</li>
+</ol>
+<p>の2つ．</p>
+<p>本当は他にも自分の設定とかいろいろ移行しているけど、それは省略.</p>
+<h2 id="インストール手順">インストール手順</h2>
+<h3 id="リカバリメディアの作成">リカバリメディアの作成</h3>
+<p><code>リカバリメディア作成ツール</code>で検索すると東芝のリカバリメディア作成ツールが出てくるのでクリックして起動．</p>
+<p>ものによるとは思うけれども，2015春モデル，i5, 8G, SSD 256GB, Office付きの場合，リカバリメディアの作成に32GB必要(厳密には20GBらしいけど，実際的には32GB必要だろう)．Linuxの感覚で8GBもあれば大丈夫でしょとか思っていると痛い目にあう(あった)．</p>
+<h3 id="インストールメディアの作成">インストールメディアの作成</h3>
+<p>昔のインストールメディアもあるけど，せっかくだしインストールメディアも新しくする．</p>
+<p><a href="https://www.archlinux.org/download/">ダウンロードページ</a>からダウンロードして，</p>
+<pre><code>$ sudo dd bs=4M if=Downloads/archlinux-2015.05.01-dual.iso of=/dev/sdb &amp;&amp; sync</code></pre>
+<p>でインストールメディアを作る．容量は700MB弱と言ったところ．</p>
+<p><code>dd</code>はリカバリメディアの作成より遥かに早く終わるので，</p>
+<ol style="list-style-type: decimal">
+<li>isoのダウンロード開始</li>
+<li>リカバリメディアの作成開始</li>
+<li>ダウンロード完了次第<code>dd</code></li>
+</ol>
+<p>の順番でやると多分無駄が少ない．</p>
+<h3 id="パーティションの縮小">パーティションの縮小</h3>
+<p>まずは高速スタートアップの無効化．参考ページに色々書いてあるのでその通りにやればOK．なお，コントロールパネルは"コントロール パネル"(間に空白を挟む)が正式なようだ．間を詰めると検索で出てこない気がする．</p>
+<p>そうしたら次にパーティションの縮小．縮小可能なのは109GBほど．深く考えることなく限界まで縮小した．インストール直後から40GB近くWindowsは食っているが，それでもまだ，70GBほど空き容量があるはずであり，まぁ十分だと思う．<br/>
+ただ，Windowsもバリバリ使う人は，Windowsの方に容量割り当てたほうが安全と思われる．Arch LinuxからWindowsへのアクセスとWindowsからArch Linuxへのアクセスは圧倒的に前者の方が楽だし，基本的にWindowsの方が容量食う用途に使われるはず．</p>
+<h3 id="インストール開始">インストール開始</h3>
+<p>再起動して，KIRAと表示された画面でまずはF2を連打．どっかにSecure Bootと書かれた設定項目があるので，これをdisableにする．そうしたらSave and Exitで，もう一度同じ画面でF12を連打．ここで，USB Memoryを選ぶとインストールメディアから起動できる．<br/>
+なお，その後の選択画面では放置すると勝手にx86_64のarchが選択される．</p>
+<h3 id="ネットワークの接続">ネットワークの接続</h3>
+<p>しばらくするとrootでログインするはず．英語キーボードなので，嫌な人は</p>
+<pre><code>$ loadkeys jp106</code></pre>
+<p>して日本語キーボードに変更する．</p>
+<p>そして，多くの手順では，ここで(有線)ネットワーク接続することを推奨されるわけだが，Ultrabookに有線なんてあるはずがない． なので，</p>
+<pre><code>$ wifi-menu</code></pre>
+<p>して無線でつなぐ．wifi-menu終了時に真っ黒になるのちょっと怖かった．この時，事前に</p>
+<pre><code>$ ip link set wlp1s0 up</code></pre>
+<p>等してwlanをupしていると接続に失敗するみたい．一応upしておくかーとか思うと痛い目見るので注意．なお，原因は不明．<br/>
+また，この後の顛末を考えるとここで<code>wifi-menu</code>失敗は十分ありうる．その場合は頑張るしかない. 後述の無線LANも参照.</p>
+<h3 id="パーティションの設定">パーティションの設定</h3>
+<p>次に，パーティション．これが地味に色々と情報が錯綜する部分なので注意．自分は一度BIOSの時代と同じことをしてやり直す羽目になった．</p>
+<ul>
+<li><code>lsblk</code>して内部SSDを確認する．
+<ul>
+<li>まぁ多分<code>/dev/sda</code>なはず．</li>
+</ul></li>
+<li><code>cgdisk /dev/sda</code>して，パーティション設定する．<code>cfdisk</code>とは若干違うので戸惑うかもしれない．
+<ol style="list-style-type: decimal">
+<li><code>New -&gt; &lt;Enter&gt; -&gt; 512M -&gt; ef00 -&gt; boot</code>で/bootを512M確保できる．
+<ul>
+<li>なんでもEFIでは512M以上が推奨されるらしい．ここで，<enter>はenterキーをそのまま押すこと．</enter></li>
+<li>何も考えずに200M, Linux filesystemとかやるとgrubのところで死んでやり直しになるので注意．</li>
+</ul></li>
+<li><code>New -&gt; Enter&gt; -&gt; Enter -&gt; Enter -&gt; /</code>とすると，/を残り容量分確保できる．</li>
+<li><code>Write</code>, <code>Quit</code>の順で終了し，パーティション設定完了．</li>
+</ol></li>
+</ul>
+<p>なお，swapは8GBあればいらないという可能性に賭けることとする．<br/>
+ここまで終わった段階で，<code>lsblk</code>するとsda6, sda7あたりが増えているはず．そこで，</p>
+<pre><code>$ mkfs.vfat -F32 /dev/sda6
+$ mkfs.ext4 /dev/sda7</code></pre>
+<p>でフォーマット. そうしたら，</p>
+<pre><code>$ mount /dev/sda7 /mnt
+$ mkdir /mnt/boot
+$ mount /dev/sda6 /mnt/boot</code></pre>
+<p>でマウントする．</p>
+<h3 id="ssdへのインストール">7. SSDへのインストール</h3>
+<p>この後の作業高速化のため，<code>/etc/pacman.d/mirrorlist</code>の先頭に</p>
+<pre><code>Server = http://ftp.jaist.ac.jp/pub/Linux/ArchLinux/$repo/os/$arch</code></pre>
+<p>を追加．<br/>
+そして，</p>
+<pre><code>$ pacstrap /mnt base base-devel dialog vim emacs</code></pre>
+<p>でインストール．ちなみに，後ろのパッケージを追加してインストールしているのは過去の名残みたいなもの．深い意味はないが入れるときのコマンドを自分のメモからコピペしているのでいつも追加している．</p>
+<p>これはしばらく時間がかかり，放置しておくと画面が真っ暗になる．その時は適当なキーを叩くともどるので焦らない．終了間際にファンがなり始めるので放置しといてファンが鳴ったら作業に戻ればいい．</p>
+<h3 id="初期設定">8. 初期設定</h3>
+<p>とりあえず</p>
+<pre><code>$ genfstab -U -p /mnt &gt;&gt; /mnt/etc/fstaba
+$ arch-chroot /mnt /bin/bash</code></pre>
+<p>でSSDの方の環境へ移る．後は最低限の設定をしていく．多分この辺じゃないかな.</p>
+<pre><code>$ emacs /etc/locale.gen # en_US.UTF-8とjp_JP.UTF-8をコメントアウト
+$ locale-gen
+$ echo LANG=en_US.UTF-8 &gt; /etc/locale.conf
+$ export LANG=en_US.UTF-8
+$ echo KEYMAP=jp106 &gt; /etc/vconsole.conf 
+$ ln -s /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
+$ hwclock -u -w
+$ echo &lt;ホスト名&gt; &gt; /etc/hostname
+$ systemctl enable dhcpcd.service
+$ passwd</code></pre>
+<p>また，以後のことを考えると(無線設定参照)，以下の2つも入れておいたほうがいいと思う．</p>
+<pre><code>$ pacman -S wireless_tools dhclient</code></pre>
+<h3 id="grubの設定">Grubの設定</h3>
+<p>順当にコマンドを叩いていく．最後の2行はいらない可能性あり．よくわからないので参考サイトからそのまま打ち込んだ．</p>
+<pre><code>$ pacman -S os-prober
+$ pacman -S grub dosfstools efibootmgr
+$ grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=arch_grub --recheck --debug
+$ grub-mkconfig -o /boot/grub/grub.cfg
+$ mkdir /boot/EFI/boot
+$ cp /boot/EFI/arch_grub/grubx64.efi  /boot/EFI/boot/bootx64.efi</code></pre>
+<p>ここまでで設定は終わり．なので，</p>
+<pre><code>$ exit
+$ reboot </code></pre>
+<p>する．参考サイトで，exitとrebootの間でUSBメモリ抜けって書かれているが，そうするとrebootできずに長押しする羽目になる．注意．</p>
+<p>そして，Windowsとの選択画面になれば全て成功．なのだが，自分の場合はWindowsが表示されなかった．Arch Linuxへrootでログインし，もう一度</p>
+<pre><code>grub-mkconfig -o /boot/grub/grub.cfg</code></pre>
+<p>すると治った．なんかusb経由じゃ<code>os-prober</code>が上手く働かないっぽい．原因究明する気はないので詳細は知らない．</p>
+<h3 id="無線設定">無線設定</h3>
+<p>最難関と言ってよかった．数時間かけてどうにかできた．とはいえ，USBブートなら(arch linuxのインストールができたように)無線につながる．なのになぜかSSDのArch Linuxではつながらない．<br/>
+詳細な原因はよくわからないが，とりあえず<code>dhcpcd</code>が悪いらしい．</p>
+<p>なので，まず<code>wifi-menu</code>で，以前と同じように設定する．<code>CONFIGURE FAILED</code>とか言われるが，放置して設定ファイルを保存する．すると，<code>/etc/netctl/&lt;名前&gt;</code>というファイルが生成されているはずなので，これをエディタで開いて，末尾に<code>DHCPClient='dhclient'</code>を追加する．<br/>
+これで無線につながって，<code>pacman</code>でパッケージインストールできるようになるはず．</p>
+<p>もし上記方法で上手く行かない場合，USBメディアからブートして，<code>wifi-menu</code>, <code>mount</code>, <code>arch-chroot</code>すればpacmanでパッケージインストールできる環境になるので，それをしつつ色々試してみると良いのではないか． このあと(Xfce4導入後), NetworkManagerを使うように変えたが, そっちだと問題なく接続できた. なので、このタイミングでさっさとNetworkManager導入して切り替えるのもありかもしれない.</p>
+<h3 id="ユーザ追加">ユーザ追加</h3>
+<p>まずはユーザ追加をする．</p>
+<pre><code>$ pacman -S zsh
+$ useradd -m -g users -G wheel -s /bin/zsh &lt;ユーザ名&gt;
+$ passwd &lt;ユーザ名&gt;
+$ pacman -S sudo
+$ visudo</code></pre>
+<p>としてvisudoを適切にいじる．</p>
+<h3 id="各種ツールインストール">各種ツールインストール</h3>
+<p>ここでは，まずツールをインストールし，その後現在のlaptopから設定を持ってくるという2段階で設定することにする．</p>
+<h4 id="git">Git</h4>
+<pre><code>$ pacman -S git tig</code></pre>
+<h4 id="x11">X11</h4>
+<pre><code>$ sudo pacman -S xorg-server xorg-server-utils xorg-xinit
+$ sudo pacman -S mesa
+$ sudo pacman -S xf86-video-intel
+$ sudo pacman -S xf86-input-synaptics
+$ sudo pacman -S xterm</code></pre>
+<p>そうしたら</p>
+<pre><code>$ startx</code></pre>
+<p>でXの起動テスト．なんかそれっぽかったら<code>reboot</code>しておく．</p>
+<h4 id="xfce4-lightdm">Xfce4, lightdm</h4>
+<pre><code>$ sudo pacman -S xfce4 xfce4-goodies gvfs
+$ sudo pacman -S lightdm lightdm-gtk-greeter</code></pre>
+<p>でXfce4とlightdmをインストール．なお，Xfce4はgnomeは重くて嫌いで，でもxmonadだけで全部自分で書くのは馬鹿らしいという判断によるインストールである．また，<code>lightdm</code>はさすがにディスプレイマネージャーくらい入れたほうがいいかなと思ってのこと．</p>
+<pre><code>$ sudo systemctl enable lightdm.service</code></pre>
+<p>でlightdmを有効化．</p>
+<pre><code>$ reboot</code></pre>
+<p>したら<code>lightdm</code>が待っている．</p>
+<p>タブ補完がシェル等で効かなくなるので，<a href="http://www.astec-x.com/FAQ/xfce4.html">ここ</a>を参考に元に直す．</p>
+<h4 id="日本語環境">日本語環境</h4>
+<p>これがないとだいぶ辛い．主にgitのコミットメッセージが見れないとか．</p>
+<p><a href="http://note.kurodigi.com/archlinux-setting/">ここ</a>を参考にひたすら作業するだけ．</p>
+<h4 id="窓使いの憂鬱-for-linux">窓使いの憂鬱 for Linux</h4>
+<p>キーバインド変更に使っているツールなのでこれを導入する. 昔やったはずなのにすべてを忘れていて比較的大変だった.</p>
+<p>まず, GitHubの方を落として, make, install</p>
+<pre><code>$ git clone https://github.com/kenhys/mayu
+$ sudo pacman -S boost
+$ ./configure &amp;&amp; make &amp;&amp; sudo make install</code></pre>
+<p>起動の方だが，root権限が必要なため, systemdを使う必要がある．mayu.serviceを適当に書けばいいわけだが, この時，mayu.serviceがsymlinkだと死ぬらしい．ただバグみたいなのでそのうち治るかもしれない．少なくとも現在はsymlinkではいけない．</p>
+<h4 id="xmonad">xmonad</h4>
+<p>まず，Firefoxとかを入れるのもありだけど，ここでxmonadを入れる．特に理由はないが，低レイヤから順次やるほうが自分はいいと思っている．</p>
+<p><a href="https://wiki.haskell.org/Xmonad/Using_xmonad_in_XFCE#Introduction">ここ</a>が参考になる．</p>
+<p>普通に設定して，xmonad --replaceするだけだけど，問題点としては</p>
+<ul>
+<li>先にxfceConfigを利用したXMonadの設定ファイルを用意すること．</li>
+<li><code>sudo pacman -S dmenu</code>しておくこと．</li>
+</ul>
+<p>この2つ位だろうか． なんかXfce4のパネルが見えなくなってしまったらxfce4-panel -rとすると治る.</p>
+<h4 id="network">Network</h4>
+<p>基本的なデスクトップ環境がそろったので，そろそろ必要ツールを入れていく． ネットワークはUbuntuの時同様NetworkManagerを用いる．</p>
+<p><a href="http://note.kurodigi.com/post-0-14/">ここ</a>に全部書いてあるのでそのとおりにやる．<br/>
+ただし, <code>sudo pacman -S network-manager-applet</code>を忘れないように．これをしないとデスクトップ通知はできない． また, <code>sudo systemctl start NetworkManager</code>も忘れずに．</p>
+<h4 id="時刻">時刻</h4>
+<p>Windowsとデュアルブートすると時刻がずれることがある. 以下の参考サイトあたりを見て、原因がlocal timeとuniversal timeによるものだとわかったら, まずWindowsの方でインターネット経由の時刻同期を切る. 方法は参考サイト参照.<br/>
+<code>timedatectl set-time "$(timedatectl status | grep Universal | awk '{print $4,$5}')"</code> みたいにしてハードウェアクロックをuniversal timeに書き換える.</p>
+<ul>
+<li>参考サイト
+<ul>
+<li>http://www.addictivetips.com/windows-tips/disable-time-synchronization-in-windows-7/</li>
+<li>https://archlinuxjp.kusakata.com/wiki/%E6%99%82%E5%88%BB#Windows_.E3.81.A7_UTC_.E3.82.92.E4.BD.BF.E3.81.86</li>
+</ul></li>
+</ul>
+<h4 id="音声">音声</h4>
+<p>この状態でyoutubeとかいくと音が出ない. デフォルトの音声がHDMIに行っているからっぽいので、<code>/etc/asound.conf</code>に</p>
+<pre><code>defaults.pcm.card 1
+defaults.pcm.device 0</code></pre>
+<p>と書いてrebootする.</p>
+<ul>
+<li><a href="http://unix.stackexchange.com/questions/93128/alsa-how-can-i-tell-my-default-audio-output-is-card-2-and-device-0-not-hdmi">参考</a></li>
+</ul>
+<h2 id="参考サイト">参考サイト</h2>
+<ul>
+<li>http://cotaro-science.blogspot.jp/2014/08/arch-linux.html</li>
+<li>http://ac-mopp.blogspot.jp/2014/04/2014-vaio-pro-svp1322a1j-arch-linux.html</li>
+<li>http://note.kurodigi.com/archlinux-uefi-install/</li>
+<li>http://note.kurodigi.com/post-0-21/</li>
+<li>http://http://note.kurodigi.com/archlinux-setting/#id309</li>
+<li>Arch Wiki (言うまでもない)</li>
+</ul>
+</body>
+          </div><a class="u-url" href="/ja/2015/06/09/from-livedoor-33232259.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

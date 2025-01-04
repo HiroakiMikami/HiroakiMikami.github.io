@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="Neural Program Synthesisの現状と思うこと">
+    
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/programsynthesis,%20machinelearning/2021/04/03/program-synthesis.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">Neural Program Synthesisの現状と思うこと</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2021-04-03T00:00:00+09:00" itemprop="datePublished">
+                Apr 3, 2021
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <p>ここ最近のDNNを用いたProgram Synthesisについて自分から見えていること、思っていることを雑にまとめてみる。</p>
+
+<h3 id="neural-program-synthesisのカテゴリ">Neural Program Synthesisのカテゴリ</h3>
+
+<p>Neural Program Synthesisにはいくつか種類がある。大きく、</p>
+
+<ol>
+  <li>探索の効率化手段としてDNNを用いる</li>
+  <li>自然言語生成と同じ枠組みでDNNを用いる</li>
+  <li>DNNでinterpreterを近似し、backpropagationでプログラムを最適化する</li>
+</ol>
+
+<p>の3つに分けられる。
+ただし、1と2の違いは曖昧としたものではある。
+イメージとしては1はASTを生成していて、2は文字列 (ソースコード) を生成しているイメージを持っている。</p>
+
+<p>1については、2017年<a href="https://www.microsoft.com/en-us/research/publication/deepcoder-learning-write-programs/">DeepCoder</a>の登場後、Programming by Exampleの目的では結構つかわれている印象がある。一番最近だと<a href="https://arxiv.org/abs/2003.09040">TFCoder</a>や<a href="http://arxiv.org/abs/2007.14381">BUSTLE</a>が当てはまると思っている。</p>
+
+<p>一方、text to code translation (自然言語を入力とするProgra Synthesis)では2が一般的な印象がある。機械翻訳と同じSeq2Seqタスクとして扱えるので実装が簡単だったとかの理由がありそう。例えば、<a href="https://sigpx.org/5/">SIGPX 5</a>で自分が紹介・その後再実装した<a href="https://arxiv.org/abs/1704.01696">NL2Code</a>が当てはまる。2020年には (Program Synthesis用ではないが) <a href="https://arxiv.org/abs/2005.14165">GPT-3</a>も登場した。</p>
+
+<p>3は偶に出てくるが、適用できる問題設定が狭いからかあまり大きくはとりあげられていない印象がある。<a href="https://arxiv.org/abs/1901.02875">この論文</a>のような3D形状を扱うプログラミングタスクで使われている例を見る (他のタスクで見たことがない)</p>
+
+<hr />
+
+<h3 id="1-探索の効率化手段としてdnnを用いるについて">「1: 探索の効率化手段としてDNNを用いる」について</h3>
+
+<p>DNNを用いたProgram Synthesisとして一番分かりやすい実装かなと思う。また、探索アルゴリズムではプログラミング言語の文法を用いてsyntaxのおかしいプログラムを排除できるので、生成したプログラムはsyntax上はvalidであることを比較的簡単に保証できる。</p>
+
+<p>問題規模を絞って探索範囲を狭めた場合、徐々にツール化の目途が立ちつつあるように見える。<a href="https://arxiv.org/abs/2003.09040">TFCoder</a>はその一例。</p>
+
+<p>一方、この方針で単純に問題規模を大きくし複雑なプログラムを合成する、という研究はあまりうまくいっていないように見える。
+最近はProgramming by Exampleタスクであることを使って、プログラム合成 → 実行 → プログラム修正 → 実行 ….というループを回しiterativeに解法を洗練させていくアプローチをよく見る。<a href="http://arxiv.org/abs/1906.04604">この論文</a>は強化学習によってプログラムを修正している。</p>
+
+<p>想像でしかないが、やはり一発で正しいプログラムを合成するというのは難易度が高く、(人間がやるように) テストしながらプログラムをデバッグしていく過程が必須なんじゃないかと思う。</p>
+
+<p>また、</p>
+
+<ul>
+  <li>探索問題である以上探索回数を多くするのが性能に直結しがち</li>
+  <li>プログラミング言語の文法を使った探索は複雑であまりGPU向きでない</li>
+  <li>後処理でinvalidなsyntaxなものを排除するのは簡単</li>
+</ul>
+
+<p>といった点で問題規模が大きくなると、この1の方針をとるメリットが薄れがちというのもあるのでは? と思っている。</p>
+
+<h3 id="2-自然言語生成と同じ枠組みでdnnを用いるについて">「2: 自然言語生成と同じ枠組みでDNNを用いる」について</h3>
+
+<p>GPT-3から話題に大きく上がっている。機械翻訳と同じ枠組みで英語 → 日本語を翻訳するように英語 → Java/Python/…. を翻訳するタスクとしてProgram Synthesisを行う。</p>
+
+<p>プログラムをsequence (文字列) として生成するため、普通にやるとsyntaxがおかしいプログラムが出力される。
+2017年～2019年ごろまではこの問題への対処がホットなテーマだったように思う。<a href="https://arxiv.org/abs/1704.01696">NL2Code</a>は生成 (decode) の工夫で対処している。</p>
+
+<p>ただ、最近はこの問題意識は重視されていなさそう。Microsoftが出したNeural Program Synthesisのベンチマークデータセットの提案<a href="http://arxiv.org/abs/2102.04664">論文</a>では後処理でsyntaxがおかしいプログラムを外しているらしい。実際一度parseすればsyntax errorがあるかどうかはすぐわかるので大量に生成して後でフィルタリングすれば良というのは合理的な気がする。</p>
+
+<p>どの程度論理的にプログラムを生成できるかについては、調査した論文は見たことがない。ただ、個人的に実験した感覚では学習データの丸暗記 + ちょっとした変更、の域を超えるものではない印象がある。</p>
+
+<p>GPT-3がどうなのかは出遅れてOpenAI APIにまだアクセスできないので実際のところは分からない。ただ、「GPT-3も学習済みタスクから近いものをとってきているらしい」という<a href="http://arxiv.org/abs/2102.07350">論文</a>があり、個人的にはこの話が納得がいっている。
+(雑に言えば)「GPT-3はStack Overflowを暗記したのでStack Overflowにある質問なら答えることができる」みたい状況にあるのではないだろうか。</p>
+
+<h3 id="3-dnnでinterpreterを近似しbackpropagationでプログラムを最適化するについて">「3: DNNでinterpreterを近似し、backpropagationでプログラムを最適化する」について</h3>
+
+<p>DNNでinterpreterを近似するという手法の制約上、画像や3Dモデルに対して適用している例しかしらない。自分で試したことがないので正直勘所が分からないというのもあるので、試してみたいなぁという気持ちがある。</p>
+
+<hr />
+
+<h3 id="今後">今後</h3>
+
+<p>1のような探索+枝刈りDNNという手法はツール化・実用化のフェーズに入りつつある気がする。IDE上のツールみたいな感じで実用化がゴールなのかな。例えばdoctestを書くとその場で関数の中身が合成される、というように。</p>
+
+<p>2はホットな分野だけど、着地点がまだ見えていない気がする。Web上にあるsample programを暗記できているとすると、「ググる代わりにchatbotに聞く」みたいなアプリケーションとしての実用化が一番最初なのかもしれないと思う。</p>
+
+<p>3は実例が少ないけど、個人的には期待している。Neural Architecture Searchがドメイン知識を利用せず微分可能にして素直にSGDで最適化、という方針が結構うまくいったのと同じように、案外多くのドメインがこの方針で高速化できたりしないのかなと思っている。
+当てずっぽうでも丸暗記でもないNeural Program Synthesisを実現できそうな技術が今のところこれしか見当たらないから期待をかけている、という側面も多分にありはするけど……</p>
+
+          </div><a class="u-url" href="/ja/programsynthesis,%20machinelearning/2021/04/03/program-synthesis.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

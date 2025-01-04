@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="Scala.jsのテストでPromise，Futureを使う (ScalaTest)">
+    
+    
+    <meta property="og:description" content="Qiitaからの移植">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/scala,%20scala.js,%20scalatest/2016/02/01/scalajs.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">Scala.jsのテストでPromise，Futureを使う (ScalaTest)</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2016-02-01T00:00:00+09:00" itemprop="datePublished">
+                Feb 1, 2016
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <p>Qiitaからの移植</p>
+
+<hr />
+
+<p>はじめての投稿となります．<br />
+Scala.jsに関するTipsが（あるかもしれないけど）Qiita上で見つかりづらかったのでいくつかまとめました．分けるほどの内容も無いけど，検索時の利便性を鑑み分割で投稿します(3から4つ)．</p>
+
+<p>まずは<a href="http://www.scala-js.org/">Scala.js</a>の試用中に，並列処理周りでハマったのでメモがてら書き残し</p>
+
+<h1 id="まとめ">まとめ</h1>
+<ul>
+  <li>Scala.jsの単体テストでScalaTestを利用する方法</li>
+  <li>Scala.jsの単体テストで，<code class="language-plaintext highlighter-rouge">Promise</code>，<code class="language-plaintext highlighter-rouge">Future</code>を使う方法</li>
+</ul>
+
+<h1 id="テスト環境">テスト環境</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">ソフトウェア</th>
+      <th style="text-align: left">バージョン</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Scala</td>
+      <td style="text-align: left">2.11.7</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Scala.js</td>
+      <td style="text-align: left">0.6.6</td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="基本事項">基本事項</h1>
+<h2 id="基本1-scalajsでのテスト">基本1: Scala.jsでのテスト</h2>
+<p><a href="www.scala-js.org/tutorial/basic/">公式のチュートリアル</a>では，utestを使う事が推奨(?)されている．utestを利用する場合は，チュートリアルの通りになので省略する．ただ，</p>
+
+<ol>
+  <li>utestを自分はよく知らない</li>
+  <li>xUnitフレームワークっぽい記法でテスト名を書きづらい</li>
+</ol>
+
+<p>等の理由から，使い慣れたScalaTestを使っている．なぜか何処にもドキュメントが無いが，<a href="http://www.scalatest.org/release_notes/3.0.0">公式のリリースノート</a>を見る限り，3.0.0-M15からScala.jsが完全にサポートされたようだ．build設定も難しくなく，<code class="language-plaintext highlighter-rouge">build.sbt</code>に</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">libraryDependencies</span> <span class="o">+=</span> <span class="s">"org.scalatest"</span> <span class="o">%%%</span> <span class="s">"scalatest"</span> <span class="o">%</span> <span class="s">"3.0.0-M15"</span> <span class="o">%</span> <span class="s">"test"</span>
+</code></pre></div></div>
+
+<p>と書くだけ．Scala.jsのバージョンに合わせるため，<code class="language-plaintext highlighter-rouge">%%%</code>を使うこと，指定するバージョンにさえ気をつければ普通のScalaTestの設定方法とほぼ変わらない．
+ちなみに，バージョンは<code class="language-plaintext highlighter-rouge">3.0.0-M10</code>でも今の所問題なく動いているので問題が起きればダウングレードも検討すべきかもしれない．</p>
+
+<h2 id="基本2-scalajsでの並列処理">基本2: Scala.jsでの並列処理</h2>
+<p>JavaScriptといえば非同期API．当然，Scala.jsでも非同期APIを使うことはよくあり，<code class="language-plaintext highlighter-rouge">scala.concurrent.{Promise|Future}</code>を使う．使い方は<a href="http://blog.pab-tech.net/2014/03/07/scala-js-future.html">ここ</a>などにある通りで，</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">org.scalajs.dom</span>
+<span class="k">import</span> <span class="nn">org.scalajs.dom.window</span>
+
+<span class="k">val</span> <span class="nv">promise</span> <span class="k">=</span> <span class="nc">Promise</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span>
+<span class="nv">window</span><span class="o">.</span><span class="py">onload</span> <span class="k">=</span> <span class="o">(</span><span class="n">e</span><span class="k">:</span> <span class="kt">dom.Event</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="o">{</span>
+  <span class="nv">promise</span><span class="o">.</span><span class="py">success</span><span class="o">(</span><span class="mi">10</span><span class="o">)</span>
+<span class="o">}</span>
+
+<span class="nv">promise</span><span class="o">.</span><span class="py">future</span> <span class="nf">foreach</span> <span class="o">(</span><span class="n">result</span> <span class="k">=&gt;</span> <span class="nf">println</span><span class="o">(</span><span class="n">result</span><span class="o">))</span>
+</code></pre></div></div>
+
+<p>と書くと，ページ読み込みの終了後に”10”がコンソールへ出力される．このあたりは，普通のScalaと変わらない．</p>
+
+<h1 id="並列処理に関するテスト">並列処理に関するテスト</h1>
+<p>非同期処理を使ったら，当然それのテストが書きたくなる．例えば，jQueryを利用して適当なWebページを持ってきて，その内容に対するテストを書くなら，</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">org.scalatest._</span>
+
+<span class="k">import</span> <span class="nn">org.scalajs.dom</span>
+<span class="k">import</span> <span class="nn">org.scalajs.dom.window</span>
+<span class="k">import</span> <span class="nn">org.scalajs.dom.document</span>
+<span class="k">import</span> <span class="nn">org.scalajs.jquery.jQuery</span>
+
+<span class="k">import</span> <span class="nn">scala.concurrent.Promise</span>
+<span class="k">import</span> <span class="nn">scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow</span>
+
+<span class="k">class</span> <span class="nc">ScalaTest</span> <span class="k">extends</span> <span class="nc">WordSpec</span> <span class="k">with</span> <span class="nc">Matchers</span> <span class="o">{</span>
+  <span class="s">"jQuery"</span> <span class="n">can</span> <span class="o">{</span>
+    <span class="s">"get the content of HTML by using get function."</span> <span class="n">in</span> <span class="o">{</span>
+      <span class="k">val</span> <span class="nv">promise</span> <span class="k">=</span> <span class="nc">Promise</span><span class="o">[</span><span class="kt">dom.Event</span><span class="o">]</span>
+
+      <span class="nv">jQuery</span><span class="o">.</span><span class="py">get</span><span class="o">(</span><span class="nv">window</span><span class="o">.</span><span class="py">location</span><span class="o">.</span><span class="py">href</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="o">(</span><span class="n">e</span><span class="k">:</span> <span class="kt">dom.Event</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="o">{</span>
+        <span class="nv">promise</span><span class="o">.</span><span class="py">success</span><span class="o">(</span><span class="n">e</span><span class="o">)</span>
+      <span class="o">})</span>
+
+      <span class="k">for</span> <span class="o">{</span> <span class="n">event</span> <span class="k">&lt;-</span> <span class="nv">promise</span><span class="o">.</span><span class="py">future</span><span class="o">}</span> <span class="o">{</span>
+        <span class="n">event</span> <span class="n">should</span> <span class="n">not</span> <span class="nf">be</span> <span class="o">(</span><span class="kc">null</span><span class="o">)</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>みたいに書けそうに思える．しかし，このコードは<strong>assertionが呼ばれたり呼ばれなかったり動作が不安定</strong>になる．これは，</p>
+
+<ol>
+  <li>ScalaTestのテストケースが呼ばれる．</li>
+  <li><code class="language-plaintext highlighter-rouge">jQuery.get</code>で，HTTPリクエストを飛ばす．</li>
+  <li>非同期APIのため，ScalaTestは次の処理に進み，終了する．</li>
+  <li>(HTTPレスポンスが返ってくる． or <code class="language-plaintext highlighter-rouge">sbt test</code>が終了する)</li>
+</ol>
+
+<p>となってしまい，assertionに処理が入らない．これだとテストにならないので，どうにかしないといけない．</p>
+
+<h2 id="解決方法">解決方法</h2>
+<p>ScalaTest 3.0.0で，Async testing stylesが追加された．これを使うと，上記問題を解決できた．</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">org.scalatest._</span>
+
+<span class="k">import</span> <span class="nn">org.scalajs.dom</span>
+<span class="k">import</span> <span class="nn">org.scalajs.dom.window</span>
+<span class="k">import</span> <span class="nn">org.scalajs.dom.document</span>
+<span class="k">import</span> <span class="nn">org.scalajs.jquery.jQuery</span>
+
+<span class="k">import</span> <span class="nn">scala.concurrent.Promise</span>
+<span class="k">import</span> <span class="nn">scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow</span>
+
+<span class="k">class</span> <span class="nc">AsyncScalaTest</span> <span class="k">extends</span> <span class="nc">AsyncWordSpec</span> <span class="k">with</span> <span class="nc">Matchers</span> <span class="o">{</span>
+  <span class="s">"jQuery"</span> <span class="n">can</span> <span class="o">{</span>
+    <span class="s">"get the content of HTML by using get function."</span> <span class="n">in</span> <span class="o">{</span> <span class="o">{</span>
+      <span class="k">val</span> <span class="nv">promise</span> <span class="k">=</span> <span class="nc">Promise</span><span class="o">[</span><span class="kt">dom.Event</span><span class="o">]</span>
+
+      <span class="nv">jQuery</span><span class="o">.</span><span class="py">get</span><span class="o">(</span><span class="nv">window</span><span class="o">.</span><span class="py">location</span><span class="o">.</span><span class="py">href</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="o">(</span><span class="n">e</span><span class="k">:</span> <span class="kt">dom.Event</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="o">{</span>
+        <span class="nv">promise</span><span class="o">.</span><span class="py">success</span><span class="o">(</span><span class="n">e</span><span class="o">)</span>
+      <span class="o">})</span>
+
+      <span class="k">for</span> <span class="o">{</span> <span class="n">event</span> <span class="k">&lt;-</span> <span class="nv">promise</span><span class="o">.</span><span class="py">future</span><span class="o">}</span> <span class="k">yield</span> <span class="o">{</span>
+        <span class="n">event</span> <span class="n">should</span> <span class="n">not</span> <span class="nf">be</span> <span class="o">(</span><span class="kc">null</span><span class="o">)</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">AsyncXXX</code>(ここでは<code class="language-plaintext highlighter-rouge">AsyncWordSpec</code>)は，<code class="language-plaintext highlighter-rouge">Future[Assertion]</code>をかえす必要がある．そのため，最後に，<code class="language-plaintext highlighter-rouge">for yield</code>文を使ってその中にassertionを書き，<code class="language-plaintext highlighter-rouge">Future</code>を作ってあげるとコンパイルが通り，想定通りにテストが動く．
+ちなみに，公式ドキュメントで書かれているutestには，このような非同期処理のテストを行う方法は書いていない．別にScala.jsに特化したテスティングフレームワークではないみたいので，わざわざ学習する必要はないのでは無いのではと感じた．</p>
+
+          </div><a class="u-url" href="/ja/scala,%20scala.js,%20scalatest/2016/02/01/scalajs.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

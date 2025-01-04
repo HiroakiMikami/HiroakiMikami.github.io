@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="自分の持っているLinux Boardとか">
+    
+    
+    <meta property="og:description" content="Livedoorブログからの移動">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2015/05/08/from-livedoor-29611811.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">自分の持っているLinux Boardとか</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2015-05-08T00:00:00+09:00" itemprop="datePublished">
+                May 8, 2015
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <div>Livedoorブログからの移動</div><hr />
+<body><p>今日Intel Edisonを買ってみたので，それの初期設定をメモしつつ持っているboardと気になるboardをメモしておく．</p>
+<h2 id="edison初回セットアップ">Edison初回セットアップ</h2>
+<p>基本は<a href="http://trac.switch-science.com/wiki/IntelEdisonStartLinux">ここ</a>を参考にすれば大丈夫(linux以外は知らないけどこのページからたどれば大丈夫では)． 以下は上に書いていないことのメモ．</p>
+<h3 id="起動時間">起動時間</h3>
+<p>firmwareアップデートとかが入らない限り，10秒くらい．起動したのかどうかはdmesgとかしてればわかる．</p>
+<p>firmwareアップデートのときは再起動で数分かかった．</p><h3 id="firmwareのマスストレージへの移動">firmwareのマスストレージへの移動</h3>
+<p>最初マスストレージがどのデバイスファイルなのかわからず苦労したが，普通に<code>/dev/sdb1</code>とかに作られるのでvfatでマウントする．</p>
+<pre><code>$ sudo mount -t vfat /dev/sdb1 /mnt/usb
+$ cp firmware/* /mnt/usb
+$ sudo umount /mnt/usb</code></pre>
+<p>アンマウントの時に結構(1分弱?)時間がかかったので，多分アンマウントの時に書きだされている．セットアップ方法書かれたページには，アンマウントしろとは書いておらず，多分reboot時にアンマウントされるのだろうが，ちょっと怖いので明示的にアンマウントしておきたい．</p>
+<h3 id="終了">終了</h3>
+<p>sshから</p>
+<pre><code>$ shutdown -h now</code></pre>
+<p>してシャットダウンしてからケーブルを抜くこと．</p><h3 id="todo">todo</h3>
+<ol style="list-style-type: decimal"><li>適当なWifiへ自分からつなぎにいく(nmcliの設定?)</li><li>そのへんに転がっているセンサ・デバイスを読む．
+<ul><li>USB OTGでWebカメラとか，<strike>x86だしってことでLeap Motionとか</strike>できたら楽しい．</li></ul></li><li>Web経由でのデータ出力
+<ul><li>自前でディスプレイ用意して...は現実的に無理なので，ハードウェア的なoutputはLEDとかだけにして，複雑なもののoutputはWebに任せたい．</li></ul></li></ol>
+<h2 id="現在所有中">現在所有中</h2>
+<h3 id="beagle-board-black">beagle board black</h3>
+<p>最初に買った．どこで買ったかは忘れたけどRSだったかな．最初にやるにしては面白くないけど突飛でもない普通のボードだった．</p>
+<h3 id="cubie-board-2">Cubie Board 2</h3>
+<p>2番目に買った．BBBを何かに運用していて(死んだサーバのピンチヒッターだったかな)，さらにlinux boardが欲しくなったから買ったみたいな記憶がある． SATAが出ているというよくわからない特徴があるが，それ以外はBBBと大差はない．むしろ情報が少なすぎて使いづらい．</p>
+<h2 id="気になるもの">気になるもの</h2>
+<h3 id="raspberry-pi-2">Raspberry Pi 2</h3>
+<p>なんか性能が1に比べて格段に上がっている．10年前の普通のPCを凌駕してるんじゃないだろうか．値段を考えると，適当に使い潰せる範囲で現状最高性能って感じなので，一つあると面白いかもしれない． とはいえ，そんな計算性能必要な用途には使わないと思うのでいらないのではないか(BBBでいいのではないか)という気もする．</p>
+<h3 id="helio"><a href="http://www.altima.jp/products/devkit/altima/helio/helio_info.html">Helio</a></h3>
+<p>FPGA付きボード．FPGAの詳細は調べていないので，どのくらいのものがあるのかはしらないが，ハイブリッドコンピュータってどんなものってのを遊ぶくらいには使えるのでは．</p>
+<h3 id="kayla"><a href="https://developer.nvidia.com/content/kayla-platform">Kayla</a></h3>
+<p>CUDA付きボード．GPUの詳細は(以下略</p>
+</body>
+          </div><a class="u-url" href="/ja/2015/05/08/from-livedoor-29611811.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

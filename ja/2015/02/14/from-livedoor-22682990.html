@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="Sublime Text 3の導入 (3)">
+    
+    
+    <meta property="og:description" content="Livedoorブログからの移動">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2015/02/14/from-livedoor-22682990.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">Sublime Text 3の導入 (3)</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2015-02-14T00:00:00+09:00" itemprop="datePublished">
+                Feb 14, 2015
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <div>Livedoorブログからの移動</div><hr />
+<body><p>前回までで最低限の設定は終わり, 後はキーバインドとかを好き放題いじるだけ, みたいな状態には持ってきた(と信じたい).</p>
+<p>今回は, snippetsを追加することでscalaの記述速度の向上(というかIntelliJの時の機能の復元)をしたい.</p>
+<h2 id="デフォルトのクラスの作成">デフォルトのクラスの作成</h2>
+<p>scalaはJavaと同じく, ファイル名とpublicなクラス名が等しく, 基本的に1クラス1ファイルであることが求められている(<a href="http://docs.scala-lang.org/style/">公式のStyle Guide</a>). なので, ファイル名と同名のクラスを生成するsnippetsを書いた.</p>
+<pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;snippet&gt;</span>
+    <span class="kw">&lt;content&gt;</span>
+        <span class="bn">&lt;![CDATA[</span>
+/** ${1: Description of class}
+   * @constructor ${2: Description of constructor}
+   */
+class ${TM_FILENAME/\.scala$//g}() {
+}
+<span class="bn">]]&gt;</span>
+    <span class="kw">&lt;/content&gt;</span>
+    <span class="kw">&lt;tabTrigger&gt;</span>class<span class="kw">&lt;/tabTrigger&gt;</span>
+    <span class="kw">&lt;scope&gt;</span>source.scala<span class="kw">&lt;/scope&gt;</span>
+<span class="kw">&lt;/snippet&gt;</span></code></pre>
+<p>そこまで変なものは書いてないので読めばわかると思う. scalaのソース内で, classでtabを押すと起動し, scaladocのコメント付きclass定義が挿入される. クラス名は, <code>${TM_FILENAME}</code>でファイル名をもってきて, <code>/\.scala$//g</code>で末尾の<code>.scala</code>を消して生成している.</p>
+<p>本当は, 基本的にはファイル名と同名のクラスを生成するが, ファイル名が小文字スタートなら, <code>sealed trait</code>を生成する, みたいなものを作りたかったが, まぁ今はいいや. そもそもそういうのは, Sublime Text的には, sealedみたいな別snippetsでやったほうがいいのだろう.</p>
+<h2 id="package宣言の挿入">package宣言の挿入</h2>
+<p>正直Sublime Textにして一番面倒だったのがpackage宣言を自分で書かないといけないことだった. IntelliJ IDEAならプロジェクトのソースディレクトリから勝手に挿入してくれるので.</p>
+<p>そこで, ディレクトリパスから, 適切なパッケージ名を推測して, 挿入するsnippetsを書いた.</p>
+<pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;snippet&gt;</span>
+    <span class="kw">&lt;content&gt;</span>
+        <span class="bn">&lt;![CDATA[</span>package ${TM_FILEPATH/^.*\/src\/(main|test)\/scala\/|\/[^\/]*\.scala$|(\/)/?2.:/g}<span class="bn">]]&gt;</span>
+    <span class="kw">&lt;/content&gt;</span>
+    <span class="kw">&lt;tabTrigger&gt;</span>package<span class="kw">&lt;/tabTrigger&gt;</span>
+    <span class="kw">&lt;scope&gt;</span>source.scala<span class="kw">&lt;/scope&gt;</span>
+    <span class="kw">&lt;description&gt;</span>Insert a package declaration of a scala file in sbt project<span class="kw">&lt;/description&gt;</span>
+<span class="kw">&lt;/snippet&gt;</span></code></pre>
+<p>正規表現が非常にややこしいので, 構文木っぽいのだけ置いときます. 解説は面倒臭いので読み取ってください.</p>
+<ul>
+<li>変数部分
+<ul>
+<li><code>${TM_FILEPATH</code></li>
+</ul></li>
+<li>正規表現部分
+<ul>
+<li>or(以下のいずれかにマッチしたら)
+<ol style="list-style-type: lower-alpha">
+<li><code>^.*\/src\/(main|test)\/scala\/</code>
+<ul>
+<li>パスの先頭から, <code>src/main/scala/</code>または<code>scr/test/scala/</code>まで</li>
+</ul></li>
+<li><code>\/[^\/]*\.scala$</code>
+<ul>
+<li>いわゆるファイル名の部分</li>
+</ul></li>
+<li><code>(\/)</code>
+<ul>
+<li>a,bにマッチしない箇所の"/"(ディレクトリの区切り文字)</li>
+</ul></li>
+</ol></li>
+</ul></li>
+<li>処理部分
+<ul>
+<li><code>?2.:</code></li>
+<li>もし<code>$2</code>(cにあたる)にマッチしていたら"."に, そうでなければ""に置換する.</li>
+</ul></li>
+<li><code>g</code>
+<ul>
+<li>当てはまる箇所全てのこの処理をする.</li>
+</ul></li>
+</ul>
+<p>このsnippetsの前提条件は,</p>
+<ol style="list-style-type: decimal">
+<li>sbtまたはmavenを用いた, scalaファイルである.</li>
+<li>パッケージ名とディレクトリ構造に一対一の関係がある(相対パス<code>foo/bar</code>ならパッケージ名は<code>foo.bar</code>というような).</li>
+</ol>
+<p>の2点となっている.</p>
+<h2 id="参考">参考</h2>
+<p>今回の参考ページは, <a href="http://docs.sublimetext.info/en/latest/extensibility/snippets.html">unofficial document</a>. 思ったよりわかりやすいページでした.</p>
+<!--
+http://www.scalatest.org/user_guide/using_matchers
+http://www.scalatest.org/user_guide/testing_with_mock_objects
+http://www.scalatest.org/user_guide/property_based_testing
+-->
+</body>
+          </div><a class="u-url" href="/ja/2015/02/14/from-livedoor-22682990.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

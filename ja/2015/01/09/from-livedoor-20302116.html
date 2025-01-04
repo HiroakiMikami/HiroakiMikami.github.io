@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="自作TeXツールと実装メモ">
+    
+    
+    <meta property="og:description" content="Livedoorブログからの移動">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2015/01/09/from-livedoor-20302116.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">自作TeXツールと実装メモ</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2015-01-09T00:00:00+09:00" itemprop="datePublished">
+                Jan 9, 2015
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <div>Livedoorブログからの移動</div><hr />
+<body>卒論を書いている時に, TeX系のツールが欲しくなることがあったので, そのうちいくつかを自作した. が, 最近はmarkdownを使って書いてpandocで変換する方法を追求したほうがいいのではないかという疑惑を持ち, 最近ではほとんどメンテナンスしていない.<br/>まだ, markdownからLaTeXへの変換は完全ではないところが多いので, 最終的にはLaTeXも書く生活が長く続くのかと思うと, メンテナンスするべきかもしれない<br/><br/><br/>
+
+<h2>コンパイル環境</h2>
+<a href="http://qiita.com/nojima/items/eebbea5574a8ff42f8b2">ここ</a>などを参考に, omakeを使ってコンパイルしている.
+<pre># 生成するPDFの名前 (拡張子は不要)
+TARGET = target
+# 画像ファイルを置くディレクトリ
+IMAGE_DIR = images
+
+# LaTeXコマンド
+LATEX = platex
+# TeTeX v.2にある発展的なLaTeXオプションを有向にするかどうか
+TETEX2_ENABLED = false
+# LaTeXに渡す引数
+LATEXFLAGS = -interaction=nonstopmode --kanji=utf8 -synctex=1
+# BibTeXコマンド
+BIBTEX = pbibtex --kanji=utf8
+# .dviから.pdfへのコンバータ
+DVIPDFM = dvipdfmx
+# dvipdfmに渡す引数
+DVIPDFMFLAGS = -p a4
+# Bounding Box生成コマンド
+EBB = ebb
+# dotファイルからpngを生成するコマンド
+DOT = dot
+# dotに渡す引数
+DOTFLAGS = -Tpng
+
+DefineCommandVars()
+
+# グロブ展開に失敗したときに空の文字列を返すようにする
+GLOB_OPTIONS = i
+
+# Bounding Boxの生成ルール
+.SUBDIRS: $(IMAGE_DIR)
+    %.bb: %.png
+        $(EBB) $&lt;
+    %.bb: %.jpg
+        $(EBB) $&lt;
+    %.png: %.dot
+	$(DOT) $&lt; $(DOTFLAGS) -o $@
+
+# 各種ファイルの抽出
+TEX_FILES = $(glob *.tex */*.tex)
+BIB_FILES = $(glob *.bib)
+
+EPS_IMAGE_FILES = $(glob $(IMAGE_DIR)/*.eps)
+DOT_FILES = $(glob $(IMAGE_DIR)/*.dot)
+DOT_IMAGE_FILES = $(addsuffix .png, $(removesuffix $(DOT_FILES)))
+OTHER_IMAGE_FILES = $(glob $(IMAGE_DIR)/*.png $(IMAGE_DIR)/*.jpg)
+IMAGE_FILES = $(EPS_IMAGE_FILES) $(DOT_IMAGE_FILES) $(OTHER_IMAGE_FILES) 
+BB_FILES = $(addsuffix .bb, $(removesuffix $(OTHER_IMAGE_FILES)))
+
+SYNCTEX_FILE = $(TARGET).synctex.gz # --synxtexで生成されるファイル
+
+# コンパイルに必要なファイル
+TEXDEPS[] = $(TEX_FILES) $(BIB_FILES) $(IMAGE_FILES) $(BB_FILES)
+
+LaTeXDocument($(TARGET), $(TARGET))
+
+.DEFAULT: $(TARGET).pdf $(TARGET).dvi
+
+.PHONY: clean
+
+clean:
+    rm $(glob *.toc *.log *.pdf *.dvi *.fls *.aux *.maf *.mtc *.bbl *.blg) $(BB_FILES) $(DOT_IMAGE_FILES) $(SYNCTEX_FILE)
+</pre>
+リンク先からの違いは, dotファイルをpng, bbへと変換して組み込めるようにしたことと, synctexをつけたこと.<br/><br/> <br/>
+<h2>tex-check-words</h2>
+論文執筆専用ツール感も強いが.
+</body>
+          </div><a class="u-url" href="/ja/2015/01/09/from-livedoor-20302116.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

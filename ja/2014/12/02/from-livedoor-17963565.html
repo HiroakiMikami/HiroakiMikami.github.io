@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="Viz.jsのバグ(?)とその対処法">
+    
+    
+    <meta property="og:description" content="Livedoorブログからの移動">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2014/12/02/from-livedoor-17963565.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">Viz.jsのバグ(?)とその対処法</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2014-12-02T00:00:00+09:00" itemprop="datePublished">
+                Dec 2, 2014
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <div>Livedoorブログからの移動</div><hr />
+<body>Viz.jsは, javascript単独でdot言語を解析するライブラリ. svgにして, htmlに直接書きだせば, browser上で, グラフを可視化できる.<br/><br/>便利なのだが, どうにもバグがあるっぽい. 同じdot言語テキストをparseしているのに, なんか挙動が違う時がある. 具体的には, HTMLのtableをlabelに使った時に発生した. 
+<pre>digraph {
+  subgraph cluster0 {
+    node0 [
+      shape=none;
+      label=&lt;&lt;table&gt;
+        &lt;tr&gt;&lt;td&gt;x&lt;/td&gt;&lt;td&gt;y&lt;/td&gt;&lt;td&gt;z&lt;/td&gt;&lt;/tr&gt;
+      &lt;/table&gt;&gt;
+  }
+}
+</pre>
+上のような有向グラフをparseすると, まれに, 「Syntax Error ... 」という感じのエラーメッセージが表示され,  node0が表として表示されなくなる.<br/>再現性は全くなく, 同じ引数を与えても起きたり起きなかったり. ただし, 一度起こると連続して何回か起こる気もする.<br/><br/>※ ただし, 具体的な発生条件はわからないので, 上のdot scriptで本当にエラーが発生するかはわからない. 大体こんな感じってことで. <br/><br/>根本的解決は難しそうなので, 諦めて成功するまでloopすることで対処した. しかし, Viz.jsのViz関数は, エラー発生時に例外を投げたり, callback関数を登録できたりするわけではない.<br/>内部コードを読むと, console.logにエラーメッセージを出力して, エラー処理が終わっている.<br/><br/>なので, parseが失敗したことをしらべるためには, 以下のようにする必要がある.
+<pre>var log = console.log
+var isSuccess = true
+console.log = function(message) { isSuccess = false; }
+var svg = Viz(dotScript, "svg", "dot")
+console.log = log
+if (isSuccess) {
+  // parse成功時の処理
+} else {
+  // parse失敗時の処理
+}
+</pre>これと, setInterval関数によるループを組み合わせたらparse失敗で変なグラフが表示されることはなくなった.<br/><br/>dotコマンドで起きたことはないので, なんかViz.jsに特有の問題なんだろうな. 
+</body>
+          </div><a class="u-url" href="/ja/2014/12/02/from-livedoor-17963565.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

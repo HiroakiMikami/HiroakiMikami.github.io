@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="ARC 076 D： Built?">
+    
+    
+    <meta property="og:description" content="はてなブログからの移動">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2017/06/28/from-hatena-211619.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">ARC 076 D： Built?</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2017-06-28T00:00:00+09:00" itemprop="datePublished">
+                Jun 28, 2017
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <div>Livedoorブログからの移動</div><hr />
+<div>はてなブログからの移動</div><hr />
+<body><p><a href="http://arc076.contest.atcoder.jp/tasks/arc076_b">http://arc076.contest.atcoder.jp/tasks/arc076_b</a></p>
+
+<h2>解き方</h2>
+
+<ul>
+<li>コストの定義を使って，辺の数を<code>O(N)</code>に削減</li>
+<li><a class="keyword" href="http://d.hatena.ne.jp/keyword/%BA%C7%BE%AE%C1%B4%B0%E8%CC%DA">最小全域木</a>を<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%AF%A5%E9%A5%B9%A5%AB%A5%EB">クラスカル</a>なりプリムなりで求める
+
+<ul>
+<li>プリムの場合は<code>priority_queue</code>を使った実装じゃないと多分間に合わない</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>ハマった所</h2>
+
+<ul>
+<li>プリム，<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%AF%A5%E9%A5%B9%A5%AB%A5%EB">クラスカル</a>の実装からスタート
+
+<ul>
+<li>ライブラリ化した方が良いかも</li>
+<li>長くなりすぎるのでそろそろ分割しないといけなそう</li>
+</ul>
+</li>
+<li>プリムのループ内(最小コストの辺の探索，最小コストの更新の部分)を<code>O(logN)</code>に収める方針を立ててしまった
+
+<ul>
+<li>コンテスト内で迷った結果として，よほど特殊な条件でないと筋が悪そう
+
+<ul>
+<li>更新しないといけない頂点が高々1個で，どの頂点か分かるなら，最初に<code>min_cost</code>をソートしておくと<code>O(logN)</code>で収まる？
+
+<ul>
+<li>最小コストの辺は，<code>min_cost[0]</code>で求まるので<code>O(1)</code></li>
+<li>更新対象を削除したのち，二分探索で挿入場所を決めれば<code>O(logN)</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="keyword" href="http://d.hatena.ne.jp/keyword/%BA%C7%BE%AE%C1%B4%B0%E8%CC%DA">最小全域木</a>は辺の数を削っていくのが王道なのかな</li>
+</ul>
+</li>
+</ul>
+
+
+</body>
+          </div><a class="u-url" href="/ja/2017/06/28/from-hatena-211619.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

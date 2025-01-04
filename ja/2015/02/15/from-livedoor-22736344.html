@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="dot言語(graphviz)の拡張についてのメモ">
+    
+    
+    <meta property="og:description" content="Livedoorブログからの移動">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2015/02/15/from-livedoor-22736344.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">dot言語(graphviz)の拡張についてのメモ</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2015-02-15T00:00:00+09:00" itemprop="datePublished">
+                Feb 15, 2015
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <div>Livedoorブログからの移動</div><hr />
+<body><p><a href="http://blog.livedoor.jp/hiroaki8270/archives/17759669.html">以前の記事</a>の続きというかなんと言うか. ほぼ<code>/dev/null</code>と化しているこのブログながら, この記事は何故か結構なアクセス数を持っていたりする. みんな困ってるのかな.</p>
+<p>上の記事でしたかったことは, 要するに, <b>後から辺を追加するときに, レイアウトが崩れるのを防ぎたい</b>ということ. で, そのためにダミーノードを追加して対処ということを考えた. つまり, 想定している用途は, 一種のコマ送り的なものであるといえる.</p>
+<p>そのような限定的な用途であるならば, dot言語に時系列情報を追加することで, うまいことdotに配置を知らせられるのではないかと思った(ダミーノード, ダミーエッジを追加することで).</p>
+<p>確かめるべく適当に実装してみた. まず, 入力は以下のようなdot言語のファイル.</p>
+<pre><code>digraph {
+  A
+  B
+  C [color=$|if(t&lt;1){print "black"}else{print "red"}|]
+  A -&gt; B [style=$|if(t&lt;1){print "invis"}else{print "solid"}|]
+  B -&gt; C [style=$|if(t&lt;2){print "invis"}else{print "solid"}|]
+}</code></pre>
+<p>ここで, <code>$||</code>に囲まれた場所がawkスクリプトとして解釈され, <code>t</code>は時間を表す変数となる.したがって, pngにして出力すると以下のように うまいこと最初(t=0)から, A, B, Cの位置情報が整って表示される.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"><code>t</code></th>
+<th align="left">画像</th>
+</tr>
+</thead>
+
+<tbody><tr class="odd">
+<td align="left">0</td>
+<td align="left"><img alt="graphviz_extension_0" border="0" class="pict" height="251" hspace="5" src="/images/blog/2015-02-15-from-livedoor-22736344/0.png" width="83"/></td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left"><img alt="graphviz_extension_1" border="0" class="pict" height="251" hspace="5" src="/images/blog/2015-02-15-from-livedoor-22736344/1.png" width="83"/></td>
+</tr>
+<tr class="odd">
+<td align="left">2</td>
+<td align="left"><img alt="graphviz_extension_2" border="0" class="pict" height="251" hspace="5" src="/images/blog/2015-02-15-from-livedoor-22736344/2.png" width="83"/></td>
+</tr>
+
+</tbody></table>
+<p>ちなみに, これを3つの独立したdotグラフとして書くと, 以下のような画像になるので, 違いは歴然.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"><code>t</code></th>
+<th align="left">画像</th>
+</tr>
+</thead>
+
+<tbody><tr class="odd">
+<td align="left">0</td>
+<td align="left"><img alt="graphviz_extension_1_0" border="0" class="pict" height="59" hspace="5" src="/images/blog/2015-02-15-from-livedoor-22736344/3.png" width="275"/></td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left"><img alt="graphviz_extension_1_1" border="0" class="pict" height="155" hspace="5" src="/images/blog/2015-02-15-from-livedoor-22736344/4.png" width="179"/></td>
+</tr>
+<tr class="odd">
+<td align="left">2</td>
+<td align="left"><img alt="graphviz_extension_1_2" border="0" class="pict" height="251" hspace="5" src="/images/blog/2015-02-15-from-livedoor-22736344/5.png" width="83"/></td>
+</tr>
+
+</tbody></table>
+<p>最後に, サンプルの変換に用いたscala scriptはこちら. 正規表現とsys.processが組み合わさってすごいことになっている.</p>
+<pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">import</span> scala.<span class="fu">sys</span>.<span class="fu">process</span>.<span class="fu">_</span>
+
+<span class="kw">val</span> fileName = <span class="fu">args</span>(<span class="dv">0</span>)
+<span class="kw">val</span> time = <span class="fu">args</span>(<span class="dv">1</span>)
+
+<span class="kw">val</span> command = <span class="st">"([^</span><span class="ch">\\</span><span class="st">$]*)</span><span class="ch">\\</span><span class="st">$</span><span class="ch">\\</span><span class="st">|([^</span><span class="ch">\\</span><span class="st">|]*)</span><span class="ch">\\</span><span class="st">|(.*)"</span>.<span class="fu">r</span>
+
+<span class="fu">println</span>(
+  (<span class="kw">for</span> (line &lt;- s<span class="st">"cat ${fileName}"</span>.<span class="fu">lineStream_</span>!) <span class="kw">yield</span> {
+    line <span class="kw">match</span> {
+      <span class="kw">case</span> <span class="fu">command</span>(prefix, command, suffix) =&gt; 
+        <span class="kw">val</span> result = Seq(<span class="st">"awk"</span>, s<span class="st">"BEGIN{t=${time};${command}}"</span>).!!.<span class="fu">replace</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">"</span>,<span class="st">""</span>)
+        s<span class="st">"${prefix}${result}${suffix}"</span>
+      <span class="kw">case</span> l =&gt; l
+    }
+  }).<span class="fu">mkString</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">"</span>)
+)</code></pre>
+<h2 id="実用するとしたら">実用するとしたら</h2>
+<p>埋め込むスクリプトについては色々考慮の余地がある. 読みやすさを考えると,</p>
+<ol style="list-style-type: decimal">
+<li>dotの記法に埋め込まれている(<code>foo=${script}</code>みたいな記法が良いと思う)</li>
+<li>記法が単純である(awkみたいにいちいちprintを書かなければいけないのは論外だろうと思う).</li>
+<li>基本的に場合分けであるため, 複数行にわたるスクリプト埋め込み</li>
+<li>よく使うスクリプトをまとめた関数(?)のようなものの定義</li>
+</ol>
+<p>といった要請があると思う.</p>
+<p>まず, 1と3についてであるが, おそらく<code>""</code>で囲ってやり, それをdotのパーサー(例えば, <a href="http://mvnrepository.com/artifact/info.leadinglight/jdot/1.0">これ</a>とか)でパースすることで達成できると思う.</p>
+<p>次に, 2であるが, 要するに関数型っぽく, 条件分岐が見やすいDSLが欲しいということ. 自分としては以下のように書けるといいかなと思う.</p>
+<pre><code>"time" : [0, 1], "state" : "abc(.*)" :: "inviz" <br/>     // 0 &lt;= time &lt;= 1 かつ stateが"abc(.*)"にマッチする場合はinviz
+otherwise :: "solid"</code></pre>
+<p>これの利点は, 条件分岐がJSONでかけるということ. したがって, 各行を<code>::</code>で分割して, 前者を<code>{}</code>で囲ってJSONでパースすればすぐ条件にできるので処理が簡単. <br/></p><p>本当を言うと, [0, 1]は, (0: 1)とか, [0: 1)とか, [: 1]とかで書きたい. また, orの条件を書くのが若干面倒というのはあるけれども, andとorを両方入れると優先順位を考えないと解釈できなくなるので面倒かなと思っている.<br/></p>
+<p>最後に, 4はなんか適当にマクロっぽいの準備すればできるだろうと思う.</p>
+</body>
+          </div><a class="u-url" href="/ja/2015/02/15/from-livedoor-22736344.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

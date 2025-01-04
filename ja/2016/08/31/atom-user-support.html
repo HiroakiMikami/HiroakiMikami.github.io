@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="Atomでユーザ補助機能を作るためのモジュール作った">
+    
+    
+    <meta property="og:description" content="Qiitaからの移動">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2016/08/31/atom-user-support.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">Atomでユーザ補助機能を作るためのモジュール作った</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2016-08-31T00:00:00+09:00" itemprop="datePublished">
+                Aug 31, 2016
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <p>Qiitaからの移動</p>
+
+<hr />
+
+<p><a href="https://www.npmjs.com/package/atom-user-support-helper">user-support-helper</a></p>
+
+<p><img src="http://hiroakimikami.github.io/atom-user-support-helper/interactive-configuration-panel.gif" alt="" /></p>
+
+<p>Atomパッケージの初期設定などの支援機能を作るためのモジュールを作った．
+初期設定が必要なパッケージってそれなりの数あると思う．<a href="http://qiita.com/MikamiHiroaki/items/7620023e6a870ac17e90">自分のパッケージ</a>におけるMS TranslatorのIDとSecretとか，pandocを使うパッケージにおけるpandocのパスとか．しかし，そのうち大半（自分の知る限り全て）のパッケージでは，そういった初期設定はREADMEを見ながら，Settings画面から自分で設定する以外の方法がない．
+そのため，</p>
+
+<ol>
+  <li>自分でインストールしたパッケージに追加する設定を見落として暫く悩む．</li>
+  <li><a href="https://atom.io/packages/translator-plus-dictionary">translator-plus-dictionary</a>に「翻訳動かないんだけど」って問い合わせがあってエラーメッセージ見るとIDとSecretの登録がされていない．</li>
+</ol>
+
+<p>のような問題が起きてしまっていた．これへの対応策として，初期設定パネルなどを作るモジュールを作った（上Screenshot参考）．必要な設定がなされてない時，エラーメッセージが出るのではなく，このようなパネルが出て，interactiveに初期設定ができる方が便利でないかなと．</p>
+
+<p>このようなユーザ補助機能を実装するのは面倒で，後回しにされがちだと思うので（少なくとも自分は後回しにする），機能よりも記述するコード量が少なくなることを優先して実装したつもり．例えば，pandocのパスが必要なら，</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">panel</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">UserSUpportHelper</span><span class="p">().</span><span class="nx">getInteractiveConfigurationPanel</span><span class="p">()</span>
+<span class="nx">panel</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="dl">'</span><span class="s1">package-name.pandocPath</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">input</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">The path of the pandoc command</span><span class="dl">'</span>
+<span class="p">})</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">atom</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="dl">'</span><span class="s1">package-name.pandocPath</span><span class="dl">'</span><span class="p">))</span> <span class="p">{</span>
+  <span class="nx">panel</span><span class="p">.</span><span class="nx">show</span><span class="p">([</span><span class="dl">'</span><span class="s1">package-name.pandoncPath</span><span class="dl">'</span><span class="p">])</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
+
+<p>のように書けば以下のようなパネルが表示される（translator-plus-dictionaryでは設定項目が5つもあるので数十行の記述が必要だった）．</p>
+
+<p><img src="https://qiita-image-store.s3.amazonaws.com/0/111070/989438f3-6650-40a6-b90b-279f257ad64c.png" alt="example.png" /></p>
+
+<p>基本的に自分が使いたいから作ったパッケージですが，Atomパッケージ書く人で使いたいなと思う人がいたら是非使ってやってください．</p>
+
+          </div><a class="u-url" href="/ja/2016/08/31/atom-user-support.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

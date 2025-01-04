@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="Scala.jsの単体テストでURLへアクセスする">
+    
+    
+    <meta property="og:description" content="Qiitaからの移植">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/scala,%20scala.js/2016/02/01/scalajs-2.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">Scala.jsの単体テストでURLへアクセスする</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2016-02-01T00:00:00+09:00" itemprop="datePublished">
+                Feb 1, 2016
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <p>Qiitaからの移植</p>
+
+<hr />
+
+<p><a href="http://www.scala-js.org/">Scala.js</a>メモ2つ目</p>
+
+<h1 id="環境">環境</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">ソフトウェア</th>
+      <th style="text-align: left">バージョン</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Scala</td>
+      <td style="text-align: left">2.11.7</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Scala.js</td>
+      <td style="text-align: left">0.6.6</td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="まとめ">まとめ</h1>
+<ul>
+  <li>Scala.jsの単体テストでは，URLにアクセスができない</li>
+  <li><code class="language-plaintext highlighter-rouge">Phantom.js</code>のコマンドライン引数の変更でアクセスできるようになる</li>
+</ul>
+
+<h1 id="やりたいこと">やりたいこと</h1>
+<p>テストデータとして，外部のURL(localhostを含め)を使いたい．例えば，対応するWebサービスのサーバへアクセスしてデータを取ってきたりとか，．
+しかし，単体テストでの外部URLアクセスはデフォルトで不可能となっている．</p>
+
+<p>例えば，<code class="language-plaintext highlighter-rouge">http://localhost:631</code>(LinuxだとCUPSのクライアントがよく動いている)にjQueryを用いてリクエストを以下のように飛ばすと，いつまでもcallback関数が呼ばれない．</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">jQuery</span><span class="o">.</span><span class="py">get</span><span class="o">(</span><span class="s">"http://localhost:631"</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="o">(</span><span class="n">e</span><span class="k">:</span> <span class="kt">dom.Event</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="o">{</span>
+  <span class="nf">println</span><span class="o">(</span><span class="s">"called!"</span><span class="o">)</span>
+<span class="o">})</span>
+</code></pre></div></div>
+
+<h1 id="やったこと">やったこと</h1>
+<p>参考にしたページURLをメモし忘れてしまったが，Stack Overflowだったかどこかのページによると，クロスドメインの類の問題らしい．なので，</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">scalaJSUseRhino</span> <span class="n">in</span> <span class="nc">Global</span> <span class="o">:=</span> <span class="kc">false</span>
+<span class="n">jsEnv</span> <span class="n">in</span> <span class="nc">Test</span> <span class="o">:=</span> <span class="nc">PhantomJSEnv</span><span class="o">(</span><span class="n">args</span> <span class="k">=</span> <span class="nc">Seq</span><span class="o">(</span><span class="s">"--web-security=no"</span><span class="o">)).</span><span class="py">value</span>
+</code></pre></div></div>
+
+<p>と<code class="language-plaintext highlighter-rouge">build.sbt</code>に追記して，単体テストで<code class="language-plaintext highlighter-rouge">Phantom.js</code>を利用し，さらにクロスドメインアクセスを許可すると<code class="language-plaintext highlighter-rouge">called!</code>と表示されるようになる．</p>
+
+<h1 id="おわりに">おわりに</h1>
+<p>明らかにいい方法ではないので，もっといい方法があれば教えて下さい．そもそも，Scala.jsの単体テストはURLにアクセスするべきではなく，他に方法がある，とかも含めて教えて頂けたら嬉しいです．</p>
+
+          </div><a class="u-url" href="/ja/scala,%20scala.js/2016/02/01/scalajs-2.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

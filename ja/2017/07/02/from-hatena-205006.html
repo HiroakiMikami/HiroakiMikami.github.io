@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="chainer 2.0勉強記録">
+    
+    
+    <meta property="og:description" content="はてなブログからの移動">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2017/07/02/from-hatena-205006.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">chainer 2.0勉強記録</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2017-07-02T00:00:00+09:00" itemprop="datePublished">
+                Jul 2, 2017
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <div>Livedoorブログからの移動</div><hr />
+<div>はてなブログからの移動</div><hr />
+<body><p><a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%C1%A5%E5%A1%BC%A5%C8%A5%EA%A5%A2%A5%EB">チュートリアル</a>を一通りやった上で，追加でハマったことのメモ</p>
+
+<h2><code>Dataset</code>の作成方法</h2>
+
+<p>以下のように，<code>DatasetMixin</code>を使って作る．データの生成（ファイル読み込みなど）を<code>get_example</code>まで遅延させるのもOK</p>
+
+<pre class="code lang-python" data-lang="python" data-unlink=""><span class="synStatement">class</span> <span class="synIdentifier">Dataset</span>(chainer.dataset.DatasetMixin):
+    <span class="synStatement">def</span> <span class="synIdentifier">__init__</span>(self):
+        xs = np.array(np.random.uniform(-math.pi, math.pi, (<span class="synConstant">10000</span>, <span class="synConstant">1</span>)), dtype=np.float32)
+        f = <span class="synStatement">lambda</span> t: np.array([math.sin(t)], dtype=np.float32)
+        ys = np.array([f(e) <span class="synStatement">for</span> e <span class="synStatement">in</span> xs])
+        self.<span class="synIdentifier">input</span> = xs
+        self.output = ys
+    <span class="synStatement">def</span> <span class="synIdentifier">__len__</span>(self):
+        <span class="synStatement">return</span> <span class="synIdentifier">len</span>(self.output)
+    <span class="synStatement">def</span> <span class="synIdentifier">get_example</span>(self, i):
+        <span class="synStatement">return</span> self.<span class="synIdentifier">input</span>[i], self.output[i]
+</pre>
+
+
+<ul>
+<li><a href="https://docs.chainer.org/en/stable/reference/core/dataset.html">参考</a></li>
+</ul>
+
+
+<h2><code>Trainer</code>に与える<code>Model</code>の実装方法</h2>
+
+<h3><code>__call__</code>の引数</h3>
+
+<p>第一引数が入力，第二引数が出力（<code>actual</code>）となり，<code>loss</code>関数を実装する．</p>
+
+<h3><code>__call__</code>での引数の扱い</h3>
+
+<p>上記Datasetの場合，引数がただの変数なので，<code>Variable(...)</code>でラップする必要がある．</p>
+
+<h2>その他</h2>
+
+<p>計算途中を変数に置かないと上手く動かないケースがある（？ 未検証）</p>
+
+<p>例えば，</p>
+
+<pre class="code lang-python" data-lang="python" data-unlink="">h1 = l1(x)
+h2 = l2(h1)
+<span class="synStatement">return</span> h2
+</pre>
+
+
+<p>は上手く動くが，</p>
+
+<pre class="code lang-python" data-lang="python" data-unlink=""><span class="synStatement">return</span> l2(l2(x))
+</pre>
+
+
+<p>は上手く動かないような気がする．</p>
+
+</body>
+          </div><a class="u-url" href="/ja/2017/07/02/from-hatena-205006.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

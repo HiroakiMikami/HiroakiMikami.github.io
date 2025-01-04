@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="自分用のLaTeXテンプレートを晒しておく">
+    
+    
+    <meta property="og:description" content="Qiitaからの移動">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2016/04/17/latex.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">自分用のLaTeXテンプレートを晒しておく</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2016-04-17T00:00:00+09:00" itemprop="datePublished">
+                Apr 17, 2016
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <p>Qiitaからの移動</p>
+
+<hr />
+
+<p>学部1年の頃からほそぼそと使い続け，自分のLaTeX環境がだいぶ固まってきたので，再構成して晒しておく(<a href="https://www.npmjs.com/package/generator-latex-with-markdown">これ</a>)．もうM2以降で大きくLaTeX環境を変える事はないだろうし．</p>
+
+<p>学部1年生や4年生等，新たにLaTeXを使い始める人の助けになれば．</p>
+
+<h1 id="目的">目的</h1>
+<p>以下の点を考慮してLaTeX環境を構築した．</p>
+
+<ol>
+  <li>できるだけLaTeXを書かないで済む．</li>
+  <li>LaTeXを書かざるをえない場合にすぐLaTeXを書ける．</li>
+  <li>諸々のコマンドラインツールを適宜組み込める．</li>
+  <li>後からコミットごとの差分表示ができる．</li>
+  <li>表に見えるファイルを汚さない．</li>
+</ol>
+
+<p>の4点．1はLaTeXを描くのが面倒なため，一方でLaTeXの方が早い場面もあるので，2も考慮している．また，3は自分が<code class="language-plaintext highlighter-rouge">graphviz</code>を使ったり，その場で適当にスクリプトを書くことが多いために考慮した．4は変更箇所を他の人に見せる時に便利なので考慮している．
+最後に，5は，<code class="language-plaintext highlighter-rouge">hoge.log</code>とかTeXが生成するファイルが表に見えるとtemrinal操作等の邪魔になるので，裏に隠したかった．</p>
+
+<p>逆に考慮していないのは，</p>
+
+<ol>
+  <li>コマンドの自動補完の効きやすさ（基本的にmacroで短くして対処する）</li>
+  <li>多人数で編集する事（好き放題できないし）</li>
+  <li>Windows/OS Xユーザ（動作確認できる環境がない）</li>
+</ol>
+
+<p>あたり．
+また，基本的にテキストエディタでLaTeX等を書く事を想定しているので，ShareLaTeX等使う人には使いづらいと思う．使ったこと無いからわからないけど．</p>
+
+<h1 id="概要">概要</h1>
+<h2 id="編集環境">編集環境</h2>
+<p><img src="https://qiita-image-store.s3.amazonaws.com/0/111070/8db25998-07fb-2062-0b1c-071e962004f0.png" alt="overview.png" /></p>
+
+<p>編集環境は上図の通り．
+原則として，記述にmarkdownを，図にdotとsvgを使用し，この2つはPDFに変換する．また，UIの画像を出す時などはHTMLを<code class="language-plaintext highlighter-rouge">phantomjs</code>を使ってPDFに変換して使用する．また，LaTeXで書いたほうが早い場面は，LaTeXを直書きしたり(e.g. クラスファイルとか)，markdown内に数式を埋め込んだりする．
+編集ツールは，テキストエディタとInkscape等を利用する事を想定している．</p>
+
+<h2 id="ビルド環境">ビルド環境</h2>
+<p>ビルドには<code class="language-plaintext highlighter-rouge">make</code>を利用．いくつかのビルドツールを検討したが，慣れとコマンドラインツールの呼び出しやすさを考えると<code class="language-plaintext highlighter-rouge">make</code>が最適との結論に達した．
+ビルド高速化のための<code class="language-plaintext highlighter-rouge">make draft</code>，1LaTeXファイルにまとめるための<code class="language-plaintext highlighter-rouge">make assemble</code>，差分をとってpdf化する<code class="language-plaintext highlighter-rouge">pdf-diff.sh</code>を用意している．</p>
+
+<h1 id="使い方">使い方</h1>
+<p>レポジトリの<a href="https://github.com/hiroakimikami/generator-latex-with-markdown">README</a>参照．
+YeomanとPhantomjsを使っているのでNode.js必須．その他pandoc等に依存している．</p>
+
+          </div><a class="u-url" href="/ja/2016/04/17/latex.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

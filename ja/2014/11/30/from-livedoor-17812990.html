@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="scalaのcollectionについてのメモ">
+    
+    
+    <meta property="og:description" content="Livedoorブログからの移動">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2014/11/30/from-livedoor-17812990.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">scalaのcollectionについてのメモ</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2014-11-30T00:00:00+09:00" itemprop="datePublished">
+                Nov 30, 2014
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <div>Livedoorブログからの移動</div><hr />
+<body>scalaのcollectionで躓いたのでメモ.<br/>
+<br/>
+普通, collectionを何も考えず使う際は, immutableなものとして考えると思う(し, 実際immutableなものが作られる).<br/>
+しかし, scala.collectionパッケージ内のtraitは, mutableなものも含むため, 型パラメータが非変なものとして設定されている. すなわち, 以下のようなプログラムはエラーを吐く. これは, Set[String]からSet[Any]への変換ができないため.
+<pre>def func(s: Set[Any]) = println(s)
+val s = Set("test")
+func(s)
+</pre>
+
+ちなみにエラー内容はこの通り.
+<pre><console>:10: error: type mismatch;
+ found   : scala.collection.immutable.Set[String]
+ required: Set[Any]
+Note: String &lt;: Any, but trait Set is invariant in type A.
+You may wish to investigate a wildcard type such as `_ &lt;: Any`. (SLS 3.2.10)
+              func(s)
+                   ^
+</console></pre>
+
+これを解決する手段は大きく分けて3つ.
+<ol>
+<li>
+エラーメッセージにあるとおり, funcに型パラメータを持たせること.
+<pre>def func[E &lt;: Any](i: Set[E]) = println(i)</pre>
+順当な手法だけど, 正直いちいち型パラメータを作るのが面倒くさくなってくるのも事実.
+</li>
+<li>
+呼び出し側でtoSetを呼び出す.
+<pre>func(s.toSet)</pre>
+こうすると, toSetが勝手に推論してSet[String]にしてくれるのでエラーを吐かなくなる.<br/>
+利点としてはエラー吐いた場所にtoSetを追加していけばいいので解決が簡単だという点, 欠点としては見栄えが悪い点.
+</li>
+<li>
+以下のように暗黙変換を用意する.
+<pre>implicit def set2Set[A, B &gt;: A](i: Set[A]): Set[B] = i.toSet
+何も考えずとも良くなる反面, 下手するとmutableなcollectionでの変換をしかねないので注意が必要.<br/>
+ただし, 自分しか使わない小規模なプログラムなら先頭にこれらを書いておけば記述が短くなると思う.
+</pre></li>
+</ol>
+<br/>
+
+ただし, Listなど一部のimmutableにしかないcollectionは, 共変であり, 上述のようなことをしなくても変換が勝手に行われる(List以外にあるのかは知らない).<br/>
+困ったらとりあえずListを使っておけば後が楽なのだろうか？
+</body>
+          </div><a class="u-url" href="/ja/2014/11/30/from-livedoor-17812990.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>

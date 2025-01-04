@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Hiroaki Mikami" /><link href="/assets/common.css" rel="stylesheet" />
+    <link href="/assets/icon.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    
+    <!-- Bootstrap (4.1.1) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Twitter summary card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mhiroaki_">
+    
+    <meta property="og:title" content="DeepCoder追実装記録 (4)">
+    
+    
+    <meta property="og:description" content="はてなブログからの移動">
+    
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")>
+    <div class="container">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/index">
+                            <i class="fa fa-lg fa-user"></i> ホーム
+                        </a>
+                    
+                </li>
+                <li class="nav-item">
+                    
+                        <a class="nav-link" href="/ja/blog">
+                            <i class="fa fa-lg fa-book"></i> ブログ
+                        </a>
+                    
+                </li>
+
+                <li class="nav-item">
+                
+                    <a class="nav-link" href="/2017/08/02/from-hatena-184458.html" >
+                        <i class="fa fa-lg fa-font"></i> English
+                    </a>
+                
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+          <header class="post-header">
+            <h1 class="post-title p-name" itemprop="name headline">DeepCoder追実装記録 (4)</h1>
+            <p class="post-meta"><time class="dt-published" datetime="2017-08-02T00:00:00+09:00" itemprop="datePublished">
+                Aug 2, 2017
+              </time></p>
+          </header>
+        
+          <div class="post-content e-content" itemprop="articleBody">
+            <div>Livedoorブログからの移動</div><hr />
+<div>はてなブログからの移動</div><hr />
+<body><h2>前回まで</h2>
+
+<p><iframe class="embed-card embed-blogcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=http%3A%2F%2Fmhiroaki.hatenablog.com%2Fentry%2F2017%2F07%2F09%2F123832" style="display: block; width: 100%; height: 190px; max-width: 500px; margin: 10px 0px;" title="DeepCoder追実装記録 (1) - 活動記録"></iframe><cite class="hatena-citation"><a href="http://mhiroaki.hatenablog.com/entry/2017/07/09/123832">mhiroaki.hatenablog.com</a></cite>
+<iframe class="embed-card embed-blogcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=http%3A%2F%2Fmhiroaki.hatenablog.com%2Fentry%2F2017%2F07%2F23%2F142403" style="display: block; width: 100%; height: 190px; max-width: 500px; margin: 10px 0px;" title="DeepCoder追実装記録 (2) - 活動記録"></iframe><cite class="hatena-citation"><a href="http://mhiroaki.hatenablog.com/entry/2017/07/23/142403">mhiroaki.hatenablog.com</a></cite>
+<iframe class="embed-card embed-blogcard" frameborder="0" scrolling="no" src="https://hatenablog-parts.com/embed?url=http%3A%2F%2Fmhiroaki.hatenablog.com%2Fentry%2F2017%2F07%2F29%2F094952" style="display: block; width: 100%; height: 190px; max-width: 500px; margin: 10px 0px;" title="DeepCoder追実装記録 (3) - 活動記録"></iframe><cite class="hatena-citation"><a href="http://mhiroaki.hatenablog.com/entry/2017/07/29/094952">mhiroaki.hatenablog.com</a></cite></p>
+
+<h2>学習</h2>
+
+<p>思い立って800万件で学習する。学習の様子は以下のような感じ。</p>
+
+<p><span itemscope="" itemtype="http://schema.org/Photograph"><img alt="f:id:mhiroaki0000:20170802184110p:plain:w300" class="hatena-fotolife" itemprop="image" src="/images/blog/2017-08-02-from-hatena-184458/0.png" style="width:300px" title="f:id:mhiroaki0000:20170802184110p:plain:w300"/></span></p>
+
+<p>この時、<code>p2.xlarge</code>のCPUメモリが足りなくなって強制終了されていた。
+今回は<code>g3.4xlarge</code>を使って対処したが、実際は、<a class="keyword" href="http://d.hatena.ne.jp/keyword/SQLite">SQLite</a>などを使ってメモリを節約する必要がありそう。</p>
+
+<h2>評価</h2>
+
+<p>ランダムに100件プログラムとInput-Outputサンプルを生成し、評価してみた。
+詳しくは後でまとめるが、DNNの推論部分を含めると平均実行時間は増加してしまっているように見える。</p>
+
+</body>
+          </div><a class="u-url" href="/ja/2017/08/02/from-hatena-184458.html" hidden></a>
+        </article>
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/%20/"></data>
+
+    <div class="wrapper">
+        <div class="footer-col-wrapper">
+            <div class="footer-col footer-col-1">
+                <ul class="contact-list">
+                    <li class="p-name">Hiroaki Mikami</li><li><a class="u-email" href="mailto:hiroaki8270@gmail.com">hiroaki8270@gmail.com</a></li></ul>
+            </div>
+
+            <div class="footer-col footer-col-5"><ul class="social-media-list"><li><a href="https://github.com/HiroakiMikami"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">HiroakiMikami</span></a></li><li><a href="https://www.linkedin.com/in/hiroaki-mikami-69084b142"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">hiroaki-mikami-69084b142</span></a></li><li><a href="https://www.twitter.com/mhiroaki_"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mhiroaki_</span></a></li></ul>
+</div>
+        </div>
+    </div>
+
+</footer></body>
+</html>
