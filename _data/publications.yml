@@ -1,4 +1,17 @@
 publications:
+  - title: "pfgen-bench: 日本語事前学習モデルのための文章生成性能評価ベンチマーク"
+    resources:
+      - text: "PDF"
+        url: "https://jxiv.jst.go.jp/index.php/jxiv/preprint/view/1008/2799"
+  - title: "PLaMo100Bの事前及び事後学習"
+    resources:
+      - text: "スライド"
+        url: https://drive.google.com/file/d/1pe_xUJQsKdQh3fhYvuUPBvi2AaEn7WX9/view
+  - title: "PLaMo-100B: A Ground-Up Language Model Designed for Japanese Proficiency"
+    location: "arXiv"
+    resources:
+      - text: "PDF"
+        url: "https://arxiv.org/pdf/2410.07563"
   - title: 大規模言語モデル (LLM)における低精度数値表現
     resources:
       - text: 第194回HPC研究発表会
@@ -41,7 +54,7 @@ publications:
     location: "arXiv"
     resources:
       - text: "PDF"
-        url: "https://arxiv.org/ftp/arxiv/papers/1811/1811.05233.pdf"
+        url: "https://arxiv.org/pdf/1811.05233"
   - title: "Distributed DNN Training with Adaptive Batch-size Control"
     location: "GTC Japan 2018"
     resources:
